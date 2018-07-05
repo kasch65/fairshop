@@ -66,14 +66,14 @@ export class FairshopManufacturersList extends PolymerElement {
 
 			<iron-ajax 
 				id="requestManufacturerImages"
-				url="[[restUrl]]manufacturer_images"
+				url="[[restUrl]]manufacturer_images?columns=manufacturerId,use,file"
 				handle-as="json"
 				on-response="_manufacturerImagesReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestManufacturerDescriptions"
-				url="[[restUrl]]manufacturer_descriptions"
+				url="[[restUrl]]manufacturer_descriptions?columns=manufacturerId,name"
 				handle-as="json"
 				on-response="_manufacturerDescriptionsReceived">
 			</iron-ajax>
@@ -89,8 +89,8 @@ export class FairshopManufacturersList extends PolymerElement {
 		this.$.requestManufacturerDescriptions.generateRequest();
 		var imageUrlMap = new Map();
 		for (let manufacturerImage of data.detail.response.manufacturer_images.records) {
-			if (manufacturerImage[2] == 'Kategorie-Bild') {
-				imageUrlMap.set(manufacturerImage[1], manufacturerImage[4]);
+			if (manufacturerImage[1] == 'Kategorie-Bild') {
+				imageUrlMap.set(manufacturerImage[0], manufacturerImage[2]);
 			}
 		}
 		this._logoUrlMap = imageUrlMap;
@@ -112,7 +112,7 @@ export class FairshopManufacturersList extends PolymerElement {
 			aElement.setAttribute('href', '/manufacturers/' + manufacturer[0]);
 			aElement.setAttribute('maufacturer', manufacturer[0]);
 			var manufacurersCard = document.createElement('fairshop-manufactur-card');
-			manufacurersCard.name = manufacturer[2];
+			manufacurersCard.name = manufacturer[1];
 			var logoUrl = this._logoUrlMap.get(manufacturer[0]);
 			if (logoUrl) {
 				manufacurersCard.logoUrl = 'http://bukhtest.alphaplanweb.de/' + logoUrl;

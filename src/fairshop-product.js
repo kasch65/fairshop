@@ -32,6 +32,10 @@ export class FairshopProduct extends PolymerElement {
 				type: Number,
 				value: 0
 			},
+			_selectedTab: {
+				type: Number,
+				value: 0
+			},
 			route: {
 				Object
 			},
@@ -88,13 +92,13 @@ export class FairshopProduct extends PolymerElement {
 			<app-route route="{{subRoute}}" pattern="/:productId" data="{{routeData2}}" tail="{{subRoute2}}"></app-route>
 			<template is="dom-if" if="[[selectedProduct]]">
 				<div class="product">
-					<h1>[[_productDescription.2]]</h1>
+					<h1>[[_productDescription.0]]</h1>
 					<div class="images">
 						<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
 							<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 								<div>
-									<a href="http://bukhtest.alphaplanweb.de/[[productImage.5]]" target="_blank">
-										<iron-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.4]]" alt\$="[[productImage.4]]"></iron-image>
+									<a href="http://bukhtest.alphaplanweb.de/[[productImage.2]]" target="_blank">
+										<iron-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></iron-image>
 									</a>
 								</div>
 							</template>
@@ -102,36 +106,36 @@ export class FairshopProduct extends PolymerElement {
 						<paper-tabs selected="{{_selected}}" scrollable>
 							<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 								<paper-tab>
-									<iron-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.3]]" alt\$="[[productImage.3]]"></iron-image>
+									<iron-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></iron-image>
 								</paper-tab>
 							</template>
 						</paper-tabs>
 					</div>
 					<div class="info">
-						<h2>[[_productDescription.3]]</h2>
+						<h2>[[_productDescription.1]]</h2>
 						<table>
 							<tr>
 								<td>Artikelnummer</td>
-								<td>[[_productInfo.1]]</td>
+								<td>[[_productInfo.0]]</td>
 							</tr>
 							<tr>
 								<td>EAN</td>
-								<td>[[_productInfo.2]]</td>
+								<td>[[_productInfo.1]]</td>
 							</tr>
 						</table>
 						<div class="tabs">
 							<paper-tabs selected="{{_selectedTab}}" scrollable>
-								<paper-tab class="iron-selected" focused="true" aria-selected="true">Beschreibung</paper-tab>
+								<paper-tab>Beschreibung</paper-tab>
 								<paper-tab>Artikel Attribute</paper-tab>
 								<paper-tab>Downloads</paper-tab>
 							</paper-tabs>
 							<iron-pages class="article-tabs" selected="{{_selectedTab}}">
-								<div class="iron-selected">[[_productDescription.4]]</div>
+								<div class="iron-selected">[[_productDescription.2]]</div>
 								<div>...</div>
 								<div>
 									<template is="dom-repeat" items="[[_productDownloads]]" as="productDownload">
 										<div class="download">
-											<a href$="http://bukhtest.alphaplanweb.de/[[productDownload.4]]" target="_blank">Download: [[productDownload.3]]</a>
+											<a href$="http://bukhtest.alphaplanweb.de/[[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
 										</div>
 									</template>
 								</div>
@@ -146,28 +150,28 @@ export class FairshopProduct extends PolymerElement {
 
 			<iron-ajax 
 				id="requestProducInfo"
-				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]"
+				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN"
 				handle-as="json"
 				on-response="_productInfoReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductDescription"
-				url="[[restUrl]]product_descriptions?filter=id,eq,[[selectedProduct]]"
+				url="[[restUrl]]product_descriptions?filter=id,eq,[[selectedProduct]]&columns=name,description,description2"
 				handle-as="json"
 				on-response="_productDescriptionReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductImages"
-				url="[[restUrl]]product_images?filter=productId,eq,[[selectedProduct]]"
+				url="[[restUrl]]product_images?filter=productId,eq,[[selectedProduct]]&columns=small,medium,large"
 				handle-as="json"
 				on-response="_productImageReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductDownloads"
-				url="[[restUrl]]product_downloads?filter=productId,eq,[[selectedProduct]]"
+				url="[[restUrl]]product_downloads?filter=productId,eq,[[selectedProduct]]&columns=description,file"
 				handle-as="json"
 				on-response="_productDownloadReceived">
 			</iron-ajax>
@@ -200,6 +204,8 @@ export class FairshopProduct extends PolymerElement {
 			this.$.requestProductImages.generateRequest();
 			this.$.requestProductDownloads.generateRequest();
 		}
+		this._selected = 0;
+		this._selectedTab = 0;
 	}
 
 	_productInfoReceived(data) {

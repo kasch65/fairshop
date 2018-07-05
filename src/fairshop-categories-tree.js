@@ -64,7 +64,7 @@ export class FairshopCategoriesTree extends PolymerElement {
 
 			<iron-ajax 
 				id="requestCategoryDescriptions"
-				url="[[restUrl]]category_descriptions"
+				url="[[restUrl]]category_descriptions?columns=categoryId,parentId,name"
 				handle-as="json"
 				on-response="_categoryDescriptionsReceived">
 			</iron-ajax>
@@ -87,11 +87,11 @@ export class FairshopCategoriesTree extends PolymerElement {
 	addChildren(parentCategoryId, categoryRecords, target, indent) {
 		for (let category of categoryRecords) {
 			if (category[1] == parentCategoryId) {
-				console.log('' + indent + ' ' + category[0] + ' ' + category[3]);
+				console.log('' + indent + ' ' + category[0] + ' ' + category[2]);
 				var catElement = document.createElement('div');
 				var aElement = document.createElement('a');
 				aElement.setAttribute("href", "/categories/" + category[0]);
-				var catTextElement = document.createTextNode(category[3]);
+				var catTextElement = document.createTextNode(category[2]);
 				aElement.appendChild(catTextElement);
 				catElement.appendChild(aElement);
 				catElement.setAttribute("class", "cat-node");

@@ -105,14 +105,14 @@ export class FairshopProductsList extends PolymerElement {
 
 			<iron-ajax 
 				id="requestManufacturerProducts"
-				url="[[restUrl]]products_manufacturers?filter=manufacturerId,eq,[[selectedManufacturer]]"
+				url="[[restUrl]]products_manufacturers?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=productId"
 				handle-as="json"
 				on-response="_manufacturerProductsReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestCategoryProducts"
-				url="[[restUrl]]products_categories?filter=categoryId,eq,[[selectedCategory]]"
+				url="[[restUrl]]products_categories?filter=categoryId,eq,[[selectedCategory]]&columns=productId"
 				handle-as="json"
 				on-response="_categoryProductsReceived">
 			</iron-ajax>
@@ -120,7 +120,7 @@ export class FairshopProductsList extends PolymerElement {
 			<iron-ajax 
 				id="requestProductImages"
 				handle-as="json"
-				on-response="_productImageesReceived">
+				on-response="_productImagesReceived">
 			</iron-ajax>
 
 			<iron-ajax 
@@ -184,20 +184,20 @@ export class FairshopProductsList extends PolymerElement {
 
 	_itemIdListChanged() {
 		var productImagesRequestor = this.$.requestProductImages;
-		productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in,' + this._itemIdList;
+		productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in,' + this._itemIdList + '&columns=productId,small';
 		productImagesRequestor.generateRequest();
 
 	}
 
-	_productImageesReceived(data) {
+	_productImagesReceived(data) {
 		var productDescriptionsRequestor = this.$.requestProductDescriptions;
-		productDescriptionsRequestor.url = this.restUrl + 'product_descriptions?filter=id,in,' + this._itemIdList;
+		productDescriptionsRequestor.url = this.restUrl + 'product_descriptions?filter=id,in,' + this._itemIdList + '&columns=id,name,description';
 		productDescriptionsRequestor.generateRequest();
 		var imageUrlMap = new Map();
 		for (let productImage of data.detail.response.product_images.records) {
-			var firstImage = imageUrlMap.get(productImage[1]);
+			var firstImage = imageUrlMap.get(productImage[0]);
 			if (!firstImage) {
-				imageUrlMap.set(productImage[1], productImage[3]);
+				imageUrlMap.set(productImage[0], productImage[1]);
 			}
 		}
 		this._imageUrlMap = imageUrlMap;
@@ -214,8 +214,8 @@ export class FairshopProductsList extends PolymerElement {
 			aElement.setAttribute('href', this._hrefPrefix + '/' + product[0]);
 			aElement.setAttribute('product', product[0]);
 			var productCard = document.createElement('fairshop-product-card');
-			productCard.name = product[2];
-			productCard.description = product[3];
+			productCard.name = product[1];
+			productCard.description = product[2];
 			var imageUrl = this._imageUrlMap.get(product[0]);
 			if (imageUrl) {
 				productCard.imageUrl = 'http://bukhtest.alphaplanweb.de/' + imageUrl;

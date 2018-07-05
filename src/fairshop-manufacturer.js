@@ -49,7 +49,7 @@ export class FairshopManufacturer extends PolymerElement {
 				}
 				.manufacturer-img {
 					width: 100%;
-					height: 18rem;
+					height: 20rem;
 				}
 				.info {
 					width: 49%;
@@ -61,31 +61,29 @@ export class FairshopManufacturer extends PolymerElement {
 			</style>
 			<app-route route="{{route}}" pattern="/:manufacturerId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
 			<div class="manufacturer">
-				<h1>[[_manufacturerDescription.2]]</h1>
-				<i>routeData.manufacturerId: [[routeData.manufacturerId]]</i>
+				<h1>[[_manufacturerDescription.0]]</h1>
 				<div class="images">
 					<template is="dom-repeat" items="[[_manufacturerImages]]" as="manufacturerImage">
-						<div class="medium-image">
-							<!--<img href$="[[manufacturerImage.0]]" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.4]]" alt="[[manufacturerImage.4]]"/>-->
-							<iron-image class="manufacturer-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.4]]" alt\$="[[manufacturerImage.4]]"></iron-image>
+						<div class="tile-image">
+						<iron-image class="manufacturer-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.0]]" alt\$="[[manufacturerImage.0]]"></iron-image>
 						</div>
 					</template>
 				</div>
 				<div class="info">
-					<div>[[_manufacturerDescription.3]]</div>
+					<div>[[_manufacturerDescription.1]]</div>
 				</div>
 			</div>
 
 			<iron-ajax 
 				id="requestManufacturerDescription"
-				url="[[restUrl]]manufacturer_descriptions?filter=manufacturerId,eq,[[selectedManufacturer]]"
+				url="[[restUrl]]manufacturer_descriptions?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=name,description"
 				handle-as="json"
 				on-response="_manufacturerDescriptionReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestManufacturerImages"
-				url="[[restUrl]]manufacturer_images?filter=manufacturerId,eq,[[selectedManufacturer]]"
+				url="[[restUrl]]manufacturer_images?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=use,eq,Herstellerkachel&columns=file"
 				handle-as="json"
 				on-response="_requestManufacturerImagesReceived">
 			</iron-ajax>
