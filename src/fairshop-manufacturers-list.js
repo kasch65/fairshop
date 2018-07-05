@@ -61,13 +61,6 @@ export class FairshopManufacturersList extends PolymerElement {
 			<div class="manufacturers">
 				<h1>Herstellerliste</h1>
 				<ul id="manufacturersList">
-					<!--<template is="dom-repeat" items="[[_manufacturerDescriptions]]" as="manufacturerDescription">
-						<li>
-							<a href="#maufacturer" maufacturer$="[[manufacturerDescription.0]]" on-click="_selectManufacturer">
-								<fairshop-manufactur-card name="[[manufacturerDescription.2]]" logo-url="http://bukhtest.alphaplanweb.de/images/categories/gori_propeller_50770.png"></fairshop-manufactur-card>
-							</a>
-						</li>
-					</template>-->
 				</ul>
 			</div>
 
@@ -116,9 +109,8 @@ export class FairshopManufacturersList extends PolymerElement {
 		for (let manufacturer of data.detail.response.manufacturer_descriptions.records) {
 			var liElement = document.createElement('li');
 			var aElement = document.createElement('a');
-			aElement.setAttribute('href', '#maufacturer');
+			aElement.setAttribute('href', '/manufacturers/' + manufacturer[0]);
 			aElement.setAttribute('maufacturer', manufacturer[0]);
-			aElement.addEventListener('click', ev => this._selectManufacturer(ev));
 			var manufacurersCard = document.createElement('fairshop-manufactur-card');
 			manufacurersCard.name = manufacturer[2];
 			var logoUrl = this._logoUrlMap.get(manufacturer[0]);
@@ -129,23 +121,6 @@ export class FairshopManufacturersList extends PolymerElement {
 			liElement.appendChild(aElement);
 			target.appendChild(liElement);
 		}
-	}
-
-	_selectManufacturer(ev) {
-		if (this._activeManufacturer) {
-			this._activeManufacturer.classList.remove("active");
-		}
-		var target = ev.target;
-		while (target && !target.attributes.maufacturer) {
-			target = target.parentElement;
-		}
-
-		this._activeManufacturer = target;
-		target.classList.add("active");
-		this.selectedManufacturer = target.attributes.maufacturer.value;
-		this.selectedCategory = null;
-		this.selectedProduct = null;
-		console.log(this.selectedManufacturer);
 	}
 
 }

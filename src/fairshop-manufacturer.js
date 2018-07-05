@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import '@polymer/app-route/app-route.js';
 import '@polymer/iron-image/iron-image.js';
 
 /**
@@ -19,6 +20,15 @@ export class FairshopManufacturer extends PolymerElement {
 			},
 			_manufacturerImages: {
 				type: Array
+			},
+			route: {
+				Object
+			},
+			routeData: {
+				type: Object
+			},
+			subRoute: {
+				type: Object
 			}
 		};
 	}
@@ -49,8 +59,10 @@ export class FairshopManufacturer extends PolymerElement {
 					text-align: center;
 				}
 			</style>
+			<app-route route="{{route}}" pattern="/:manufacturerId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
 			<div class="manufacturer">
 				<h1>[[_manufacturerDescription.2]]</h1>
+				<i>routeData.manufacturerId: [[routeData.manufacturerId]]</i>
 				<div class="images">
 					<template is="dom-repeat" items="[[_manufacturerImages]]" as="manufacturerImage">
 						<div class="medium-image">
@@ -78,6 +90,18 @@ export class FairshopManufacturer extends PolymerElement {
 				on-response="_requestManufacturerImagesReceived">
 			</iron-ajax>
 		`;
+	}
+
+	static get observers() {
+		return ['_routePageChanged(routeData.manufacturerId)']
+	}
+
+	_routePageChanged(page) {
+		console.log('fairshop-manufacturer.route.path: ' + this.route.path);
+		if (this.routeData && this.routeData.manufacturerId) {
+			console.log('fairshop-manufacturer.routeData.manufacturerId: ' + this.routeData.manufacturerId);
+			this.selectedManufacturer = this.routeData.manufacturerId;
+		}
 	}
 
 	_manufacturerChanged() {

@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import '@polymer/app-route/app-route.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-image/iron-image.js';
 
@@ -30,6 +31,21 @@ export class FairshopProduct extends PolymerElement {
 			_selected: {
 				type: Number,
 				value: 0
+			},
+			route: {
+				Object
+			},
+			routeData: {
+				type: Object
+			},
+			subRoute: {
+				type: Object
+			},
+			routeData2: {
+				type: Object
+			},
+			subRoute2: {
+				type: Object
 			}
 		};
 	}
@@ -68,6 +84,8 @@ export class FairshopProduct extends PolymerElement {
 					overflow: auto;
 				}
 			</style>
+			<app-route route="{{route}}" pattern="/:categoryId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
+			<app-route route="{{subRoute}}" pattern="/:productId" data="{{routeData2}}" tail="{{subRoute2}}"></app-route>
 			<template is="dom-if" if="[[selectedProduct]]">
 				<div class="product">
 					<h1>[[_productDescription.2]]</h1>
@@ -154,6 +172,19 @@ export class FairshopProduct extends PolymerElement {
 				on-response="_productDownloadReceived">
 			</iron-ajax>
 		`;
+	}
+
+	static get observers() {
+		return ['_routePageChanged(routeData2.productId)']
+	}
+
+	_routePageChanged(page) {
+		console.log('fairshop-product.route.path: ' + this.route.path);
+		console.log('fairshop-product.subRoute.path: ' + this.subRoute.path);
+		if (this.routeData2.productId) {
+			console.log('fairshop-product.routeData2.productId: ' + this.routeData2.productId);
+			this.selectedProduct = this.routeData2.productId;
+		}
 	}
 
 	_productChanged() {

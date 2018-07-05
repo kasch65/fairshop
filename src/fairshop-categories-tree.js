@@ -90,8 +90,7 @@ export class FairshopCategoriesTree extends PolymerElement {
 				console.log('' + indent + ' ' + category[0] + ' ' + category[3]);
 				var catElement = document.createElement('div');
 				var aElement = document.createElement('a');
-				aElement.addEventListener('click', ev => this._selectCategory(ev));
-				aElement.setAttribute("href", "#products");
+				aElement.setAttribute("href", "/categories/" + category[0]);
 				var catTextElement = document.createTextNode(category[3]);
 				aElement.appendChild(catTextElement);
 				catElement.appendChild(aElement);
@@ -101,18 +100,6 @@ export class FairshopCategoriesTree extends PolymerElement {
 				this.addChildren(category[0], categoryRecords, catElement, indent + 1);
 			}
 		}
-	}
-
-	_selectCategory(ev) {
-		if (this._activeCategory) {
-			this._activeCategory.classList.remove("active");
-		}
-		this._activeCategory = ev.target;
-		ev.target.classList.add("active");
-		this.selectedCategory = ev.target.parentElement.attributes.href.value;
-		this.selectedManufacturer = null;
-		this.selectedProduct = null;
-		console.log(this.selectedCategory);
 	}
 
 }

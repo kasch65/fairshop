@@ -24,7 +24,8 @@
     "@polymer/paper-button": "^3.0.0-pre.1",
     "@polymer/app-layout": "^3.0.0-pre.1",
     "@polymer/paper-spinner": "^3.0.0-pre.1",
-    "@polymer/paper-tabs": "^3.0.0-pre.12"
+    "@polymer/paper-tabs": "^3.0.0-pre.19",
+    "@polymer/app-route": "^3.0.0-pre.19"
   },
   "repository": {
     "type": "git",
