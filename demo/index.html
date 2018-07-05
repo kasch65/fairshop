@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+    <script type="module" src="../src/dp-form-app.js"></script>
+    <script type="module" src="/node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
+  </head>
+
+  <body>
+    <style>
+      dp-form-app {
+        --dp-form-app-text-color: red;
+      }
+    </style>
+    <h1>Show dp-form-app Demo</h1>
+    <!--Use demo-snippet to encapsulate demos with their respective source codes-->
+    <demo-snippet>
+      <template>
+        <dp-form-app rest-url="http://localhost:8081/demo/data" list-url-suffix="/formsetList.json" formset-url-suffix="/formset.json"></dp-form-app>
+      </template>
+    </demo-snippet>
+  </body>
+
+</html>

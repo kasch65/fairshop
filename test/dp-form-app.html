@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+  <head>
+
+    <title>dp-form-app tests</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+
+    <script type="module" src="../src/dp-form-app.js"></script>
+
+  </head>
+
+  <body>
+
+    <test-fixture id="BasicComponent">
+      <template>
+        <dp-form-app></dp-form-app>
+      </template>
+    </test-fixture>
+
+
+    <script type="module">
+      describe('<dp-form-app>', function () {
+        var dpComponent;
+
+        beforeEach(function () {
+          dpComponent = fixture('BasicComponent');
+        });
+
+        it('should show sampleProperty', function () {
+          expect(dpComponent.sampleProperty).to.be.undefined;
+          dpComponent.sampleProperty = "Hello";
+          expect(dpComponent.shadowRoot.querySelector("#aDiv").textContent).to.equal("Hello");
+        });
+
+      });
+    </script>
+
+  </body>
+
+</html>

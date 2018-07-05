@@ -1,0 +1,18 @@
+{
+	"plugins": {
+		"local": {
+			"disabled": false,
+			"browsers": ["chrome", "firefox"],
+			"browserOptions": {
+				"chrome": [
+					"no-sandbox",
+					"headless",
+					"disable-gpu",
+					"enable-logging",
+					"v=1"
+				],
+				"firefox": ["--headless"]
+			}
+		}
+	}
+}

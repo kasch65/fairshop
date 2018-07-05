@@ -1,0 +1,82 @@
+{
+    "formset": [{
+        "id": 42641,
+        "version": null,
+        "security": null,
+        "revision": {
+            "id": null,
+            "version": null,
+            "revision": 0,
+            "timestamp": 1507537463988
+        },
+        "attribute": [],
+        "name": "Kundenbedarfsanalyse_digipen",
+        "formRefs": [{
+            "id": 42641,
+            "version": null,
+            "security": null,
+            "revision": {
+                "id": null,
+                "version": null,
+                "revision": 0,
+                "timestamp": 1507537463691
+            },
+            "papersize": null,
+            "papermargins": null,
+            "formControl": [],
+            "attribute": [],
+            "name": "Kundenbedarfsanalyse_digipen_S1",
+            "language": null,
+            "xid": null
+        }, {
+            "id": 42642,
+            "version": null,
+            "security": null,
+            "revision": {
+                "id": null,
+                "version": null,
+                "revision": 0,
+                "timestamp": 1507537463988
+            },
+            "papersize": null,
+            "papermargins": null,
+            "formControl": [],
+            "attribute": [],
+            "name": "Kundenbedarfsanalyse_digipen_S2",
+            "language": null,
+            "xid": null
+        }],
+        "xid": null
+    }, {
+        "id": 42603,
+        "version": null,
+        "security": null,
+        "revision": {
+            "id": null,
+            "version": null,
+            "revision": 0,
+            "timestamp": 1519995379732
+        },
+        "attribute": [],
+        "name": "Auftrag_Weinhandel",
+        "formRefs": [{
+            "id": 42603,
+            "version": null,
+            "security": null,
+            "revision": {
+                "id": null,
+                "version": null,
+                "revision": 0,
+                "timestamp": 1519995379732
+            },
+            "papersize": null,
+            "papermargins": null,
+            "formControl": [],
+            "attribute": [],
+            "name": "Auftrag_Weinhandel",
+            "language": null,
+            "xid": null
+        }],
+        "xid": null
+    }]
+}

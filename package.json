@@ -1,0 +1,44 @@
+{
+  "name": "@fairweben/fair-shop",
+  "version": "1.0.0",
+  "description": "[[A progressive shop demo]]",
+  "main": "fair-shop.js",
+  "module": "/dist/fair-shop.umd.js",
+  "scripts": {
+    "docs": "polymer analyze src/fair-shop.js > analysis.json",
+    "demo": "polymer serve -b chrome --open-path ./demo -o",
+    "test-local": "polymer serve -b chrome --open-path ./test/index.html -o",
+    "test": "polymer test",
+    "build": "webpack"
+  },
+  "author": "[[ks@kai-schaefer-it.de]]",
+  "license": "ISC",
+  "dependencies": {
+    "@webcomponents/webcomponentsjs": "^1.2.0",
+    "@polymer/iron-ajax": "^3.0.0-pre.19",
+    "@polymer/iron-pages": "^3.0.0-pre.19",
+    "@polymer/iron-input": "^3.0.0-pre.19",
+    "@polymer/iron-image": "^3.0.0-pre.19",
+    "@polymer/paper-toast": "^3.0.0-pre.1",
+    "@polymer/paper-checkbox": "^3.0.0-pre.1",
+    "@polymer/paper-button": "^3.0.0-pre.1",
+    "@polymer/app-layout": "^3.0.0-pre.1",
+    "@polymer/paper-spinner": "^3.0.0-pre.1",
+    "@polymer/paper-tabs": "^3.0.0-pre.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://KSchaefer@git.eitco.de/scm/digi/dp-formset-list.git"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^3.0.0-pre.19",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
+    "@polymer/iron-test-helpers": "^3.0.0-pre.19",
+    "@polymer/test-fixture": "^3.0.0-pre.19",
+    "clean-webpack-plugin": "^0.1.19",
+    "wct-browser-legacy": "^1.0.0",
+    "webpack": "^4.8.3",
+    "webpack-bundle-analyzer": "^2.12.0",
+    "webpack-cli": "^2.0.15"
+  }
+}
