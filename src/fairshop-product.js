@@ -50,6 +50,12 @@ export class FairshopProduct extends PolymerElement {
 			},
 			subRoute2: {
 				type: Object
+			},
+			routeData3: {
+				type: Object
+			},
+			subRoute3: {
+				type: Object
 			}
 		};
 	}
@@ -88,65 +94,65 @@ export class FairshopProduct extends PolymerElement {
 					overflow: auto;
 				}
 			</style>
-			<app-route route="{{route}}" pattern="/:categoryId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
-			<app-route route="{{subRoute}}" pattern="/:productId" data="{{routeData2}}" tail="{{subRoute2}}"></app-route>
-			<template is="dom-if" if="[[selectedProduct]]">
-				<div class="product">
-					<h1>[[_productDescription.0]]</h1>
-					<div class="images">
-						<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
-							<template is="dom-repeat" items="[[_productImages]]" as="productImage">
-								<div>
-									<a href="http://bukhtest.alphaplanweb.de/[[productImage.2]]" target="_blank">
-										<iron-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></iron-image>
-									</a>
-								</div>
-							</template>
-						</iron-pages>
-						<paper-tabs selected="{{_selected}}" scrollable>
-							<template is="dom-repeat" items="[[_productImages]]" as="productImage">
-								<paper-tab>
-									<iron-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></iron-image>
-								</paper-tab>
-							</template>
-						</paper-tabs>
-					</div>
-					<div class="info">
-						<h2>[[_productDescription.1]]</h2>
-						<table>
-							<tr>
-								<td>Artikelnummer</td>
-								<td>[[_productInfo.0]]</td>
-							</tr>
-							<tr>
-								<td>EAN</td>
-								<td>[[_productInfo.1]]</td>
-							</tr>
-						</table>
-						<div class="tabs">
-							<paper-tabs selected="{{_selectedTab}}" scrollable>
-								<paper-tab>Beschreibung</paper-tab>
-								<paper-tab>Artikel Attribute</paper-tab>
-								<paper-tab>Downloads</paper-tab>
-							</paper-tabs>
-							<iron-pages class="article-tabs" selected="{{_selectedTab}}">
-								<div class="iron-selected">[[_productDescription.2]]</div>
-								<div>...</div>
-								<div>
-									<template is="dom-repeat" items="[[_productDownloads]]" as="productDownload">
-										<div class="download">
-											<a href$="http://bukhtest.alphaplanweb.de/[[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
-										</div>
-									</template>
-								</div>
-							</iron-pages>
-							<div></div>
-							<div class="downloads">
+			<app-route route="{{route}}" pattern="/:groupId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
+			<app-route route="{{subRoute}}" pattern="/:product" data="{{routeData2}}" tail="{{subRoute2}}"></app-route>
+			<app-route route="{{subRoute2}}" pattern="/:productId" data="{{routeData3}}" tail="{{subRoute3}}"></app-route>
+
+			<div class="product">
+				<h1>[[_productDescription.0]]</h1>
+				<div class="images">
+					<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
+						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
+							<div>
+								<a href="http://bukhtest.alphaplanweb.de/[[productImage.2]]" target="_blank">
+									<iron-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></iron-image>
+								</a>
 							</div>
+						</template>
+					</iron-pages>
+					<paper-tabs selected="{{_selected}}" scrollable>
+						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
+							<paper-tab>
+								<iron-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></iron-image>
+							</paper-tab>
+						</template>
+					</paper-tabs>
+				</div>
+				<div class="info">
+					<h2>[[_productDescription.1]]</h2>
+					<table>
+						<tr>
+							<td>Artikelnummer</td>
+							<td>[[_productInfo.0]]</td>
+						</tr>
+						<tr>
+							<td>EAN</td>
+							<td>[[_productInfo.1]]</td>
+						</tr>
+					</table>
+					<div class="tabs">
+						<paper-tabs selected="{{_selectedTab}}" scrollable>
+							<paper-tab>Beschreibung</paper-tab>
+							<paper-tab>Artikel Attribute</paper-tab>
+							<paper-tab>Downloads</paper-tab>
+						</paper-tabs>
+						<iron-pages id="tabPages" class="article-tabs" selected="{{_selectedTab}}">
+							<div id="descriptionTab"></div>
+							<div>...</div>
+							<div>
+								<template is="dom-repeat" items="[[_productDownloads]]" as="productDownload">
+									<div class="download">
+										<a href$="http://bukhtest.alphaplanweb.de/[[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
+									</div>
+								</template>
+							</div>
+						</iron-pages>
+						<div></div>
+						<div class="downloads">
 						</div>
 					</div>
 				</div>
-			</template>
+			</div>
 
 			<iron-ajax 
 				id="requestProducInfo"
@@ -185,9 +191,9 @@ export class FairshopProduct extends PolymerElement {
 	_routePageChanged(page) {
 		console.log('fairshop-product.route.path: ' + this.route.path);
 		console.log('fairshop-product.subRoute.path: ' + this.subRoute.path);
-		if (this.routeData2.productId) {
-			console.log('fairshop-product.routeData2.productId: ' + this.routeData2.productId);
-			this.selectedProduct = this.routeData2.productId;
+		if (this.routeData3.productId) {
+			console.log('fairshop-product.routeData3.productId: ' + this.routeData3.productId);
+			this.selectedProduct = this.routeData3.productId;
 		}
 	}
 
@@ -214,6 +220,8 @@ export class FairshopProduct extends PolymerElement {
 
 	_productDescriptionReceived(data) {
 		this._productDescription = data.detail.response.product_descriptions.records[0];
+		// Add HTML to description tab
+		this.$.descriptionTab.innerHTML =this._productDescription[2];
 	}
 
 	_productImageReceived(data) {

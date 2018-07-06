@@ -2,16 +2,15 @@ import {
 	PolymerElement,
 	html
 } from "@polymer/polymer/polymer-element";
+import '@polymer/app-route/app-location.js';
+import '@polymer/app-route/app-route.js';
 import '@polymer/app-layout/app-layout.js';
-import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
-import '@polymer/app-route/app-location.js';
-import '@polymer/app-route/app-route.js';
 import './fairshop-manufacturers-list.js';
 import './fairshop-manufacturer.js';
 import './fairshop-categories-tree.js';
@@ -36,6 +35,24 @@ export class FairshopApp extends PolymerElement {
 			subRoute: {
 				type: Object
 			},
+			groupRouteData: {
+				type: Object
+			},
+			groupSubRoute: {
+				type: Object
+			},
+			productsRouteData: {
+				type: Object
+			},
+			productsSubRoute: {
+				type: Object
+			},
+			productRouteData: {
+				type: Object
+			},
+			productSubRoute: {
+				type: Object
+			},
 			_homeActive: {
 				type: Boolean,
 				value: true
@@ -45,6 +62,18 @@ export class FairshopApp extends PolymerElement {
 				value: false
 			},
 			_manufacturersActive: {
+				type: Boolean,
+				value: false
+			},
+			_manufacturerActive: {
+				type: Boolean,
+				value: false
+			},
+			_productsActive: {
+				type: Boolean,
+				value: false
+			},
+			_productActive: {
 				type: Boolean,
 				value: false
 			}
@@ -62,25 +91,23 @@ export class FairshopApp extends PolymerElement {
 					background-color: var(--primary-background-color);
 					color: var(--primary-text-color);
 				}
+				[main-title] {
+					font-weight: bolder;
+				}
 				paper-spinner-lite {
 					left: 50%;
 					top: 50%;
 					position: fixed;
 				}
-				.list {
-					width: 30%;
-					display: inline-block;
-					vertical-align:top;
-					overflow: auto;
-				}
-				.preview {
-					width: 69%;
-					display: inline-block;
-					vertical-align:top;
+				#home {
+					min-height: 50vh;
 				}
 				app-header {
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
+				}
+				paper-button {
+					font-size: 1rem;;
 				}
 				app-header a {
 					color: var(--paper-grey-50);
@@ -91,11 +118,18 @@ export class FairshopApp extends PolymerElement {
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
 				}
+				#home {
+					min-height: 50vh;
+					text-align: center;
+				}
 			</style>
 
 			<app-location route="{{route}}"></app-location>
 			<app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subRoute}}"></app-route>
-			
+			<app-route route="{{subRoute}}" pattern="/:pageId" data="{{groupRouteData}}" tail="{{groupSubRoute}}"></app-route>
+			<app-route route="{{groupSubRoute}}" pattern="/:product" data="{{productsRouteData}}" tail="{{productsSubRoute}}"></app-route>
+			<app-route route="{{productsSubRoute}}" pattern="/:productId" data="{{productRouteData}}" tail="{{productSubRoute}}"></app-route>
+
 			<app-header-layout>
 				<app-header slot="header" fixed="" effects="waterfall">
 					<app-toolbar>
@@ -123,32 +157,21 @@ export class FairshopApp extends PolymerElement {
 					<div id="manufacturers" page-name="manufacturers">
 						<fairshop-manufacturers-list rest-url="[[restUrl]]"></fairshop-manufacturers-list>
 					</div>
-					<template is="dom-if" if="[[subRoute.path.length]]">
-						<div id="maufacturer" page-name="maufacturer">
-							<fairshop-manufacturer rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-manufacturer>
-						</div>
-					</template>
 				</template>
-				<template is="dom-if" if="[[_categoriesActive]]">
-					<template is="dom-if" if="[[subRoute.path.length]]">
-						<div id="products" page-name="products">
-							<fairshop-products-list rest-url="[[restUrl]]" category-route="[[subRoute]]"></fairshop-products-list>
-						</div>
-						<div id="product" page-name="product">
-							<fairshop-product rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-product>
-						</div>
-					</template>
+				<template is="dom-if" if="[[_manufacturerActive]]">
+					<div id="maufacturer" page-name="maufacturer">
+						<fairshop-manufacturer rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-manufacturer>
+					</div>
 				</template>
-
-				<template is="dom-if" if="[[_manufacturersActive]]">
-					<template is="dom-if" if="[[subRoute.path.length]]">
-						<div id="namufacturerProducts" page-name="products">
-							<fairshop-products-list rest-url="[[restUrl]]" manufacturer-route="[[subRoute]]"></fairshop-products-list>
-						</div>
-						<div id="namufacturerProduct" page-name="product">
-							<fairshop-product rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-product>
-						</div>
-					</template>
+				<template is="dom-if" if="[[_productsActive]]">
+					<div id="products" page-name="products">
+						<fairshop-products-list rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-products-list>
+					</div>
+				</template>
+				<template is="dom-if" if="[[_productActive]]">
+					<div id="product" page-name="product">
+						<fairshop-product rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-product>
+					</div>
 				</template>
 
 				<div id="footer">(c) fairshop 2018</div>
@@ -158,27 +181,53 @@ export class FairshopApp extends PolymerElement {
 	}
 
 	static get observers() {
-		return ['_routePageChanged(routeData.page)']
+		return ['_routePageChanged(route)']
 	}
 
-	_routePageChanged(page) {
+	_routePageChanged(route) {
 		console.log('fairshop-app.route.path: ' + this.route.path);
 		console.log('fairshop-app.routeData.page: ' + this.routeData.page);
 		console.log('fairshop-app.subRoute.path: ' + this.subRoute.path);
+		// Hide all views
+		this._homeActive = false;
+		this._categoriesActive = false;
+		this._manufacturersActive = false;
+		this._manufacturerActive = false;
+		this._productsActive = false;
+		this._productActive = false;
+		// Activate some views
 		if (this.routeData.page == '') {
 			this._homeActive = true;
-			this._categoriesActive = false;
-			this._manufacturersActive = false;
 		}
 		else if (this.routeData.page == 'categories') {
-			this._homeActive = false;
-			this._categoriesActive = true;
-			this._manufacturersActive = false;
+			if (this.subRoute.path && this.subRoute.path.length && this.groupSubRoute.path && this.groupSubRoute.path.length && this.productRouteData.productId) {
+				this._productActive = true;
+			}
+			else {
+				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
+					this._productsActive = true;
+				}
+				else {
+					this._categoriesActive = true;
+				}
+			}
 		}
 		else if (this.routeData.page == 'manufacturers') {
-			this._homeActive = false;
-			this._categoriesActive = false;
-			this._manufacturersActive = true;
+			if (this.subRoute.path && this.subRoute.path.length && this.groupSubRoute.path && this.groupSubRoute.path.length && this.productRouteData.productId) {
+				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
+					this._manufacturerActive = true;
+				}
+				this._productActive = true;
+			}
+			else {
+				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
+					this._manufacturerActive = true;
+					this._productsActive = true;
+				}
+				else {
+					this._manufacturersActive = true;
+				}
+			}
 		}
 	}
 

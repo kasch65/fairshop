@@ -51,7 +51,7 @@ export class FairshopManufacturer extends PolymerElement {
 					width: 100%;
 					height: 20rem;
 				}
-				.info {
+				#manufacturerInfo {
 					width: 49%;
 					float: left;
 				}
@@ -69,8 +69,7 @@ export class FairshopManufacturer extends PolymerElement {
 						</div>
 					</template>
 				</div>
-				<div class="info">
-					<div>[[_manufacturerDescription.1]]</div>
+				<div id="manufacturerInfo">
 				</div>
 			</div>
 
@@ -115,6 +114,9 @@ export class FairshopManufacturer extends PolymerElement {
 
 	_manufacturerDescriptionReceived(data) {
 		this._manufacturerDescription = data.detail.response.manufacturer_descriptions.records[0];
+		// Add HTML to description
+		this.$.manufacturerInfo.innerHTML =this._manufacturerDescription[1];
+
 	}
 
 	_requestManufacturerImagesReceived(data) {

@@ -39,22 +39,13 @@ export class FairshopProductsList extends PolymerElement {
 			_imageUrlMap: {
 				type: Map
 			},
-			categoryRoute: {
+			route: {
 				Object
 			},
-			categoryRouteData: {
+			routeData: {
 				type: Object
 			},
-			categorySubRoute: {
-				type: Object
-			},
-			manufacturerRoute: {
-				Object
-			},
-			manufacturerRouteData: {
-				type: Object
-			},
-			manufacturerSubRoute: {
+			subRoute: {
 				type: Object
 			},
 			_hrefPrefix: {
@@ -92,8 +83,7 @@ export class FairshopProductsList extends PolymerElement {
 					display: inline-block;
 				}
 			</style>
-			<app-route route="{{categoryRoute}}" pattern="/:categoryId" data="{{categoryRouteData}}" tail="{{categorySubRoute}}"></app-route>
-			<app-route route="{{manufacturerRoute}}" pattern="/:manufacturerId" data="{{manufacturerRouteData}}" tail="{{manufacturerSubRoute}}"></app-route>
+			<app-route route="{{route}}" pattern="/:groupId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
 			<div class="products">
 				<h1>Artikelliste</h1>
 				<fairshop-paginator product-ids="[[_productIds]]" item-id-list="{{_itemIdList}}"></fairshop-paginator>
@@ -132,29 +122,22 @@ export class FairshopProductsList extends PolymerElement {
 	}
 
 	static get observers() {
-		return ['_categoryRoutePageChanged(categoryRouteData.categoryId)',
-			'_manufacturerRoutePageChanged(manufacturerRouteData.categoryId)'];
+		return ['_routePageChanged(routeData.groupId)'];
 	}
 
-	_categoryRoutePageChanged(page) {
-		if (this.categoryRoute) {
-			console.log('fairshop-products-list.categoryRoute.path: ' + this.categoryRoute.path);
-			if (this.categoryRouteData.categoryId) {
-				console.log('fairshop-products-list.categoryRouteData.categoryId: ' + this.categoryRouteData.categoryId);
-				this.selectedCategory = this.categoryRouteData.categoryId;
+	_routePageChanged(page) {
+		if (this.route) {
+			console.log('fairshop-products-list.route.path: ' + this.route.path);
+			if (this.routeData.groupId) {
+				console.log('fairshop-products-list.routeData.groupId: ' + this.routeData.groupId);
+				if (this.route.prefix.endsWith('/categories')) {
+					this.selectedCategory = this.routeData.groupId;
+				}
+				else if (this.route.prefix.endsWith('/manufacturers')) {
+					this.selectedManufacturer = this.routeData.groupId;
+				}
 			}
-			this._hrefPrefix = this.categoryRoute.prefix + this.categoryRoute.path;
-		}
-	}
-
-	_manufacturerRoutePageChanged(page) {
-		if (this.manufacturerRoute) {
-			console.log('fairshop-products-list.manufacturerRoute.path: ' + this.manufacturerRoute.path);
-			if (this.manufacturerRouteData.manufacturerId) {
-				console.log('fairshop-products-list.manufacturerRouteData.manufacturerId: ' + this.manufacturerRouteData.manufacturerId);
-				this.selectedManufacturer = this.manufacturerRouteData.manufacturerId;
-			}
-			this._hrefPrefix = this.manufacturerRoute.prefix + this.manufacturerRoute.path;
+			this._hrefPrefix = this.route.prefix + this.route.path;
 		}
 	}
 
@@ -211,7 +194,7 @@ export class FairshopProductsList extends PolymerElement {
 		for (let product of data.detail.response.product_descriptions.records) {
 			var liElement = document.createElement('li');
 			var aElement = document.createElement('a');
-			aElement.setAttribute('href', this._hrefPrefix + '/' + product[0]);
+			aElement.setAttribute('href', this._hrefPrefix + '/product/' + product[0]);
 			aElement.setAttribute('product', product[0]);
 			var productCard = document.createElement('fairshop-product-card');
 			productCard.name = product[1];
