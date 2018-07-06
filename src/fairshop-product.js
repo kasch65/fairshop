@@ -1,5 +1,4 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
-import '@polymer/app-route/app-route.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-image/iron-image.js';
 
@@ -35,27 +34,6 @@ export class FairshopProduct extends PolymerElement {
 			_selectedTab: {
 				type: Number,
 				value: 0
-			},
-			route: {
-				Object
-			},
-			routeData: {
-				type: Object
-			},
-			subRoute: {
-				type: Object
-			},
-			routeData2: {
-				type: Object
-			},
-			subRoute2: {
-				type: Object
-			},
-			routeData3: {
-				type: Object
-			},
-			subRoute3: {
-				type: Object
 			}
 		};
 	}
@@ -94,9 +72,6 @@ export class FairshopProduct extends PolymerElement {
 					overflow: auto;
 				}
 			</style>
-			<app-route route="{{route}}" pattern="/:groupId" data="{{routeData}}" tail="{{subRoute}}"></app-route>
-			<app-route route="{{subRoute}}" pattern="/:product" data="{{routeData2}}" tail="{{subRoute2}}"></app-route>
-			<app-route route="{{subRoute2}}" pattern="/:productId" data="{{routeData3}}" tail="{{subRoute3}}"></app-route>
 
 			<div class="product">
 				<h1>[[_productDescription.0]]</h1>
@@ -182,19 +157,6 @@ export class FairshopProduct extends PolymerElement {
 				on-response="_productDownloadReceived">
 			</iron-ajax>
 		`;
-	}
-
-	static get observers() {
-		return ['_routePageChanged(routeData2.productId)']
-	}
-
-	_routePageChanged(page) {
-		console.log('fairshop-product.route.path: ' + this.route.path);
-		console.log('fairshop-product.subRoute.path: ' + this.subRoute.path);
-		if (this.routeData3.productId) {
-			console.log('fairshop-product.routeData3.productId: ' + this.routeData3.productId);
-			this.selectedProduct = this.routeData3.productId;
-		}
 	}
 
 	_productChanged() {

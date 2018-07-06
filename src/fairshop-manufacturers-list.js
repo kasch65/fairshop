@@ -11,21 +11,6 @@ export class FairshopManufacturersList extends PolymerElement {
 			restUrl: {
 				type: String
 			},
-			selectedCategory: {
-				type: Number,
-				notify: true
-			},
-			selectedManufacturer: {
-				type: Number,
-				notify: true
-			},
-			selectedProduct: {
-				type: Number,
-				notify: true
-			},
-			_activeManufacturer: {
-				type: Object
-			},
 			_manufacturerDescriptions: {
 				type: Array
 			},

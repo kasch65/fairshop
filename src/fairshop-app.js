@@ -1,9 +1,4 @@
-import {
-	PolymerElement,
-	html
-} from "@polymer/polymer/polymer-element";
-import '@polymer/app-route/app-location.js';
-import '@polymer/app-route/app-route.js';
+import { PolymerElement, html } from "@polymer/polymer/polymer-element";
 import '@polymer/app-layout/app-layout.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/iron-input/iron-input.js';
@@ -11,6 +6,7 @@ import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
+import './fairshop-router.js';
 import './fairshop-manufacturers-list.js';
 import './fairshop-manufacturer.js';
 import './fairshop-categories-tree.js';
@@ -29,29 +25,28 @@ export class FairshopApp extends PolymerElement {
 			route: {
 				Object
 			},
-			routeData: {
-				type: Object
+			_page: {
+				type: String,
+				value: 'home'
 			},
-			subRoute: {
-				type: Object
+			_categoryId: {
+				type: Number,
+				value: null
 			},
-			groupRouteData: {
-				type: Object
+			_manufacturerId: {
+				type: Number,
+				value: null
 			},
-			groupSubRoute: {
-				type: Object
+			_productId: {
+				type: Number,
+				value: null
 			},
-			productsRouteData: {
-				type: Object
+			_hrefPrefix: {
+				type: String
 			},
-			productsSubRoute: {
-				type: Object
-			},
-			productRouteData: {
-				type: Object
-			},
-			productSubRoute: {
-				type: Object
+			_path: {
+				type: String,
+				observer: "_pathChanged"
 			},
 			_homeActive: {
 				type: Boolean,
@@ -124,11 +119,7 @@ export class FairshopApp extends PolymerElement {
 				}
 			</style>
 
-			<app-location route="{{route}}"></app-location>
-			<app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subRoute}}"></app-route>
-			<app-route route="{{subRoute}}" pattern="/:pageId" data="{{groupRouteData}}" tail="{{groupSubRoute}}"></app-route>
-			<app-route route="{{groupSubRoute}}" pattern="/:product" data="{{productsRouteData}}" tail="{{productsSubRoute}}"></app-route>
-			<app-route route="{{productsSubRoute}}" pattern="/:productId" data="{{productRouteData}}" tail="{{productSubRoute}}"></app-route>
+			<fairshop-router page="{{_page}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
 
 			<app-header-layout>
 				<app-header slot="header" fixed="" effects="waterfall">
@@ -160,17 +151,17 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_manufacturerActive]]">
 					<div id="maufacturer" page-name="maufacturer">
-						<fairshop-manufacturer rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-manufacturer>
+						<fairshop-manufacturer rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]"></fairshop-manufacturer>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productsActive]]">
 					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-products-list>
+						<fairshop-products-list rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]"></fairshop-products-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productActive]]">
 					<div id="product" page-name="product">
-						<fairshop-product rest-url="[[restUrl]]" route="[[subRoute]]"></fairshop-product>
+						<fairshop-product rest-url="[[restUrl]]" selected-product="[[_productId]]"></fairshop-product>
 					</div>
 				</template>
 
@@ -180,14 +171,7 @@ export class FairshopApp extends PolymerElement {
 		`;
 	}
 
-	static get observers() {
-		return ['_routePageChanged(route)']
-	}
-
-	_routePageChanged(route) {
-		console.log('fairshop-app.route.path: ' + this.route.path);
-		console.log('fairshop-app.routeData.page: ' + this.routeData.page);
-		console.log('fairshop-app.subRoute.path: ' + this.subRoute.path);
+	_pathChanged() {
 		// Hide all views
 		this._homeActive = false;
 		this._categoriesActive = false;
@@ -196,37 +180,27 @@ export class FairshopApp extends PolymerElement {
 		this._productsActive = false;
 		this._productActive = false;
 		// Activate some views
-		if (this.routeData.page == '') {
+		if (this._page == 'home') {
 			this._homeActive = true;
 		}
-		else if (this.routeData.page == 'categories') {
-			if (this.subRoute.path && this.subRoute.path.length && this.groupSubRoute.path && this.groupSubRoute.path.length && this.productRouteData.productId) {
-				this._productActive = true;
+		else if (this._productId) {
+			this._productActive = true;
+		}
+		else if (this._page == 'categories') {
+			if (this._categoryId) {
+				this._productsActive = true;
 			}
 			else {
-				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
-					this._productsActive = true;
-				}
-				else {
-					this._categoriesActive = true;
-				}
+				this._categoriesActive = true;
 			}
 		}
-		else if (this.routeData.page == 'manufacturers') {
-			if (this.subRoute.path && this.subRoute.path.length && this.groupSubRoute.path && this.groupSubRoute.path.length && this.productRouteData.productId) {
-				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
-					this._manufacturerActive = true;
-				}
-				this._productActive = true;
+		else if (this._page == 'manufacturers') {
+			if (this._manufacturerId) {
+				this._manufacturerActive = true;
+				this._productsActive = true;
 			}
 			else {
-				if (this.subRoute.path && this.subRoute.path.length && this.groupRouteData.pageId) {
-					this._manufacturerActive = true;
-					this._productsActive = true;
-				}
-				else {
-					this._manufacturersActive = true;
-				}
+				this._manufacturersActive = true;
 			}
 		}
 	}
