@@ -1,18 +1,31 @@
 Zum Anzeigen dieser Seite unter VS-Code kann die Tastenkombination `Strg + K V` (erst `Strg + K` drücken, loslassen und dann `V` drücken) genutzt werden.
 Alternativ: Rechtsklick auf die Datei -> Vorschau öffnen.
 
+# Offne Punkte
+
+- Überschrift über Produktliste dynamisch anpassen: "Produkte von Herstellername" oder Kategoriename oder Suchergebnisse
+- Zoom Funktion für Produktbilder
+- Anmeldung/Authentifizierung
+- Bezahlung
+- Warenkorb
+- Wunschliste
+- Dokumentation der REST Schnitttelle
+- Suche in Kategorien, Herstellern, Produktlisten
+- Schnellsuche
+- Sortierung
+    - Verfügbarkeit
+    - Preis
+    - Relevanz
+    - Name
+
 # Manuelle Anpassungen
 
 Dieses Template ist zur Standartisierung der Webcomponent-Entwicklung gedacht. Bevor man die Entwicklung beginnt muss man ein paar Dinge händisch anpassen.
 
-## Ersetzen des Komponentennamens "dp-form-app"
-
-Alle Vorkommen von dp-form-app müssen mit dem eigentlichen Namen des Webcomponente ersetzt werden. Das beinhaltet auch alle Dateinamen und Importe.
-
 ## package.json Anpassen
 
 Hierbei müssen alle Felder mit dem Platzhalter [[...]] mit dem jeweiligen Inhalt versehen werden.
-Im docs script (`polymer analyze src/dp-form-app.js > analysis.json`) müssen alle JavaScript-Dateien, die in der Dokumentation angezeigt werden sollen, mit Leerzeichen getrennt aufgelistet werden. Hat man bspw. zusätzlich noch ein Mixin `MyMixin.js`, lautet das Skript: `polymer analyze src/dp-form-app.js src/MyMixin.js > analysis.json`
+Im docs script (`polymer analyze src/fairshop-app.js > analysis.json`) müssen alle JavaScript-Dateien, die in der Dokumentation angezeigt werden sollen, mit Leerzeichen getrennt aufgelistet werden. Hat man bspw. zusätzlich noch ein Mixin `MyMixin.js`, lautet das Skript: `polymer analyze src/fairshop-app.js src/MyMixin.js > analysis.json`
 
 ## Installation von VS-Code Tools
 
@@ -55,8 +68,8 @@ Hat man beispielsweise ein Mixin namens `MyMixin.js`, muss man eine Datei `test/
 
 ```
 window.WCT.loadSuites([
-  'dp-form-app.html?dom=shadow',
-  'dp-form-app.html?wc-shadydom=true&wc-ce=true',
+  'fairshop-app.html?dom=shadow',
+  'fairshop-app.html?wc-shadydom=true&wc-ce=true',
   'MyMixin.js'
 ]);
 ```
@@ -87,7 +100,7 @@ Zur Dokumentation nutzen wir [JSDoc](http://usejsdoc.org/). Mit dem Befehl `npm 
 
 ## Build-Prozess
 
-Die Webkomponenten sollen in Angular genutzt werden können. Hierzu wird webpack genutzt um ein UMD-Bundle zu bauen. Der Befehl dazu ist `npm run build`. Die Konfiguration ist in [webpack.config.js](.\webpack.config.js) zu finden.
+Hierzu wird webpack genutzt um ein UMD-Bundle zu bauen. Der Befehl dazu ist `npm run build`. Die Konfiguration ist in [webpack.config.js](.\webpack.config.js) zu finden.
 
 **WICHTIG:**
 

@@ -3,9 +3,14 @@
 
   <head>
     <meta charset="utf-8">
+    <title>fairshop</title>
+    <meta name="Description" content="fairshop is a lexible open source shop solution built with polymer.">
     <base href="/">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#4285f4">
     <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="preload" href="/node_modules/@polymer/polymer/lib/mixins/property-effects.js" as="script">
+    <link rel="preload" href="/node_modules/@polymer/iron-icons/iron-icons.js" as="script">
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script type="module" src="/src/fairshop-app.js"></script>
     <style>
@@ -17,6 +22,7 @@
   </head>
 
   <body>
+    <noscript>Sorry, your browser does not support JavaScript!</noscript>
     <fairshop-app rest-url="http://localhost/rest/impl/api.php/"></fairshop-app>
   </body>
   

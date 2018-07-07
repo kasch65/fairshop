@@ -15,6 +15,12 @@ export class FairshopProductCard extends PolymerElement {
 			},
 			description: {
 				type: String
+			},
+			price: {
+				type: String
+			},
+			manufacturerName: {
+				type: String
 			}
 		};
 	}
@@ -28,7 +34,7 @@ export class FairshopProductCard extends PolymerElement {
 			<style>
 				.product-card {
 					width: 12rem;
-					height: 16rem;
+					height: 18rem;
 					color: var(--google-grey-700);
 					text-align: center;
 					padding: 0.5rem;
@@ -43,8 +49,10 @@ export class FairshopProductCard extends PolymerElement {
 				}
 			</style>
 			<div class="product-card" title$="[[description]]">
-				<iron-image class="product-img" sizing="contain" src="[[imageUrl]]" alt="no image"></iron-image>
+				<iron-image class="product-img" sizing="contain" xplaceholder="http://localhost:8081/src/img/no_picture.png" src="[[imageUrl]]" alt="no image" xpreload xfade></iron-image>
 				<div>[[name]]</div>
+				<div>von [[manufacturerName]]</div>
+				<div><b>[[price]]€</b></div>
 			</div>
 		`;
 	}

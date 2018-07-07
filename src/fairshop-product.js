@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-image/iron-image.js';
 
@@ -45,6 +46,11 @@ export class FairshopProduct extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				#backBtn {
+					right: 0;
+					position: absolute;
+					top: 4rem;
+				}
 				.images {
 					width: 49%;
 					display: inline-block;
@@ -74,6 +80,7 @@ export class FairshopProduct extends PolymerElement {
 			</style>
 
 			<div class="product">
+				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<h1>[[_productDescription.0]]</h1>
 				<div class="images">
 					<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
@@ -104,6 +111,18 @@ export class FairshopProduct extends PolymerElement {
 							<td>EAN</td>
 							<td>[[_productInfo.1]]</td>
 						</tr>
+						<tr>
+							<td>Hersteller</td>
+							<td>[[_productInfo.4]]</td>
+						</tr>
+						<tr>
+							<td>Verfügbarkeit</td>
+							<td>[[_productInfo.3]]</td>
+						</tr>
+						<tr>
+							<td><b>Preis</b></td>
+							<td><b>[[_productInfo.2]]</b></td>
+						</tr>
 					</table>
 					<div class="tabs">
 						<paper-tabs selected="{{_selectedTab}}" scrollable>
@@ -131,7 +150,7 @@ export class FairshopProduct extends PolymerElement {
 
 			<iron-ajax 
 				id="requestProducInfo"
-				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN"
+				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN,price,available,manufacturerName"
 				handle-as="json"
 				on-response="_productInfoReceived">
 			</iron-ajax>
@@ -192,6 +211,10 @@ export class FairshopProduct extends PolymerElement {
 
 	_productDownloadReceived(data) {
 		this._productDownloads = data.detail.response.product_downloads.records;
+	}
+
+	_goBack() {
+		window.history.back();
 	}
 }
 customElements.define("fairshop-product", FairshopProduct);
