@@ -19,6 +19,12 @@ export class FairshopRouter extends PolymerElement {
 				value: 'home',
 				notify: true
 			},
+			pageNr: {
+				type: Number,
+				value: 1,
+				notify: true,
+				observers: '_pageNrChanged'
+			},
 			categoryId: {
 				type: Number,
 				value: null,
@@ -51,11 +57,15 @@ export class FairshopRouter extends PolymerElement {
 		`;
 	}
 
-	static get observers() {
-		return ['_routePageChanged(_route)']
+	ready() {
+		super.ready();
 	}
 
-	_routePageChanged(_route) {
+	static get observers() {
+		return ['_routePageChanged(_route.path)']
+	}
+
+	_routePageChanged(path) {
 		// Analyze _route
 		var pathTokens = this._route.path.substr(1).split('/');
 		var page = 'home';
@@ -114,6 +124,11 @@ export class FairshopRouter extends PolymerElement {
 		this.manufacturerId = manufacturerId;
 		this.productId = productId;
 		this.path = this._route.path;
+	}
+
+	_pageNrChanged() {
+		this._route.__queryParams.page =this.pageNr;
+		this.notifyPath("_route.__queryParams.page");
 	}
 
 }

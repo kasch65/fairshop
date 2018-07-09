@@ -1,3 +1,19 @@
+# Fairshop
+
+Alle gängigen Shop Systeme sind in PHP geschrieben. Dabei bietet PHP in Performance, Sicherheit, Entwicklungsgeschwindigkeit
+und Usability nicht die besten Möglichkeiten. Das Polymer Framework in Verbindung mit REST Services kann
+hier viel mehr. Erfahrungen aus der Entwicklung unterschiedlichster Shop-Lösungen in PHP und Erfahrungen in der Polymer
+Entwicklung wollen wir zur Entwicklung einer Open Source Shop Lösung nutzen. Google bietet bereits eine einfache
+Referenz-Implementierung in Polymer 3 an. Es ist erstaunlich, mit wie wenig Aufwand eine vollwertige
+Shop Lösung mit Frontend, Admin-Oberfläche und Backend entwickelt werden kann. Faishop bündelt die Aktivitäten, hieraus ein modulares offenes Schopsystem zu entwickeln.
+
+# Backend
+
+https://github.com/mevdschee/php-crud-api
+
+
+# Entwicklung
+
 Zum Anzeigen dieser Seite unter VS-Code kann die Tastenkombination `Strg + K V` (erst `Strg + K` drücken, loslassen und dann `V` drücken) genutzt werden.
 Alternativ: Rechtsklick auf die Datei -> Vorschau öffnen.
 

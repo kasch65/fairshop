@@ -24,6 +24,19 @@ export class FairshopProductsList extends PolymerElement {
 			hrefPrefix: {
 				tape: String
 			},
+			_productCnt: {
+				type: Number
+			},
+			page: {
+				type: Number,
+				value: 1,
+				observer: '_pageChanged',
+				notify: true
+			},
+			_itemsPerPage: {
+				type: Number,
+				value: 50
+			},
 			_productIds: {
 				type: Array,
 				notify: true
@@ -92,7 +105,7 @@ export class FairshopProductsList extends PolymerElement {
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<h1>[[_title]]</h1>
-				<fairshop-paginator product-ids="[[_productIds]]" item-id-list="{{_itemIdList}}"></fairshop-paginator>
+				<fairshop-paginator page="{{page}}" product-cnt="[[_productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
 				<div class="list">
 					<ul id="productsList">
 					</ul>
@@ -104,6 +117,13 @@ export class FairshopProductsList extends PolymerElement {
 				url="[[restUrl]]products_manufacturers?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=productId"
 				handle-as="json"
 				on-response="_manufacturerProductsReceived">
+			</iron-ajax>
+
+			<iron-ajax 
+				id="requestManufacturerProducts2"
+				url="[[restUrl]]product_search_copy?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=language,eq,43&columns=id,price,manufacturerName,name,description&order[]=sum,desc&order[]=pos&page=[[page]],[[_itemsPerPage]]"
+				handle-as="json"
+				on-response="_manufacturerProductsReceived2">
 			</iron-ajax>
 
 			<iron-ajax 
@@ -147,22 +167,84 @@ export class FairshopProductsList extends PolymerElement {
 		`;
 	}
 
-	_categoryChanged() {
-		if (this.selectedCategory) {
-			this.$.requestCategoryProducts.generateRequest();
-			this.$.requestCategoryDescription.generateRequest();
+	_pageChanged(newValue, oldValue) {
+		if (oldValue && this.selectedManufacturer) {
+			this.$.requestManufacturerProducts2.generateRequest();
 		}
 	}
 
 	_manufacturerChanged() {
 		if (this.selectedManufacturer) {
-			this.$.requestManufacturerProducts.generateRequest();
-			this.$.requestManufacturerDescription.generateRequest();
+			this.$.requestManufacturerProducts2.generateRequest();
+			this.page = 1;
 		}
 	}
 
-	_manufacturerDescriptionReceived(data) {
-		this._title = 'Produkte von ' + data.detail.response.manufacturer_descriptions.records[0][0];
+	/**
+	 * Pagewise
+	 */
+	_manufacturerProductsReceived2(data) {
+		if ( data.detail.response.product_search_copy.records) {
+			this._title = 'Produkte von ' + data.detail.response.product_search_copy.records[0][2];
+			this._products = data.detail.response.product_search_copy.records;
+			this._productCnt = data.detail.response.product_search_copy.results;
+
+			var itemIdList = '';
+			for (let item of data.detail.response.product_search_copy.records) {
+				itemIdList += ',';
+				itemIdList += item[0];
+			}
+
+			var productImagesRequestor = this.$.requestProductImages;
+			productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in' + itemIdList + '&columns=productId,small';
+			productImagesRequestor.generateRequest();
+		}
+	}
+
+	_productImagesReceived(data) {
+		var imageUrlMap = new Map();
+		for (let productImage of data.detail.response.product_images.records) {
+			// Only save first image
+			var firstImage = imageUrlMap.get(productImage[0]);
+			if (!firstImage) {
+				imageUrlMap.set(productImage[0], productImage[1]);
+			}
+		}
+		this._imageUrlMap = imageUrlMap;
+		this._processData();
+	}
+
+	_processData() {
+		// Clear old items
+		var target = this.$.productsList;
+		while (target.firstChild) {
+			target.removeChild(target.firstChild);
+		}
+		// Add new items
+		for (let productInfo of this._products) {
+			var imageUrl = this._imageUrlMap.get(productInfo[0]);
+			var liElement = document.createElement('li');
+			var aElement = document.createElement('a');
+			aElement.setAttribute('href', this.hrefPrefix + '/' + productInfo[0]);
+			var productCard = document.createElement('fairshop-product-card');
+			if (imageUrl) {
+				productCard.imageUrl = 'http://bukhtest.alphaplanweb.de/' + imageUrl;
+			}
+			productCard.name = productInfo[3];
+			productCard.description = productInfo[4];
+			productCard.price = productInfo[1];
+			productCard.manufacturerName = productInfo[2];
+			aElement.appendChild(productCard);
+			liElement.appendChild(aElement);
+			target.appendChild(liElement);
+		}
+	}
+
+	_categoryChanged() {
+		if (this.selectedCategory) {
+			this.$.requestCategoryProducts.generateRequest();
+			this.$.requestCategoryDescription.generateRequest();
+		}
 	}
 
 	_categoryDescriptionReceived(data) {
@@ -228,48 +310,6 @@ export class FairshopProductsList extends PolymerElement {
 		if (this._openRequests == 0) {
 			this._processData();
 		}
-	}
-
-	_productImagesReceived(data) {
-		var imageUrlMap = new Map();
-		for (let productImage of data.detail.response.product_images.records) {
-			var firstImage = imageUrlMap.get(productImage[0]);
-			if (!firstImage) {
-				imageUrlMap.set(productImage[0], productImage[1]);
-			}
-		}
-		this._imageUrlMap = imageUrlMap;
-		this._openRequests--;
-		if (this._openRequests == 0) {
-			this._processData();
-		}
-	}
-
-	_processData() {
-		this._openRequests = -1;
-		var target = this.$.productsList;
-		while (target.firstChild) {
-			target.removeChild(target.firstChild);
-		}
-		for (let productInfo of this._productInfos) {
-			var productDescription = this._productDescriptionMap.get(productInfo[0]);
-			var imageUrl = this._imageUrlMap.get(productInfo[0]);
-			var liElement = document.createElement('li');
-			var aElement = document.createElement('a');
-			aElement.setAttribute('href', this.hrefPrefix + '/' + productInfo[0]);
-			var productCard = document.createElement('fairshop-product-card');
-			if (imageUrl) {
-				productCard.imageUrl = 'http://bukhtest.alphaplanweb.de/' + imageUrl;
-			}
-			productCard.name = productDescription[1];
-			productCard.description = productDescription[2];
-			productCard.price = productInfo[1];
-			productCard.manufacturerName = productInfo[2];
-			aElement.appendChild(productCard);
-			liElement.appendChild(aElement);
-			target.appendChild(liElement);
-		}
-		this._openRequests = 0;
 	}
 
 	_goBack() {

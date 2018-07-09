@@ -29,6 +29,11 @@ export class FairshopApp extends PolymerElement {
 				type: String,
 				value: 'home'
 			},
+			_pageNr: {
+				type: Number,
+				value: 1,
+				notify: true
+			},
 			_categoryId: {
 				type: Number,
 				value: null
@@ -119,7 +124,7 @@ export class FairshopApp extends PolymerElement {
 				}
 			</style>
 
-			<fairshop-router page="{{_page}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
+			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
 
 			<app-header-layout>
 				<app-header slot="header" fixed="" effects="waterfall">
@@ -156,7 +161,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_productsActive]]">
 					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]"></fairshop-products-list>
+						<fairshop-products-list rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}"></fairshop-products-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productActive]]">
