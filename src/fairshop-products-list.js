@@ -37,27 +37,6 @@ export class FairshopProductsList extends PolymerElement {
 				type: Number,
 				value: 50
 			},
-			_productIds: {
-				type: Array,
-				notify: true
-			},
-			_activeProduct: {
-				type: Object
-			},
-			_itemIdList: {
-				type: String,
-				observer: "_itemIdListChanged"
-			},
-			_openRequests: {
-				type: Number,
-				value: 0
-			},
-			_productInfos: {
-				type: Array
-			},
-			_productDescriptionMap: {
-				type: Map
-			},
 			_imageUrlMap: {
 				type: Map
 			},
@@ -114,43 +93,16 @@ export class FairshopProductsList extends PolymerElement {
 
 			<iron-ajax 
 				id="requestManufacturerProducts"
-				url="[[restUrl]]products_manufacturers?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=productId"
+				url="[[restUrl]]product_search_copy?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=language,eq,43&columns=id,price,manufacturerName,name,description&order[]=sum,desc&order[]=pos&page=[[page]],[[_itemsPerPage]]"
 				handle-as="json"
 				on-response="_manufacturerProductsReceived">
 			</iron-ajax>
 
 			<iron-ajax 
-				id="requestManufacturerProducts2"
-				url="[[restUrl]]product_search_copy?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=language,eq,43&columns=id,price,manufacturerName,name,description&order[]=sum,desc&order[]=pos&page=[[page]],[[_itemsPerPage]]"
-				handle-as="json"
-				on-response="_manufacturerProductsReceived2">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestCategoryDescription"
-				url="[[restUrl]]category_descriptions?filter=categoryId,eq,[[selectedCategory]]&columns=name"
-				handle-as="json"
-				on-response="_categoryDescriptionReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestManufacturerDescription"
-				url="[[restUrl]]manufacturer_descriptions?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=name"
-				handle-as="json"
-				on-response="_manufacturerDescriptionReceived">
-			</iron-ajax>
-
-			<iron-ajax 
 				id="requestCategoryProducts"
-				url="[[restUrl]]products_categories?filter=categoryId,eq,[[selectedCategory]]&columns=productId"
+				url="[[restUrl]]product_category_view?filter[]=categoryId,eq,[[selectedCategory]]&filter[]=language,eq,43&columns=id,price,manufacturerName,name,description,categoryName&order[]=sum,desc&order[]=pos&page=[[page]],[[_itemsPerPage]]"
 				handle-as="json"
 				on-response="_categoryProductsReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProducInfo"
-				handle-as="json"
-				on-response="_productInfoReceived">
 			</iron-ajax>
 
 			<iron-ajax 
@@ -158,24 +110,32 @@ export class FairshopProductsList extends PolymerElement {
 				handle-as="json"
 				on-response="_productImagesReceived">
 			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProductDescriptions"
-				handle-as="json"
-				on-response="_productDescriptionsReceived">
-			</iron-ajax>
 		`;
 	}
 
 	_pageChanged(newValue, oldValue) {
-		if (oldValue && this.selectedManufacturer) {
-			this.$.requestManufacturerProducts2.generateRequest();
+		if (oldValue) {
+			if (this.selectedManufacturer) {
+				this.$.requestManufacturerProducts.generateRequest();
+			}
+			else if (this.selectedCategory) {
+				this.$.requestCategoryProducts.generateRequest();
+			}
 		}
 	}
 
 	_manufacturerChanged() {
 		if (this.selectedManufacturer) {
-			this.$.requestManufacturerProducts2.generateRequest();
+			this.selectedCategory = null;
+			this.$.requestManufacturerProducts.generateRequest();
+			this.page = 1;
+		}
+	}
+
+	_categoryChanged() {
+		if (this.selectedCategory) {
+			this.selectedManufacturer = null;
+			this.$.requestCategoryProducts.generateRequest();
 			this.page = 1;
 		}
 	}
@@ -183,7 +143,7 @@ export class FairshopProductsList extends PolymerElement {
 	/**
 	 * Pagewise
 	 */
-	_manufacturerProductsReceived2(data) {
+	_manufacturerProductsReceived(data) {
 		if ( data.detail.response.product_search_copy.records) {
 			this._title = 'Produkte von ' + data.detail.response.product_search_copy.records[0][2];
 			this._products = data.detail.response.product_search_copy.records;
@@ -191,6 +151,23 @@ export class FairshopProductsList extends PolymerElement {
 
 			var itemIdList = '';
 			for (let item of data.detail.response.product_search_copy.records) {
+				itemIdList += ',';
+				itemIdList += item[0];
+			}
+
+			var productImagesRequestor = this.$.requestProductImages;
+			productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in' + itemIdList + '&columns=productId,small';
+			productImagesRequestor.generateRequest();
+		}
+	}
+	_categoryProductsReceived(data) {
+		if ( data.detail.response.product_category_view.records) {
+			this._title = data.detail.response.product_category_view.records[0][5];
+			this._products = data.detail.response.product_category_view.records;
+			this._productCnt = data.detail.response.product_category_view.results;
+
+			var itemIdList = '';
+			for (let item of data.detail.response.product_category_view.records) {
 				itemIdList += ',';
 				itemIdList += item[0];
 			}
@@ -237,78 +214,6 @@ export class FairshopProductsList extends PolymerElement {
 			aElement.appendChild(productCard);
 			liElement.appendChild(aElement);
 			target.appendChild(liElement);
-		}
-	}
-
-	_categoryChanged() {
-		if (this.selectedCategory) {
-			this.$.requestCategoryProducts.generateRequest();
-			this.$.requestCategoryDescription.generateRequest();
-		}
-	}
-
-	_categoryDescriptionReceived(data) {
-		this._title = data.detail.response.category_descriptions.records[0][0];
-	}
-
-	_manufacturerProductsReceived(data) {
-		var productIds = Array();
-		for (let row of data.detail.response.products_manufacturers.records) {
-			productIds.push(row[0]);
-		}
-		this._productIds = productIds;
-	}
-
-	_categoryProductsReceived(data) {
-		var productIds = Array();
-		for (let row of data.detail.response.products_categories.records) {
-			productIds.push(row[0]);
-		}
-		this._productIds = productIds;
-	}
-
-	_itemIdListChanged() {
-		if (this._openRequests != 0) {
-			console.log('Product listing ByteLengthQueuingStrategy.toString.toString.!');
-			return;
-		}
-		var productInfoRequestor = this.$.requestProducInfo;
-		productInfoRequestor.url =this.restUrl + 'products?filter=id,in,' + this._itemIdList + '&columns=id,price,manufacturerName';
-		productInfoRequestor.generateRequest();
-
-		var productDescriptionsRequestor = this.$.requestProductDescriptions;
-		productDescriptionsRequestor.url = this.restUrl + 'product_descriptions?filter=id,in,' + this._itemIdList + '&columns=id,name,description';
-		productDescriptionsRequestor.generateRequest();
-
-		var productImagesRequestor = this.$.requestProductImages;
-		productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in,' + this._itemIdList + '&columns=productId,small';
-		productImagesRequestor.generateRequest();
-
-		this._openRequests = 3;
-
-	}
-
-	_productInfoReceived(data) {
-		var productInfos = Array();
-		for (let productIinfo of data.detail.response.products.records) {
-			productInfos.push(productIinfo);
-		}
-		this._productInfos = productInfos;
-		this._openRequests--;
-		if (this._openRequests == 0) {
-			this._processData();
-		}
-	}
-
-	_productDescriptionsReceived(data) {
-		var productDescriptionMap = new Map();
-		for (let productIinfo of data.detail.response.product_descriptions.records) {
-			productDescriptionMap.set(productIinfo[0], productIinfo);
-		}
-		this._productDescriptionMap = productDescriptionMap;
-		this._openRequests--;
-		if (this._openRequests == 0) {
-			this._processData();
 		}
 	}
 

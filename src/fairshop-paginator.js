@@ -15,6 +15,9 @@ export class FairshopPaginator extends PolymerElement {
 				value: 50,
 				observer: "_recalculate"
 			},
+			/**
+			 * first page is 1
+			 */
 			page: {
 				type: Number,
 				value: 1,
