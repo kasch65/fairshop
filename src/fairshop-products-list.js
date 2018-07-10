@@ -35,7 +35,7 @@ export class FairshopProductsList extends PolymerElement {
 			},
 			_itemsPerPage: {
 				type: Number,
-				value: 50
+				value: 48
 			},
 			_imageUrlMap: {
 				type: Map
@@ -82,21 +82,22 @@ export class FairshopProductsList extends PolymerElement {
 				li>a {
 					text-decoration: none;
 				}
+				.sorting {
+					float: left;
+					margin-right: 1rem;
+					margin-bottom: 1rem;
+				}
 				.label {
 					position: relative;
-					top: -0.8rem;
 					padding: 0.5rem;
 					float: left;
 				}
 				select {
 					height: 2.2rem;
-					top: -0.8rem;
-					position: relative;
 					border-style: solid;
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
 					font-size: 1rem;
-					margin-right: 1rem;
 				}
 				fairshop-paginator {
 					display: inline-block;
@@ -104,16 +105,18 @@ export class FairshopProductsList extends PolymerElement {
 			</style>
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
-				<h1>[[_title]]</h1>
+				<div class="heading"><h1>[[_title]]</h1></div>
 				<template is="dom-if" if="[[_productCnt]]">
-					<div class="label">Sortierung:</div>
-					<select value="{{_sortOrder::change}}">
-						<option value="sum,desc">Relevanz</option>
-						<option value="price">Preis aufsteigend</option>
-						<option value="price,desc">Preis absteigend</option>
-						<option value="name">Name</option>
-						<option value="available,desc">Verfügbarkeit</option>
-					</select> 
+					<div class="sorting">
+						<div class="label">Sortierung:</div>
+						<select value="{{_sortOrder::change}}">
+							<option value="sum,desc">Relevanz</option>
+							<option value="price">Preis aufsteigend</option>
+							<option value="price,desc">Preis absteigend</option>
+							<option value="name">Name</option>
+							<option value="available,desc">Verfügbarkeit</option>
+						</select> 
+					</div>
 					<fairshop-paginator page="{{page}}" product-cnt="[[_productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
 				</template>
 				<div class="list">
