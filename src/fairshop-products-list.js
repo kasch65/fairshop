@@ -105,15 +105,17 @@ export class FairshopProductsList extends PolymerElement {
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<h1>[[_title]]</h1>
-				<div class="label">Sortierung:</div>
-				<select value="{{_sortOrder::change}}">
-					<option value="sum,desc">Relevanz</option>
-					<option value="price">Preis aufsteigend</option>
-					<option value="price,desc">Preis absteigend</option>
-					<option value="name">Name</option>
-					<option value="available,desc">Verfügbarkeit</option>
-				</select> 
-				<fairshop-paginator page="{{page}}" product-cnt="[[_productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
+				<template is="dom-if" if="[[_productCnt]]">
+					<div class="label">Sortierung:</div>
+					<select value="{{_sortOrder::change}}">
+						<option value="sum,desc">Relevanz</option>
+						<option value="price">Preis aufsteigend</option>
+						<option value="price,desc">Preis absteigend</option>
+						<option value="name">Name</option>
+						<option value="available,desc">Verfügbarkeit</option>
+					</select> 
+					<fairshop-paginator page="{{page}}" product-cnt="[[_productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
+				</template>
 				<div class="list">
 					<ul id="productsList">
 					</ul>
@@ -201,7 +203,7 @@ export class FairshopProductsList extends PolymerElement {
 		}
 	}
 	_categoryProductsReceived(data) {
-		if ( data.detail.response.product_category_view.records) {
+		if (data.detail.response.product_category_view.records.length) {
 			this._title = data.detail.response.product_category_view.records[0][5];
 			this._products = data.detail.response.product_category_view.records;
 			this._productCnt = data.detail.response.product_category_view.results;
@@ -215,6 +217,16 @@ export class FairshopProductsList extends PolymerElement {
 			var productImagesRequestor = this.$.requestProductImages;
 			productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in' + itemIdList + '&columns=productId,small';
 			productImagesRequestor.generateRequest();
+		}
+		else {
+			this._title = 'Keine Produkte gefunden';
+			this._products = null;
+			this._productCnt = 0;
+			// Clear old items
+			var target = this.$.productsList;
+			while (target.firstChild) {
+				target.removeChild(target.firstChild);
+			}
 		}
 	}
 
