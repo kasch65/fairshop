@@ -83,6 +83,8 @@ export class FairshopProductsList extends PolymerElement {
 					text-decoration: none;
 				}
 				.label {
+					position: relative;
+					top: -0.8rem;
 					padding: 0.5rem;
 					float: left;
 				}

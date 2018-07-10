@@ -2,10 +2,9 @@
 
 Alle gängigen Shop Systeme sind in PHP geschrieben. Dabei bietet PHP in Performance, Sicherheit, Entwicklungsgeschwindigkeit
 und Usability nicht die besten Möglichkeiten. Das Polymer Framework in Verbindung mit REST Services kann
-hier viel mehr. Erfahrungen aus der Entwicklung unterschiedlichster Shop-Lösungen in PHP und Erfahrungen in der Polymer
-Entwicklung wollen wir zur Entwicklung einer Open Source Shop Lösung nutzen. Google bietet bereits eine einfache
-Referenz-Implementierung in Polymer 3 an. Es ist erstaunlich, mit wie wenig Aufwand eine vollwertige
-Shop Lösung mit Frontend, Admin-Oberfläche und Backend entwickelt werden kann. Faishop bündelt die Aktivitäten, hieraus ein modulares offenes Schopsystem zu entwickeln.
+viel mehr. Erfahrungen aus der Entwicklung unterschiedlichster Shop-Lösungen in PHP und Erfahrungen in der Polymer
+Entwicklung nutzen wir zur Entwicklung einer Open Source Shop Lösung.
+Auch Google bietet bereits einen einfachen Referenz-Shop in Polymer 3.0 an. Es ist erstaunlich, mit wie wenig Aufwand eine vollwertige Shop Lösung mit Frontend, Admin-Oberfläche und Backend entwickelt werden kann. Fairshop bündelt die Aktivitäten, hieraus ein modulares offenes Schopsystem zu entwickeln.
 
 # Backend
 
@@ -28,11 +27,6 @@ Alternativ: Rechtsklick auf die Datei -> Vorschau öffnen.
 - Dokumentation der REST Schnitttelle
 - Suche in Kategorien, Herstellern, Produktlisten
 - Schnellsuche
-- Sortierung
-    - Verfügbarkeit
-    - Preis
-    - Relevanz
-    - Name
 
 # Manuelle Anpassungen
 
