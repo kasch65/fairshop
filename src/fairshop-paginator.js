@@ -96,8 +96,7 @@ export class FairshopPaginator extends PolymerElement {
 			this.page = Math.max(1, this.page - 1);
 		}
 		else if (pageValue == 'next') {
-			this.page = Number(this.page) + 1;
-			this.page = Math.min(this._pages, this.page);
+			this.page = Math.min(this._pages, this.page + 1);
 		}
 		else {
 			this.page = pageValue;
