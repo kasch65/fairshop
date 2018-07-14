@@ -1,7 +1,7 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-tabs/paper-tabs.js';
-import '@polymer/iron-image/iron-image.js';
+import './fairshop-image.js';
 
 /**
  * @class
@@ -87,7 +87,7 @@ export class FairshopProduct extends PolymerElement {
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<div>
 								<a href="http://bukhtest.alphaplanweb.de/[[productImage.2]]" target="_blank">
-									<iron-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></iron-image>
+									<fairshop-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></fairshop-image>
 								</a>
 							</div>
 						</template>
@@ -95,7 +95,7 @@ export class FairshopProduct extends PolymerElement {
 					<paper-tabs selected="{{_selected}}" scrollable>
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<paper-tab>
-								<iron-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></iron-image>
+								<fairshop-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></fairshop-image>
 							</paper-tab>
 						</template>
 					</paper-tabs>

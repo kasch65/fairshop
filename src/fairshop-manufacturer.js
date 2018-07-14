@@ -1,5 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
-import '@polymer/iron-image/iron-image.js';
+import './fairshop-image.js';
 
 /**
  * @class
@@ -54,7 +54,7 @@ export class FairshopManufacturer extends PolymerElement {
 				<div class="images">
 					<template is="dom-repeat" items="[[_manufacturerImages]]" as="manufacturerImage">
 						<div class="tile-image">
-						<iron-image class="manufacturer-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.0]]" alt\$="[[manufacturerImage.0]]"></iron-image>
+						<fairshop-image class="manufacturer-img" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.0]]" placeholder="http://localhost:8081/src/img/no_picture.png""></fairshop-image>
 						</div>
 					</template>
 				</div>

@@ -1,5 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
-import '@polymer/iron-image/iron-image.js';
+import './fairshop-image.js';
 
 /**
  * @class
@@ -46,13 +46,13 @@ export class FairshopProductCard extends PolymerElement {
 				.product-card>div {
 					hyphens: auto;
 				}
-				.product-card iron-image {
+				.product-card fairshop-image {
 					width: 100%;
 					height: 12rem;
 				}
 			</style>
 			<div class="product-card" title$="[[description]]">
-				<iron-image class="product-img" sizing="contain" xplaceholder="http://localhost:8081/src/img/no_picture.png" src="[[imageUrl]]" alt="no image" xpreload xfade></iron-image>
+				<fairshop-image class="product-img" src="[[imageUrl]]" placeholder="http://localhost:8081/src/img/no_picture.png"></fairshop-image>
 				<div>[[name]]</div>
 				<div>von [[manufacturerName]]</div>
 				<div><b>[[price]]€</b></div>
