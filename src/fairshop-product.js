@@ -1,4 +1,6 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import '@polymer/iron-ajax/iron-ajax.js';
+import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import './fairshop-image.js';
@@ -10,6 +12,9 @@ export class FairshopProduct extends PolymerElement {
 	static get properties() {
 		return {
 			restUrl: {
+				type: String
+			},
+			imageUrl: {
 				type: String
 			},
 			selectedProduct: {
@@ -86,8 +91,8 @@ export class FairshopProduct extends PolymerElement {
 					<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<div>
-								<a href="http://bukhtest.alphaplanweb.de/[[productImage.2]]" target="_blank">
-									<fairshop-image class="detail-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.1]]" alt\$="[[productImage.1]]"></fairshop-image>
+								<a href="[[imageUrl]][[productImage.2]]" target="_blank">
+									<fairshop-image class="detail-img" sizing="contain" src="[[imageUrl]][[productImage.1]]" alt\$="[[productImage.1]]"></fairshop-image>
 								</a>
 							</div>
 						</template>
@@ -95,7 +100,7 @@ export class FairshopProduct extends PolymerElement {
 					<paper-tabs selected="{{_selected}}" scrollable>
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<paper-tab>
-								<fairshop-image class="tab-img" sizing="contain" src="http://bukhtest.alphaplanweb.de/[[productImage.0]]" alt\$="[[productImage.0]]"></fairshop-image>
+								<fairshop-image class="tab-img" sizing="contain" src="[[imageUrl]][[productImage.0]]" alt\$="[[productImage.0]]"></fairshop-image>
 							</paper-tab>
 						</template>
 					</paper-tabs>
@@ -136,7 +141,7 @@ export class FairshopProduct extends PolymerElement {
 							<div>
 								<template is="dom-repeat" items="[[_productDownloads]]" as="productDownload">
 									<div class="download">
-										<a href$="http://bukhtest.alphaplanweb.de/[[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
+										<a href$="[[imageUrl]][[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
 									</div>
 								</template>
 							</div>
@@ -196,21 +201,29 @@ export class FairshopProduct extends PolymerElement {
 	}
 
 	_productInfoReceived(data) {
-		this._productInfo = data.detail.response.products.records[0];
+		if (data.detail.response && data.detail.response.products) {
+			this._productInfo = data.detail.response.products.records[0];
+		}
 	}
 
 	_productDescriptionReceived(data) {
-		this._productDescription = data.detail.response.product_descriptions.records[0];
-		// Add HTML to description tab
-		this.$.descriptionTab.innerHTML =this._productDescription[2];
+		if (data.detail.response && data.detail.response.product_descriptions) {
+			this._productDescription = data.detail.response.product_descriptions.records[0];
+			// Add HTML to description tab
+			this.$.descriptionTab.innerHTML =this._productDescription[2];
+		}
 	}
 
 	_productImageReceived(data) {
-		this._productImages = data.detail.response.product_images.records;
+		if (data.detail.response && data.detail.response.product_images) {
+			this._productImages = data.detail.response.product_images.records;
+		}
 	}
 
 	_productDownloadReceived(data) {
-		this._productDownloads = data.detail.response.product_downloads.records;
+		if (data.detail.response && data.detail.response.product_downloads) {
+			this._productDownloads = data.detail.response.product_downloads.records;
+		}
 	}
 
 	_goBack() {

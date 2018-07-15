@@ -1,18 +1,22 @@
 {
   "name": "@fairweben/fair-shop",
   "version": "1.0.0",
-  "description": "[[A progressive shop demo]]",
+  "description": "A progressive shop demo",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kasch65/fairshop.git"
+  },
   "main": "fair-shop.js",
   "module": "/dist/fair-shop.umd.js",
+  "author": "ks@kai-schaefer-it.de",
+  "license": "Apache-2.0",
   "scripts": {
-    "docs": "polymer analyze src/fair-shop.js > analysis.json",
-    "demo": "polymer serve -b chrome --open-path ./demo -o",
-    "test-local": "polymer serve -b chrome --open-path ./test/index.html -o",
+    "start": "polymer serve",
+    "build": "polymer build",
+    "lint": "polymer lint",
     "test": "polymer test",
-    "build": "webpack"
+    "test:integration": "polymer build # test that psk builds without error with the CLI"
   },
-  "author": "[[ks@kai-schaefer-it.de]]",
-  "license": "ISC",
   "dependencies": {
     "@polymer/app-layout": "^3.0.0-pre.21",
     "@polymer/app-route": "^3.0.0-pre.21",
@@ -26,7 +30,17 @@
     "@polymer/paper-spinner": "^3.0.0-pre.21",
     "@polymer/paper-tabs": "^3.0.0-pre.21",
     "@polymer/paper-toast": "^3.0.0-pre.21",
+    "@polymer/polymer": "^3.0.0-pre.21",
     "@webcomponents/webcomponentsjs": "^2.0.2",
     "workbox-sw": "^3.4.1"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^3.0.0-pre.21",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.21",
+    "@polymer/iron-test-helpers": "^3.0.0-pre.21",
+    "@polymer/test-fixture": "^3.0.0-pre.21"
+  },
+  "engines": {
+    "node": ">=8.0"
   }
 }

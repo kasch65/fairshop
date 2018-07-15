@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import '@polymer/iron-ajax/iron-ajax.js';
 
 /**
  * @class

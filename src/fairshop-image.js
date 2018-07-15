@@ -55,7 +55,7 @@ export class FairshopImage extends PolymerElement {
 					height: 100%;
 					background-position: center center;
 					background-repeat: no-repeat;
-					transition: opacity 0.5s;
+					transition: opacity 0.3s;
 				}
 				#placeholderDiv {
 					opacity: 1;

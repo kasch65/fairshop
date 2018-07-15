@@ -1,6 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer/polymer-element";
 import '@polymer/app-layout/app-layout.js';
-import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
@@ -20,6 +19,9 @@ export class FairshopApp extends PolymerElement {
 	static get properties() {
 		return {
 			restUrl: {
+				type: String
+			},
+			imageUrl: {
 				type: String
 			},
 			route: {
@@ -166,7 +168,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_productActive]]">
 					<div id="product" page-name="product">
-						<fairshop-product rest-url="[[restUrl]]" selected-product="[[_productId]]"></fairshop-product>
+						<fairshop-product rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[_productId]]"></fairshop-product>
 					</div>
 				</template>
 
