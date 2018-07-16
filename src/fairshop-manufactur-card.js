@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import './fairshop-image.js';
 
 /**
@@ -42,7 +42,7 @@ export class FairshopManufacturCard extends PolymerElement {
 			</style>
 			<div class="manufacturer-card" title$="[[name]]">
 				<template is="dom-if" if="[[logoUrl]]">
-					<fairshop-image class="manufacturer-img" src="[[logoUrl]]" placeholder="http://localhost:8081/src/img/no_picture.png"></fairshop-image>
+					<fairshop-image class="manufacturer-img" src="[[logoUrl]]" placeholder="/src/img/no_picture.png"></fairshop-image>
 					</template>
 				<template is="dom-if" if="[[!logoUrl]]">
 					<div>[[name]]</div>

@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import './fairshop-image.js';
 
@@ -9,6 +9,9 @@ export class FairshopManufacturer extends PolymerElement {
 	static get properties() {
 		return {
 			restUrl: {
+				type: String
+			},
+			imageUrl: {
 				type: String
 			},
 			selectedManufacturer: {
@@ -55,7 +58,7 @@ export class FairshopManufacturer extends PolymerElement {
 				<div class="images">
 					<template is="dom-repeat" items="[[_manufacturerImages]]" as="manufacturerImage">
 						<div class="tile-image">
-						<fairshop-image class="manufacturer-img" src="http://bukhtest.alphaplanweb.de/[[manufacturerImage.0]]" placeholder="http://localhost:8081/src/img/no_picture.png""></fairshop-image>
+						<fairshop-image class="manufacturer-img" src="[[imageUrl]][[manufacturerImage.0]]" placeholder="/src/img/no_picture.png""></fairshop-image>
 						</div>
 					</template>
 				</div>
@@ -91,14 +94,18 @@ export class FairshopManufacturer extends PolymerElement {
 	}
 
 	_manufacturerDescriptionReceived(data) {
-		this._manufacturerDescription = data.detail.response.manufacturer_descriptions.records[0];
-		// Add HTML to description
-		this.$.manufacturerInfo.innerHTML =this._manufacturerDescription[1];
+		if (data.detail.response && data.detail.response.manufacturer_descriptions && data.detail.response.manufacturer_descriptions.records) {
+			this._manufacturerDescription = data.detail.response.manufacturer_descriptions.records[0];
+			// Add HTML to description
+			this.$.manufacturerInfo.innerHTML =this._manufacturerDescription[1];
+		}
 
 	}
 
 	_requestManufacturerImagesReceived(data) {
-		this._manufacturerImages = data.detail.response.manufacturer_images.records;
+		if (data.detail.response && data.detail.response.manufacturer_images && data.detail.response.manufacturer_images.records) {
+			this._manufacturerImages = data.detail.response.manufacturer_images.records;
+		}
 	}
 
 }

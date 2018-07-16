@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/app-route/app-location.js';
 
 /**

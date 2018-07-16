@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
 /**
  * @class
@@ -39,7 +39,6 @@ export class FairshopImage extends PolymerElement {
 					overflow: hidden;
 					position: relative;
 				}
-				#placeholder,
 				#img {
 					width: 0;
 					height: 0;
@@ -70,14 +69,14 @@ export class FairshopImage extends PolymerElement {
 					opacity: 1;
 				}
 			</style>
-			<img id="placeholder" src="[[placeholder]]" on-load="_placeholderLoaded"></img>
 			<img id="img" src="[[src]]" on-load="_loaded"></img>
 			<div id="placeholderDiv" style="[[_placeholderBg]]"></div>
 			<div id="imgDiv" style="[[_imgBg]]"></div>
 		`;
 	}
 
-	_placeholderLoaded() {
+	ready() {
+		super.ready();
 		this._placeholderBg = 'background-image: url("' + this.placeholder + '"); background-size: ' + this.sizing + ';';
 	}
 

@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import './fairshop-paginator.js';
@@ -11,6 +11,9 @@ export class FairshopProductsList extends PolymerElement {
 	static get properties() {
 		return {
 			restUrl: {
+				type: String
+			},
+			imageUrl: {
 				type: String
 			},
 			selectedManufacturer: {
@@ -189,7 +192,7 @@ export class FairshopProductsList extends PolymerElement {
 	 * Pagewise
 	 */
 	_manufacturerProductsReceived(data) {
-		if ( data.detail.response.product_search_copy.records) {
+		if ( data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records) {
 			this._title = 'Produkte von ' + data.detail.response.product_search_copy.records[0][2];
 			this._products = data.detail.response.product_search_copy.records;
 			this._productCnt = data.detail.response.product_search_copy.results;
@@ -206,7 +209,7 @@ export class FairshopProductsList extends PolymerElement {
 		}
 	}
 	_categoryProductsReceived(data) {
-		if (data.detail.response.product_category_view.records.length) {
+		if (data.detail.response && data.detail.response.product_category_view && data.detail.response.product_category_view.records && data.detail.response.product_category_view.records.length) {
 			this._title = data.detail.response.product_category_view.records[0][5];
 			this._products = data.detail.response.product_category_view.records;
 			this._productCnt = data.detail.response.product_category_view.results;
@@ -235,11 +238,13 @@ export class FairshopProductsList extends PolymerElement {
 
 	_productImagesReceived(data) {
 		var imageUrlMap = new Map();
-		for (let productImage of data.detail.response.product_images.records) {
-			// Only save first image
-			var firstImage = imageUrlMap.get(productImage[0]);
-			if (!firstImage) {
-				imageUrlMap.set(productImage[0], productImage[1]);
+		if (data.detail.response && data.detail.response.product_images && data.detail.response.product_images.records) {
+			for (let productImage of data.detail.response.product_images.records) {
+				// Only save first image
+				var firstImage = imageUrlMap.get(productImage[0]);
+				if (!firstImage) {
+					imageUrlMap.set(productImage[0], productImage[1]);
+				}
 			}
 		}
 		this._imageUrlMap = imageUrlMap;
@@ -260,7 +265,7 @@ export class FairshopProductsList extends PolymerElement {
 			aElement.setAttribute('href', this.hrefPrefix + '/' + productInfo[0]);
 			var productCard = document.createElement('fairshop-product-card');
 			if (imageUrl) {
-				productCard.imageUrl = 'http://bukhtest.alphaplanweb.de/' + imageUrl;
+				productCard.imageUrl = this.imageUrl + imageUrl;
 			}
 			productCard.name = productInfo[3];
 			productCard.description = productInfo[4];

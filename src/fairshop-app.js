@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/app-layout/app-layout.js';
 import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-toast/paper-toast.js';
@@ -153,17 +153,17 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_manufacturersActive]]">
 					<div id="manufacturers" page-name="manufacturers">
-						<fairshop-manufacturers-list rest-url="[[restUrl]]"></fairshop-manufacturers-list>
+						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]"></fairshop-manufacturers-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_manufacturerActive]]">
 					<div id="maufacturer" page-name="maufacturer">
-						<fairshop-manufacturer rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]"></fairshop-manufacturer>
+						<fairshop-manufacturer rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]"></fairshop-manufacturer>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productsActive]]">
 					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}"></fairshop-products-list>
+						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}"></fairshop-products-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productActive]]">

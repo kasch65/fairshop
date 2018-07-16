@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import './fairshop-manufactur-card.js';
 
@@ -9,6 +9,9 @@ export class FairshopManufacturersList extends PolymerElement {
 	static get properties() {
 		return {
 			restUrl: {
+				type: String
+			},
+			imageUrl: {
 				type: String
 			},
 			_manufacturerDescriptions: {
@@ -99,7 +102,7 @@ export class FairshopManufacturersList extends PolymerElement {
 			manufacurersCard.name = manufacturer[1];
 			var logoUrl = this._logoUrlMap.get(manufacturer[0]);
 			if (logoUrl) {
-				manufacurersCard.logoUrl = 'http://bukhtest.alphaplanweb.de/' + logoUrl;
+				manufacurersCard.logoUrl = this.imageUrl + logoUrl;
 			}
 			aElement.appendChild(manufacurersCard);
 			liElement.appendChild(aElement);

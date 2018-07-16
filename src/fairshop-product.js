@@ -1,8 +1,8 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
+import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-tabs/paper-tabs.js';
 import './fairshop-image.js';
 
 /**
@@ -67,7 +67,7 @@ export class FairshopProduct extends PolymerElement {
 				h1 {
 					text-align: center;
 				}
-				paper-tabs {
+				paper-tabs#image-tabs {
 					height:	8rem;
 				}
 				.tab-img {
@@ -97,7 +97,7 @@ export class FairshopProduct extends PolymerElement {
 							</div>
 						</template>
 					</iron-pages>
-					<paper-tabs selected="{{_selected}}" scrollable>
+					<paper-tabs id="image-tabs" selected="{{_selected}}" scrollable>
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<paper-tab>
 								<fairshop-image class="tab-img" sizing="contain" src="[[imageUrl]][[productImage.0]]" alt\$="[[productImage.0]]"></fairshop-image>
@@ -138,13 +138,15 @@ export class FairshopProduct extends PolymerElement {
 						<iron-pages id="tabPages" class="article-tabs" selected="{{_selectedTab}}">
 							<div id="descriptionTab"></div>
 							<div>...</div>
-							<div>
+							<div id="download">
 								<template is="dom-repeat" items="[[_productDownloads]]" as="productDownload">
-									<div class="download">
-										<a href$="[[imageUrl]][[productDownload.1]]" target="_blank">Download: [[productDownload.0]]</a>
-									</div>
+									<a href$="[[imageUrl]][[productDownload.1]]" target="_blank">
+										[[productDownload.0]]
+										<template is="dom-if" if="[[_isEmpty(productDownload.0)]]">[[productDownload.1]]</template>
+									</a>
 								</template>
 							</div>
+						</div>
 						</iron-pages>
 						<div></div>
 						<div class="downloads">
@@ -228,6 +230,15 @@ export class FairshopProduct extends PolymerElement {
 
 	_goBack() {
 		window.history.back();
+	}
+
+	_isEmpty(downloadName) {
+		if (downloadName && downloadName.length > 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 }
 customElements.define("fairshop-product", FairshopProduct);

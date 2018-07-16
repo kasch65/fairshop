@@ -1,4 +1,4 @@
-import { PolymerElement, html } from "@polymer/polymer/polymer-element";
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 
 /**
@@ -63,11 +63,13 @@ export class FairshopCategoriesTree extends PolymerElement {
 	}
 
 	_categoryDescriptionsReceived(data) {
-		var categoryRecords = data.detail.response.category_descriptions.records;
-		var parentCategoryId = null;
-		var indent = 0;
-		var target = this.$.catList;
-		this.addChildren(parentCategoryId, categoryRecords, target, indent);
+		if (data.detail.response && data.detail.response.category_descriptions) {
+			var categoryRecords = data.detail.response.category_descriptions.records;
+			var parentCategoryId = null;
+			var indent = 0;
+			var target = this.$.catList;
+			this.addChildren(parentCategoryId, categoryRecords, target, indent);
+		}
 	}
 
 	addChildren(parentCategoryId, categoryRecords, target, indent) {
