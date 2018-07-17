@@ -69,13 +69,15 @@ export class FairshopCategoriesTree extends PolymerElement {
 			var indent = 0;
 			var target = this.$.catList;
 			this.addChildren(parentCategoryId, categoryRecords, target, indent);
+			// Let tests wait until ajax data has been evaluated and this event to be fired
+			this.dispatchEvent(new CustomEvent('test-event', {detail: 'ajax-loaded'}));
 		}
 	}
 
 	addChildren(parentCategoryId, categoryRecords, target, indent) {
 		for (let category of categoryRecords) {
 			if (category[1] == parentCategoryId) {
-				console.log('' + indent + ' ' + category[0] + ' ' + category[2]);
+				//console.log('' + indent + ' ' + category[0] + ' ' + category[2]);
 				var catElement = document.createElement('div');
 				var aElement = document.createElement('a');
 				aElement.setAttribute("href", "/categories/" + category[0]);

@@ -1,30 +1,21 @@
-<!DOCTYPE html>
-<html>
-
+<!doctype html>
+<html lang="en">
   <head>
-
-    <title>dp-form-app tests</title>
-
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>Tests</title>
 
     <script src="../node_modules/wct-browser-legacy/browser.js"></script>
-
   </head>
-
   <body>
-
     <script>
-      //Loads all the specified testsuites with certain configurations
-      //In this case it will test the dp-form-app.html once with and once without polyfills
-      window.WCT.loadSuites([
-        'dp-form-app.html?dom=shadow',
-        'dp-form-app.html?wc-shadydom=true',
+      WCT.loadSuites([
+        // Load 'fairshop-categories-tree.html' test suite, using native shadow dom
+        'fairshop-categories-tree.html?dom=shadow',
+        // Load 'fairshop-categories-tree.html' test suite, using shadydom
+        'fairshop-categories-tree.html?wc-shadydom=true',
       ]);
     </script>
-
-
-
   </body>
-
 </html>

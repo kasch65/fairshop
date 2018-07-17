@@ -35,10 +35,8 @@
     "workbox-sw": "^3.4.1"
   },
   "devDependencies": {
-    "@polymer/iron-component-page": "^3.0.0-pre.21",
     "@polymer/iron-demo-helpers": "^3.0.0-pre.21",
-    "@polymer/iron-test-helpers": "^3.0.0-pre.21",
-    "@polymer/test-fixture": "^3.0.0-pre.21"
+    "wct-browser-legacy": "^1.0.0"
   },
   "engines": {
     "node": ">=8.0"

@@ -1,0 +1,7 @@
+{
+  "name": "Fairshop App",
+  "short_name": "Fairshop",
+  "description": "An open Polymer Shop",
+  "start_url": "/",
+  "display": "standalone"
+}
