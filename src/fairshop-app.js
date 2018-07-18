@@ -124,6 +124,11 @@ export class FairshopApp extends PolymerElement {
 					min-height: 50vh;
 					text-align: center;
 				}
+				.featurelist {
+					width: fit-content;
+					margin: auto;
+					text-align: left;
+				}
 			</style>
 
 			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
@@ -144,6 +149,14 @@ export class FairshopApp extends PolymerElement {
 					<div id="home" page-name="home">
 						<h1>fairshop</h1>
 						<h2>fair and always open</h2>
+						<div class="featurelist">
+							<ul>
+								<li>fastest shop in the world</li>
+								<li>easy to customize</li>
+								<li>extensible</li>
+								<li>reliable</li>
+							</ul>
+						</div>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_categoriesActive]]">

@@ -43,6 +43,8 @@
             assert.equal(event.detail, 'ajax-loaded');
             var catNodes = myView.shadowRoot.querySelectorAll('.cat-node');
             assert.equal(catNodes.length, 259);
+            assert.equal(catNodes[0].firstChild.innerText, 'Neuheiten T');
+            assert.equal(catNodes[258].firstChild.innerText, 'Trinkwassertanks');
             done();
           });
         });
