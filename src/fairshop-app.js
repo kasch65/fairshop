@@ -129,7 +129,7 @@ export class FairshopApp extends PolymerElement {
 			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
 
 			<app-header-layout>
-				<app-header slot="header" fixed="" effects="waterfall">
+				<app-header slot="header" fixed="">
 					<app-toolbar>
 						<div main-title>fairshop demo</div>
 						<div class="left-bar-item">

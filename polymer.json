@@ -1,6 +1,10 @@
 {
   "entrypoint": "index.html",
   "shell": "src/fairshop-app.js",
+  "sources": [
+    "icons/**/*",
+    "favicon.ico"
+  ],
   "extraDependencies": [
     "manifest.json",
     "node_modules/@webcomponents/webcomponentsjs/*.js",
