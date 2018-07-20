@@ -1,6 +1,6 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
-import './fairshop-manufactur-card.js';
+import { PolymerElement, html } from '@polymer/polymer';
+import '@polymer/iron-ajax';
+import './fairshop-manufacturer-card.js';
 
 /**
  * @class
@@ -98,7 +98,7 @@ export class FairshopManufacturersList extends PolymerElement {
 			var liElement = document.createElement('li');
 			var aElement = document.createElement('a');
 			aElement.setAttribute('href', '/manufacturers/' + manufacturer[0]);
-			var manufacurersCard = document.createElement('fairshop-manufactur-card');
+			var manufacurersCard = document.createElement('fairshop-manufacturer-card');
 			manufacurersCard.name = manufacturer[1];
 			var logoUrl = this._logoUrlMap.get(manufacturer[0]);
 			if (logoUrl) {
@@ -108,6 +108,8 @@ export class FairshopManufacturersList extends PolymerElement {
 			liElement.appendChild(aElement);
 			target.appendChild(liElement);
 		}
+		// Let tests wait until ajax data has been evaluated and this event to be fired
+		this.dispatchEvent(new CustomEvent('test-event', {detail: 'ajax-loaded'}));
 	}
 
 }

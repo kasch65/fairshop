@@ -1,10 +1,10 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer';
 import './fairshop-image.js';
 
 /**
  * @class
  */
-export class FairshopManufacturCard extends PolymerElement {
+export class FairshopManufacturerCard extends PolymerElement {
 	static get properties() {
 		return {
 			logoUrl: {
@@ -52,4 +52,4 @@ export class FairshopManufacturCard extends PolymerElement {
 	}
 
 }
-customElements.define("fairshop-manufactur-card", FairshopManufacturCard);
+customElements.define("fairshop-manufacturer-card", FairshopManufacturerCard);
