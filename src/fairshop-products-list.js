@@ -275,6 +275,8 @@ export class FairshopProductsList extends PolymerElement {
 			liElement.appendChild(aElement);
 			target.appendChild(liElement);
 		}
+		// Let tests wait until ajax data has been evaluated and this event to be fired
+		this.dispatchEvent(new CustomEvent('test-event', {detail: 'ajax-loaded'}));
 	}
 
 	_goBack() {

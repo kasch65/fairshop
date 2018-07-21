@@ -1,0 +1,52 @@
+<!--
+  Open http://localhost:8081/test/fairshop-products-list.html to run test in browser
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>fairshop-products-list</title>
+
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+
+    <!-- Import the element to test -->
+    <script type="module" src="../src/fairshop-products-list.js"></script>
+  </head>
+  <body>
+    <test-fixture id="TestView">
+      <template>
+        <fairshop-products-list rest-url="/demo/data/products/" image-url="/demo/data/products/" selected-manufacturer="251"></fairshop-products-list>
+      </template>
+    </test-fixture>
+
+    <script type="module">
+      suite('fairshop-products-list tests', function() {
+        var myView = fixture('TestView');
+                
+        test('ul#productsList must be present', function() {
+          var ul = myView.$.productsList;
+          assert.equal(ul.id, 'productsList');
+        });
+
+        test('.productsList must contains 1 children', function() {
+          var nodes = myView.shadowRoot.querySelector('.list');
+          assert.equal(nodes.childElementCount, 1);
+        });
+        // Async
+        test('43 fairshop-manufacturer-card´s loaded', function(done) {
+          var myEventView = fixture('TestView');
+          myEventView.addEventListener('test-event', function(event) {
+            assert.equal(event.detail, 'ajax-loaded');
+            var catNodes = myEventView.shadowRoot.querySelectorAll('fairshop-product-card');
+            assert.equal(catNodes.length, 4);
+            done();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
