@@ -19,6 +19,10 @@ export class FairshopManufacturersList extends PolymerElement {
 			},
 			_logoUrlMap: {
 				type: Map
+			},
+			searchString: {
+				type: String,
+				observer: '_search'
 			}
 		};
 	}
@@ -48,6 +52,9 @@ export class FairshopManufacturersList extends PolymerElement {
 			</style>
 			<div class="manufacturers">
 				<h1>Herstellerliste</h1>
+				<template is="dom-if" if="[[searchString]]">
+					<div class="filtered">Filter: <b>[[searchString]]</b></div>
+				</template>
 				<ul id="manufacturersList">
 				</ul>
 			</div>
@@ -62,6 +69,12 @@ export class FairshopManufacturersList extends PolymerElement {
 			<iron-ajax 
 				id="requestManufacturerDescriptions"
 				url="[[restUrl]]manufacturer_descriptions?columns=manufacturerId,name"
+				handle-as="json"
+				on-response="_manufacturerDescriptionsReceived">
+			</iron-ajax>
+
+			<iron-ajax 
+				id="searchManufacturerDescriptions"
 				handle-as="json"
 				on-response="_manufacturerDescriptionsReceived">
 			</iron-ajax>
@@ -82,10 +95,6 @@ export class FairshopManufacturersList extends PolymerElement {
 			}
 		}
 		this._logoUrlMap = imageUrlMap;
-	}
-
-	_requestManufacturerDescriptions() {
-		this.$.requestManufacturerDescriptions.generateRequest();
 	}
 
 	_manufacturerDescriptionsReceived(data) {
@@ -110,6 +119,20 @@ export class FairshopManufacturersList extends PolymerElement {
 		}
 		// Let tests wait until ajax data has been evaluated and this event to be fired
 		this.dispatchEvent(new CustomEvent('test-event', {detail: 'ajax-loaded'}));
+	}
+
+	_search() {
+		if (this._logoUrlMap) {
+			if (this.searchString) {
+				console.log('Searching manufacturer: ' + this.searchString);
+				this.$.searchManufacturerDescriptions.url = this.restUrl + 'manufacturer_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=manufacturerId,name';
+				this.$.searchManufacturerDescriptions.generateRequest();
+			}
+			else {
+				this.$.requestManufacturerDescriptions.generateRequest();
+			}
+		}
+
 	}
 
 }

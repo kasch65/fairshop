@@ -4,6 +4,7 @@ import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
 import './fairshop-router.js';
 import './fairshop-manufacturers-list.js';
@@ -78,6 +79,12 @@ export class FairshopApp extends PolymerElement {
 			_productActive: {
 				type: Boolean,
 				value: false
+			},
+			_searchString: {
+				type: String,
+				observer: "_searchStringChanged"
+			}, _activeSearchString: {
+				type: String
 			}
 		};
 	}
@@ -141,6 +148,10 @@ export class FairshopApp extends PolymerElement {
 							<a href="/"><paper-button>Home</paper-button></a>
 							<a href="/categories"><paper-button>Categories</paper-button></a>
 							<a href="/manufacturers"><paper-button>Manufacturers</paper-button></a>
+							<iron-input bind-value="{{_searchString}}">
+								<input>
+							</iron-input>
+							<iron-icon icon="icons:search"></iron-icon>
 						</div>
 					</app-toolbar>
 				</app-header>
@@ -166,7 +177,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_manufacturersActive]]">
 					<div id="manufacturers" page-name="manufacturers">
-						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]"></fairshop-manufacturers-list>
+						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" search-string="[[_activeSearchString]]"></fairshop-manufacturers-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_manufacturerActive]]">
@@ -222,6 +233,15 @@ export class FairshopApp extends PolymerElement {
 			else {
 				this._manufacturersActive = true;
 			}
+		}
+	}
+
+	_searchStringChanged() {
+		if (this._searchString && this._searchString.length >= 3) {
+			this._activeSearchString = this._searchString;
+		}
+		else {
+			this._activeSearchString = null;
 		}
 	}
 
