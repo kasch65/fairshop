@@ -87,7 +87,9 @@ export class FairshopManufacturersList extends PolymerElement {
 	}
 
 	_manufacturerImagesReceived(data) {
-		this.$.requestManufacturerDescriptions.generateRequest();
+		if (!this.searchString) {
+			this.$.requestManufacturerDescriptions.generateRequest();
+		}
 		var imageUrlMap = new Map();
 		for (let manufacturerImage of data.detail.response.manufacturer_images.records) {
 			if (manufacturerImage[1] == 'Kategorie-Bild') {
@@ -122,17 +124,14 @@ export class FairshopManufacturersList extends PolymerElement {
 	}
 
 	_search() {
-		if (this._logoUrlMap) {
-			if (this.searchString) {
-				console.log('Searching manufacturer: ' + this.searchString);
-				this.$.searchManufacturerDescriptions.url = this.restUrl + 'manufacturer_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=manufacturerId,name';
-				this.$.searchManufacturerDescriptions.generateRequest();
-			}
-			else {
-				this.$.requestManufacturerDescriptions.generateRequest();
-			}
+		if (this.searchString) {
+			console.log('Searching manufacturer: ' + this.searchString);
+			this.$.searchManufacturerDescriptions.url = this.restUrl + 'manufacturer_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=manufacturerId,name';
+			this.$.searchManufacturerDescriptions.generateRequest();
 		}
-
+		else {
+			this.$.requestManufacturerDescriptions.generateRequest();
+		}
 	}
 
 }

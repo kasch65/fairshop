@@ -18,11 +18,15 @@ export class FairshopProductsList extends PolymerElement {
 			},
 			selectedManufacturer: {
 				type: Number,
-				observer: "_manufacturerChanged"
+				observer: '_manufacturerChanged'
 			},
 			selectedCategory: {
 				type: Number,
-				observer: "_categoryChanged"
+				observer: '_categoryChanged'
+			},
+			searchString: {
+				type: String,
+				observer: '_searchStringChanged'
 			},
 			hrefPrefix: {
 				tape: String
@@ -109,6 +113,9 @@ export class FairshopProductsList extends PolymerElement {
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<div class="heading"><h1>[[_title]]</h1></div>
+				<template is="dom-if" if="[[searchString]]">
+					<div class="filtered">Filter: <b>[[searchString]]</b></div>
+				</template>
 				<template is="dom-if" if="[[_productCnt]]">
 					<div class="sorting">
 						<div class="label">Sortierung:</div>
@@ -147,12 +154,21 @@ export class FairshopProductsList extends PolymerElement {
 				handle-as="json"
 				on-response="_productImagesReceived">
 			</iron-ajax>
+
+			<iron-ajax 
+				id="searchProductDescriptions"
+				handle-as="json"
+				on-response="_searchProductDescriptionsReceived">
+			</iron-ajax>
 		`;
 	}
 
 	_pageChanged(newValue, oldValue) {
 		if (oldValue) {
-			if (this.selectedManufacturer) {
+			if (this.searchString) {
+				this._searchStringChanged();
+			}
+			else if (this.selectedManufacturer) {
 				this.$.requestManufacturerProducts.generateRequest();
 			}
 			else if (this.selectedCategory) {
@@ -188,6 +204,27 @@ export class FairshopProductsList extends PolymerElement {
 		}
 	}
 
+	_searchStringChanged() {
+		if (this.searchString) {
+			console.log('Searching products: ' + this.searchString);
+			this.$.searchProductDescriptions.url = this.restUrl + 'product_search_copy?filter[]=nr,cs,' + this.searchString + '&filter[]=ean,cs,' + this.searchString + '&filter[]=manufacturerName,cs,' + this.searchString + '&filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&filter[]=description2,cs,' + this.searchString + '&satisfy=any&columns=id,price,manufacturerName,name,description&order[]=' + this._sortOrder + '&order[]=pos&page=' + this.page + ',' + this._itemsPerPage;
+			this.$.searchProductDescriptions.generateRequest();
+		}
+		else {
+			// Fallback to previous search
+			if (this.selectedManufacturer) {
+				this.selectedCategory = null;
+				this.$.requestManufacturerProducts.generateRequest();
+				this.page = 1;
+			}
+			else if (this.selectedCategory) {
+				this.selectedManufacturer = null;
+				this.$.requestCategoryProducts.generateRequest();
+				this.page = 1;
+			}
+		}
+	}
+
 	/**
 	 * Pagewise
 	 */
@@ -208,6 +245,7 @@ export class FairshopProductsList extends PolymerElement {
 			productImagesRequestor.generateRequest();
 		}
 	}
+
 	_categoryProductsReceived(data) {
 		if (data.detail.response && data.detail.response.product_category_view && data.detail.response.product_category_view.records && data.detail.response.product_category_view.records.length) {
 			this._title = data.detail.response.product_category_view.records[0][5];
@@ -216,6 +254,34 @@ export class FairshopProductsList extends PolymerElement {
 
 			var itemIdList = '';
 			for (let item of data.detail.response.product_category_view.records) {
+				itemIdList += ',';
+				itemIdList += item[0];
+			}
+
+			var productImagesRequestor = this.$.requestProductImages;
+			productImagesRequestor.url = this.restUrl + 'product_images?filter=productId,in' + itemIdList + '&columns=productId,small';
+			productImagesRequestor.generateRequest();
+		}
+		else {
+			this._title = 'Keine Produkte gefunden';
+			this._products = null;
+			this._productCnt = 0;
+			// Clear old items
+			var target = this.$.productsList;
+			while (target.firstChild) {
+				target.removeChild(target.firstChild);
+			}
+		}
+	}
+
+	_searchProductDescriptionsReceived(data) {
+		if ( data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records) {
+			this._title = 'Suchergebnis';
+			this._products = data.detail.response.product_search_copy.records;
+			this._productCnt = data.detail.response.product_search_copy.results;
+
+			var itemIdList = '';
+			for (let item of data.detail.response.product_search_copy.records) {
 				itemIdList += ',';
 				itemIdList += item[0];
 			}

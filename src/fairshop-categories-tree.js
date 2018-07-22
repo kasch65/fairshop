@@ -9,6 +9,10 @@ export class FairshopCategoriesTree extends PolymerElement {
 		return {
 			restUrl: {
 				type: String
+			},
+			searchString: {
+				type: String,
+				observer: '_search'
 			}
 		};
 	}
@@ -42,9 +46,15 @@ export class FairshopCategoriesTree extends PolymerElement {
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
 				}
+				.found {
+					background-color: yellow;
+				}
 			</style>
 			<div class="categories">
 				<h1>Kategoriebaum</h1>
+				<template is="dom-if" if="[[searchString]]">
+					<div class="filtered">Filter: <b>[[searchString]]</b></div>
+				</template>
 				<div id="catList">
 			</div>
 
@@ -53,6 +63,12 @@ export class FairshopCategoriesTree extends PolymerElement {
 				url="[[restUrl]]category_descriptions?columns=categoryId,parentId,name"
 				handle-as="json"
 				on-response="_categoryDescriptionsReceived">
+			</iron-ajax>
+
+			<iron-ajax 
+				id="searchCategoryDescriptions"
+				handle-as="json"
+				on-response="_searchDescriptionsReceived">
 			</iron-ajax>
 		`;
 	}
@@ -85,10 +101,44 @@ export class FairshopCategoriesTree extends PolymerElement {
 				aElement.appendChild(catTextElement);
 				catElement.appendChild(aElement);
 				catElement.setAttribute("class", "cat-node");
-				catElement.setAttribute("href", category[0]);
+				//catElement.setAttribute("href", category[0]);
+				catElement.setAttribute("category", category[0]);
 				target.appendChild(catElement);
 				this.addChildren(category[0], categoryRecords, catElement, indent + 1);
 			}
+		}
+	}
+
+	_search() {
+		if (this.searchString) {
+			console.log('Highlighting categories: ' + this.searchString);
+			this.$.searchCategoryDescriptions.url = this.restUrl + 'category_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=categoryId';
+			this.$.searchCategoryDescriptions.generateRequest();
+		}
+		else {
+			this._resetSearch();
+		}
+	}
+
+	_searchDescriptionsReceived(data) {
+		if (data.detail.response && data.detail.response.category_descriptions) {
+			this._resetSearch();
+			var catDivs = this.root.querySelectorAll('.cat-node');
+			for (let catIdRes of data.detail.response.category_descriptions.records) {
+				var catId = catIdRes[0];
+				for (let catDiv of catDivs) {
+					if (catDiv.getAttribute('category') == catId) {
+						catDiv.classList.add('found');
+					}
+				}
+			}
+		}
+	}
+
+	_resetSearch() {
+		var catDivs = this.root.querySelectorAll('.cat-node');
+		for (let catDiv of catDivs) {
+			catDiv.classList.remove('found');
 		}
 	}
 

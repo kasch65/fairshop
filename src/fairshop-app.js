@@ -85,6 +85,9 @@ export class FairshopApp extends PolymerElement {
 				observer: "_searchStringChanged"
 			}, _activeSearchString: {
 				type: String
+			},
+			_waitForSearch: {
+				type: Object
 			}
 		};
 	}
@@ -136,6 +139,19 @@ export class FairshopApp extends PolymerElement {
 					margin: auto;
 					text-align: left;
 				}
+				iron-input {
+					border: none;
+					border-width: 0;
+				}
+				iron-input input {
+					height: 1.3rem;
+					padding: 0.5rem;
+					border-style: none none solid none;
+					border-width: 0 0 2px 0;
+					border-radius: .2rem .2rem 0 0;
+					border-color: #8884;
+					background-color: #fffd;
+				}
 			</style>
 
 			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
@@ -172,7 +188,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_categoriesActive]]">
 					<div id="categories" page-name="categories">
-						<fairshop-categories-tree rest-url="[[restUrl]]"></fairshop-categories-tree>
+						<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_activeSearchString]]"></fairshop-categories-tree>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_manufacturersActive]]">
@@ -187,7 +203,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_productsActive]]">
 					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}"></fairshop-products-list>
+						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_activeSearchString]]"></fairshop-products-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productActive]]">
@@ -211,38 +227,64 @@ export class FairshopApp extends PolymerElement {
 		this._productsActive = false;
 		this._productActive = false;
 		// Activate some views
-		if (this._page == 'home') {
-			this._homeActive = true;
+		if (this._activeSearchString && !this._productId && !this._manufacturerId) {
+			this._categoriesActive = true;
+			this._manufacturersActive = true;
+			this._productsActive = true;
 		}
-		else if (this._productId) {
-			this._productActive = true;
-		}
-		else if (this._page == 'categories') {
-			if (this._categoryId) {
-				this._productsActive = true;
+		else {
+			if (this._page == 'home') {
+				this._homeActive = true;
 			}
-			else {
-				this._categoriesActive = true;
+			else if (this._productId) {
+				this._productActive = true;
 			}
-		}
-		else if (this._page == 'manufacturers') {
-			if (this._manufacturerId) {
-				this._manufacturerActive = true;
-				this._productsActive = true;
+			else if (this._page == 'categories') {
+				if (this._categoryId) {
+					this._productsActive = true;
+				}
+				else {
+					this._categoriesActive = true;
+				}
 			}
-			else {
-				this._manufacturersActive = true;
+			else if (this._page == 'manufacturers') {
+				if (this._manufacturerId) {
+					this._manufacturerActive = true;
+					this._productsActive = true;
+				}
+				else {
+					this._manufacturersActive = true;
+				}
 			}
 		}
 	}
 
 	_searchStringChanged() {
-		if (this._searchString && this._searchString.length >= 3) {
-			this._activeSearchString = this._searchString;
+		if (this._searchString && this._searchString.length == 3) {
+			this._setActiveSearchString();
+		}
+		else if (this._searchString && this._searchString.length > 3) {
+			if (!this._waitForSearch) {
+				var self = this;
+				this._waitForSearch = setTimeout(function() {
+					self._setActiveSearchString();
+				}, 1000);
+			}
 		}
 		else {
 			this._activeSearchString = null;
 		}
+	}
+
+	_setActiveSearchString() {
+		this._activeSearchString = this._searchString;
+		this._waitForSearch = null;
+		this._homeActive = false;
+		this._categoriesActive = true;
+		this._manufacturersActive = true;
+		this._manufacturerActive = false;
+		this._productsActive = true;
+		this._productActive = false;
 	}
 
 }
