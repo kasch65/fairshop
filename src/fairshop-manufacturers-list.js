@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax';
 import './fairshop-manufacturer-card.js';
 
@@ -111,9 +111,11 @@ export class FairshopManufacturersList extends PolymerElement {
 			aElement.setAttribute('href', '/manufacturers/' + manufacturer[0]);
 			var manufacurersCard = document.createElement('fairshop-manufacturer-card');
 			manufacurersCard.name = manufacturer[1];
-			var logoUrl = this._logoUrlMap.get(manufacturer[0]);
-			if (logoUrl) {
-				manufacurersCard.logoUrl = this.imageUrl + logoUrl;
+			if (this._logoUrlMap) {
+				var logoUrl = this._logoUrlMap.get(manufacturer[0]);
+				if (logoUrl) {
+					manufacurersCard.logoUrl = this.imageUrl + logoUrl;
+				}
 			}
 			aElement.appendChild(manufacurersCard);
 			liElement.appendChild(aElement);

@@ -1,12 +1,10 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/app-layout/app-layout.js';
-import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/iron-input/iron-input.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
 import './fairshop-router.js';
+import './fairshop-search-field.js';
 import './fairshop-manufacturers-list.js';
 import './fairshop-manufacturer.js';
 import './fairshop-categories-tree.js';
@@ -83,11 +81,6 @@ export class FairshopApp extends PolymerElement {
 			_searchString: {
 				type: String,
 				observer: "_searchStringChanged"
-			}, _activeSearchString: {
-				type: String
-			},
-			_waitForSearch: {
-				type: Object
 			}
 		};
 	}
@@ -134,23 +127,10 @@ export class FairshopApp extends PolymerElement {
 					min-height: 50vh;
 					text-align: center;
 				}
-				.featurelist {
+				#home .featurelist {
 					width: fit-content;
 					margin: auto;
 					text-align: left;
-				}
-				iron-input {
-					border: none;
-					border-width: 0;
-				}
-				iron-input input {
-					height: 1.3rem;
-					padding: 0.5rem;
-					border-style: none none solid none;
-					border-width: 0 0 2px 0;
-					border-radius: .2rem .2rem 0 0;
-					border-color: #8884;
-					background-color: #fffd;
 				}
 			</style>
 
@@ -164,10 +144,7 @@ export class FairshopApp extends PolymerElement {
 							<a href="/"><paper-button>Home</paper-button></a>
 							<a href="/categories"><paper-button>Categories</paper-button></a>
 							<a href="/manufacturers"><paper-button>Manufacturers</paper-button></a>
-							<iron-input bind-value="{{_searchString}}">
-								<input>
-							</iron-input>
-							<iron-icon icon="icons:search"></iron-icon>
+							<fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field>
 						</div>
 					</app-toolbar>
 				</app-header>
@@ -188,12 +165,12 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_categoriesActive]]">
 					<div id="categories" page-name="categories">
-						<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_activeSearchString]]"></fairshop-categories-tree>
+						<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_searchString]]"></fairshop-categories-tree>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_manufacturersActive]]">
 					<div id="manufacturers" page-name="manufacturers">
-						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" search-string="[[_activeSearchString]]"></fairshop-manufacturers-list>
+						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" search-string="[[_searchString]]"></fairshop-manufacturers-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_manufacturerActive]]">
@@ -203,7 +180,7 @@ export class FairshopApp extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_productsActive]]">
 					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_activeSearchString]]"></fairshop-products-list>
+						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_searchString]]"></fairshop-products-list>
 					</div>
 				</template>
 				<template is="dom-if" if="[[_productActive]]">
@@ -227,7 +204,7 @@ export class FairshopApp extends PolymerElement {
 		this._productsActive = false;
 		this._productActive = false;
 		// Activate some views
-		if (this._activeSearchString && !this._productId && !this._manufacturerId) {
+		if (this._searchString && !this._productId && !this._manufacturerId) {
 			this._categoriesActive = true;
 			this._manufacturersActive = true;
 			this._productsActive = true;
@@ -260,31 +237,18 @@ export class FairshopApp extends PolymerElement {
 	}
 
 	_searchStringChanged() {
-		if (this._searchString && this._searchString.length == 3) {
-			this._setActiveSearchString();
-		}
-		else if (this._searchString && this._searchString.length > 3) {
-			if (!this._waitForSearch) {
-				var self = this;
-				this._waitForSearch = setTimeout(function() {
-					self._setActiveSearchString();
-				}, 1000);
-			}
+		if (this._searchString) {
+			this._waitForSearch = null;
+			this._homeActive = false;
+			this._categoriesActive = true;
+			this._manufacturersActive = true;
+			this._manufacturerActive = false;
+			this._productsActive = true;
+			this._productActive = false;
 		}
 		else {
-			this._activeSearchString = null;
+			this._pathChanged();
 		}
-	}
-
-	_setActiveSearchString() {
-		this._activeSearchString = this._searchString;
-		this._waitForSearch = null;
-		this._homeActive = false;
-		this._categoriesActive = true;
-		this._manufacturersActive = true;
-		this._manufacturerActive = false;
-		this._productsActive = true;
-		this._productActive = false;
 	}
 
 }
