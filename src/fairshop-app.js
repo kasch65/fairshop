@@ -126,6 +126,9 @@ export class FairshopApp extends PolymerElement {
 					background-color: var(--primary-background-color);
 					color: var(--primary-text-color);
 				}
+				app-header {
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
+				}
 				[main-title] {
 					font-size: 1.5rem;
 					color: var(--paper-grey-50);
@@ -153,6 +156,7 @@ export class FairshopApp extends PolymerElement {
 					padding: 1rem;
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
 				}
 				#home {
 					min-height: 50vh;

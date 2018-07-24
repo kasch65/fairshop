@@ -53,6 +53,9 @@ export class FairshopProductCard extends PolymerElement {
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
 				}
+				.product-card:hover {
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
+				}
 				.product-card>div {
 					hyphens: auto;
 				}
