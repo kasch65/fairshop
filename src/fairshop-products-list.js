@@ -66,13 +66,21 @@ export class FairshopProductsList extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
 				#backBtn {
 					right: 0;
 					position: absolute;
 					top: 4rem;
 				}
 				.products {
-					overflow: auto;
+					overflow: hidden;
 				}
 				.active {
 					background-color: var(--google-blue-100);
@@ -100,11 +108,16 @@ export class FairshopProductsList extends PolymerElement {
 					float: left;
 				}
 				select {
-					height: 2.2rem;
-					border-style: solid;
-					border-width: 0.5px;
-					border-color: var(--google-grey-300);
+					height: 2.5rem;
 					font-size: 1rem;
+
+					padding: 0.5rem;
+					border-style: none none solid none;
+					border-width: 0 0 2px 0;
+					border-radius: .2rem .2rem 0 0;
+					border-color: #8884;
+					background-color: #eee;
+					color: var(--primary-text-color);
 				}
 				fairshop-paginator {
 					display: inline-block;

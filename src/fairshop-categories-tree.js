@@ -24,6 +24,14 @@ export class FairshopCategoriesTree extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
 				.categories {
 					overflow: auto;
 				}
@@ -35,11 +43,11 @@ export class FairshopCategoriesTree extends PolymerElement {
 				}
 				.cat-node a {
 					text-decoration: none;
-					color: var(--google-grey-700);
+					color: var(--secondary-text-color);
 				}
 				#catList>.cat-node {
 					float:	left;
-					color: var(--google-grey-700);
+					color: var(--secondary-text-color);
 					padding: 0.5rem;
 					margin: 0.5rem;
 					border-style: solid;

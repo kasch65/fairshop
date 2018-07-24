@@ -34,7 +34,15 @@ export class FairshopManufacturersList extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
-				.manufacturers {
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
+			.manufacturers {
 					overflow: auto;
 				}
 				.active {

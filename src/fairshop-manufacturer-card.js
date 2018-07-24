@@ -24,10 +24,17 @@ export class FairshopManufacturerCard extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
 				.manufacturer-card {
 					width: 6rem;
 					height: 6rem;
-					color: var(--google-grey-700);
 					text-align: center;
 					padding: 0.5rem;
 					margin: 0.5rem;

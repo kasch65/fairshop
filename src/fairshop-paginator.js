@@ -41,6 +41,14 @@ export class FairshopPaginator extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
 				.active {
 					background-color: var(--google-blue-100);
 				}

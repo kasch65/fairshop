@@ -51,6 +51,17 @@ export class FairshopProduct extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
+				paper-tabs {
+					--paper-tabs-selection-bar-color: var(--google-blue-700);
+				}
 				#backBtn {
 					right: 0;
 					position: absolute;

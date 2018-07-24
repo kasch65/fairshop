@@ -32,10 +32,20 @@ export class FairshopProductCard extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
+				:host {
+					line-height: 1.3rem;
+				}
 				.product-card {
 					width: 12rem;
 					height: 18rem;
-					color: var(--google-grey-700);
 					text-align: center;
 					padding: 0.5rem;
 					margin: 0.5rem;

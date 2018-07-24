@@ -92,12 +92,43 @@ export class FairshopApp extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
+				:host {
+					--font-weight: 400;
+					--font-family: 'Roboto', sans-serif;
+					--line-height: 1.5rem;
+				}
+				:host {
+					--faishop-host: {
+						box-sizing: border-box;
+						font-family: var(--font-family);
+						font-weight: var(--font-weight);
+						line-height: var(--line-height);
+						color: var(--secondary-text-color);
+					}
+				}
+				h1,
+				h2,
+				h3 {
+					--faishop-header: {
+						font-weight: var(--font-weight);
+						color: var(--primary-text-color);
+					}
+				}
+				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
 				fairshop-app {
 					background-color: var(--primary-background-color);
 					color: var(--primary-text-color);
 				}
 				[main-title] {
-					font-weight: bolder;
+					font-size: 1.5rem;
+					color: var(--paper-grey-50);
 				}
 				paper-spinner-lite {
 					left: 50%;

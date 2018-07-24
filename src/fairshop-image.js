@@ -35,6 +35,14 @@ export class FairshopImage extends PolymerElement {
 		return html `
 			<style>
 				:host {
+					@apply --faishop-host;
+				}
+				h1,
+				h2,
+				h3 {
+					@apply --faishop-header;
+				}
+				:host {
 					display: inline-block;
 					overflow: hidden;
 					position: relative;
