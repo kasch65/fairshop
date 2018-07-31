@@ -1,8 +1,12 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
+import '@polymer/paper-listbox/paper-listbox.js';
+import '@polymer/paper-item/paper-item.js';
 import './fairshop-paginator.js';
 import './fairshop-product-card.js';
+
 
 /**
  * @class
@@ -65,6 +69,8 @@ export class FairshopProductsList extends PolymerElement {
 	 */
 	static get template() {
 		return html `
+
+
 			<style>
 				:host {
 					@apply --faishop-host;
@@ -99,25 +105,8 @@ export class FairshopProductsList extends PolymerElement {
 				}
 				.sorting {
 					float: left;
-					margin-right: 1rem;
-					margin-bottom: 1rem;
-				}
-				.label {
-					position: relative;
-					padding: 0.5rem;
-					float: left;
-				}
-				select {
-					height: 2.5rem;
-					font-size: 1rem;
-
-					padding: 0.5rem;
-					border-style: none none solid none;
-					border-width: 0 0 2px 0;
-					border-radius: .2rem .2rem 0 0;
-					border-color: #8884;
-					background-color: #eee;
-					color: var(--primary-text-color);
+					margin-top: -1rem;
+					margin-right: 2rem;
 				}
 				fairshop-paginator {
 					display: inline-block;
@@ -131,14 +120,15 @@ export class FairshopProductsList extends PolymerElement {
 				</template>
 				<template is="dom-if" if="[[_productCnt]]">
 					<div class="sorting">
-						<div class="label">Sortierung:</div>
-						<select value="{{_sortOrder::change}}">
-							<option value="sum,desc">Relevanz</option>
-							<option value="price">Preis aufsteigend</option>
-							<option value="price,desc">Preis absteigend</option>
-							<option value="name">Name</option>
-							<option value="available,desc">Verfügbarkeit</option>
-						</select> 
+						<paper-dropdown-menu label="Sortierung">
+							<paper-listbox slot="dropdown-content" selected="{{_sortOrder}}" attr-for-selected="value">
+								<paper-item value="sum,desc">Relevanz</paper-item>
+								<paper-item value="price">Preis aufsteigend</paper-item>
+								<paper-item value="price,desc">Preis absteigend</paper-item>
+								<paper-item value="name">Name</paper-item>
+								<paper-item value="available,desc">Verfügbarkeit</paper-item>
+							</paper-listbox>
+						</paper-dropdown-menu>
 					</div>
 					<fairshop-paginator page="{{page}}" product-cnt="[[_productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
 				</template>

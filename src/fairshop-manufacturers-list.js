@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-ajax';
 import './fairshop-manufacturer-card.js';
 

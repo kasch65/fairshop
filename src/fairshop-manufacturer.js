@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-ajax/iron-ajax.js';
 import './fairshop-image.js';
 
@@ -46,7 +46,7 @@ export class FairshopManufacturer extends PolymerElement {
 					overflow: auto;
 				}
 				.images {
-					width: 49%;
+					width: 50%;
 					float: left;
 				}
 				.manufacturer-img {
@@ -54,7 +54,7 @@ export class FairshopManufacturer extends PolymerElement {
 					height: 20rem;
 				}
 				#manufacturerInfo {
-					width: 49%;
+					width: 50%;
 					float: left;
 				}
 				h1 {

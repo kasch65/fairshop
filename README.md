@@ -6,6 +6,12 @@ viel mehr. Erfahrungen aus der Entwicklung unterschiedlichster Shop-Lösungen in
 Entwicklung nutzen wir zur Entwicklung einer Open Source Shop Lösung.
 Auch Google bietet bereits einen einfachen Referenz-Shop in Polymer 3.0 an. Es ist erstaunlich, mit wie wenig Aufwand eine vollwertige Shop Lösung mit Frontend, Admin-Oberfläche und Backend entwickelt werden kann. Fairshop bündelt die Aktivitäten, hieraus ein modulares offenes Schopsystem zu entwickeln.
 
+# Alternative Namensvorschläge
+
+- Fair kaufen
+- Fairkauf
+- Fair sell
+
 # Backend
 
 https://github.com/mevdschee/php-crud-api
@@ -25,8 +31,6 @@ Alternativ: Rechtsklick auf die Datei -> Vorschau öffnen.
 - Warenkorb
 - Wunschliste
 - Dokumentation der REST Schnitttelle
-- Suche in Kategorien, Herstellern, Produktlisten
-- Schnellsuche
 
 # Manuelle Anpassungen
 
@@ -92,16 +96,10 @@ Tests werden in BDD-Syntax (Behaviour-Driven-Development) mit Mocha, Chai und Si
 
 Es gibt zwei Möglichkeiten um Tests auszuführen.
 
-1.  `npm run test`
+1.  `polymer test`
     Lässt Selenium-Tests automatisch in allen definierten Browsern laufen. Die Konfiguration dazu ist in der [wct.conf.json](.\wct.conf.json)-Datei.
-2.  `npm run test-local`
-    Öffnet ein Chrome-Browser und navigiert zu [test/index.html](.\test\index.html). Hier werden die tests mit Mocha ausgeführt und deren Ergebnis visuell repräsentiert. Unter Windows sollte MOMENTAN diese Möglichkeit benutzt werden (Bugs und Performance-Probleme machen Selenium-tests unbrauchbar)
-
-### Keine Selenium-Tests unter Windows
-
-//TODO: Entfernen wenn das nicht mehr gilt
-
-Unter Windows kann aufgrund des [hier](https://github.com/Polymer/web-component-tester/issues/694) beschriebenen Fehlers nicht mit `npm run test` getestet werden.
+2.  `polymer serve`
+    Öffnet ein Chrome-Browser und navigiert zu [test](.\test\index.html). Hier werden die tests mit Mocha ausgeführt und deren Ergebnis visuell repräsentiert. Unter Windows sollte MOMENTAN diese Möglichkeit benutzt werden (Bugs und Performance-Probleme machen Selenium-tests unbrauchbar)
 
 ## API-Dokumentation
 

@@ -1,8 +1,10 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/neon-animation/neon-animations.js';
+import '@polymer/paper-dialog/paper-dialog.js';
 import './fairshop-image.js';
 
 /**
@@ -88,10 +90,35 @@ export class FairshopProduct extends PolymerElement {
 				.detail-img {
 					width: 100%;
 					height: 30rem;
+					cursor: zoom-in;
 				}
 				.article-tabs {
 					height: 18rem;
 					overflow: auto;
+				}
+				/*.shade {
+					width: 100vw;
+					height: 100vh;
+					position: fixed;
+					top: 0;
+					left: 0;
+					background-color: var(--iron-overlay-backdrop-background-color, #000);
+					opacity: var(--iron-overlay-backdrop-opacity, 0.6);
+					transition: opacity 0.2s;
+					z-index: 200;
+					pointer-events: none;
+				}*/
+				#zoomDialog {
+					cursor: zoom-out;
+					width: 90vw;
+					height: 90vh;
+					z-index: 300;
+				}
+				#productZoomImage {
+					max-height: inherit;
+					margin: 0;
+					width: 100%;
+					height: 100%;
 				}
 			</style>
 
@@ -102,9 +129,7 @@ export class FairshopProduct extends PolymerElement {
 					<iron-pages selected="{{_selected}}" entry-animation="slide-from-top-animation">
 						<template is="dom-repeat" items="[[_productImages]]" as="productImage">
 							<div>
-								<a href="[[imageUrl]][[productImage.2]]" target="_blank">
-									<fairshop-image class="detail-img" sizing="contain" src="[[imageUrl]][[productImage.1]]" alt\$="[[productImage.1]]"></fairshop-image>
-								</a>
+								<fairshop-image class="detail-img" sizing="contain" src="[[imageUrl]][[productImage.1]]" alt\$="[[productImage.1]]" zoom="[[imageUrl]][[productImage.2]]" on-click="_onZoom"></fairshop-image>
 							</div>
 						</template>
 					</iron-pages>
@@ -165,6 +190,10 @@ export class FairshopProduct extends PolymerElement {
 					</div>
 				</div>
 			</div>
+			<!--<div class="shade" _hidden$="">&nbsp;</div>-->
+			<paper-dialog id="zoomDialog" _modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-click="_onZoomOut">
+				<fairshop-image id="productZoomImage" sizing="contain" src="[[imageUrl]][[_productImages.0.0]]"></fairshop-image>
+			</paper-dialog>
 
 			<iron-ajax 
 				id="requestProducInfo"
@@ -251,5 +280,15 @@ export class FairshopProduct extends PolymerElement {
 			return true;
 		}
 	}
+
+  _onZoom(ev) {
+		this.$.productZoomImage.src = ev.target.zoom;
+		this.$.zoomDialog.open();
+  }
+
+  _onZoomOut(ev) {
+    this.$.zoomDialog.close();
+  }
+
 }
 customElements.define("fairshop-product", FairshopProduct);
