@@ -1,7 +1,7 @@
 import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/iron-input/iron-input.js';
+import '@polymer/paper-input/paper-input.js';
 
 /**
  * @class
@@ -34,35 +34,28 @@ export class FairshopSearchField extends PolymerElement {
 	static get template() {
 		return html `
 			<style>
-				iron-input {
-					border: none;
-					border-width: 0;
+				.search-field {
+					display: flex;
+					align-items: center;
 				}
-				#resetSearch {
-					transition: width .2s;
+				paper-input {
+					overflow: hidden;
+					--paper-input-container-color: var(--paper-grey-50);
+					--paper-input-container-focus-color: #ddd;
+					--paper-input-container-invalid-color: red;
+					--paper-input-container-input-color: var(--paper-grey-50);
+					transition: width 2s;
 				}
-				iron-input input.hidden,
-				#resetSearch.hidden {
+				paper-input.hidden {
 					width: 0;
-					padding: 0.5rem 0;
-				}
-				iron-input input {
-					height: 1.3rem;
-					width: 9rem;
-					padding: 0.5rem;
-					border-style: none none solid none;
-					border-width: 0 0 2px 0;
-					border-radius: .2rem .2rem 0 0;
-					border-color: #8884;
-					background-color: #fffd;
-					transition: width .2s;
 				}
 			</style>
-			<iron-input bind-value="{{_searchInput}}">
-				<input id="searchField" class="hidden">
-			</iron-input>
-			<paper-icon-button id="resetSearch" class="hidden" icon="icons:clear" on-click="_resetSearch"></paper-icon-button>
-			<paper-icon-button class="search" icon="icons:search" on-click="_toggleSearch"></paper-icon-button>
+			<dic class="search-field">
+				<paper-input id="searchField" class="hidden" label="Suche" value="{{_searchInput}}" no-label-float>
+					<paper-icon-button id="resetSearch" slot="suffix" icon="icons:clear" on-click="_resetSearch"></paper-icon-button>
+				</paper-input>
+				<paper-icon-button class="search" icon="icons:search" on-click="_toggleSearch"></paper-icon-button>
+			</div>
 		`;
 	}
 

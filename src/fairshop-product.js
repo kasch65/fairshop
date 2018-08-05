@@ -65,8 +65,8 @@ export class FairshopProduct extends PolymerElement {
 					--paper-tabs-selection-bar-color: var(--google-blue-700);
 				}
 				#backBtn {
-					right: 0;
 					position: absolute;
+					right: 1.2rem;
 					top: 4rem;
 				}
 				.images {
@@ -190,8 +190,7 @@ export class FairshopProduct extends PolymerElement {
 					</div>
 				</div>
 			</div>
-			<!--<div class="shade" _hidden$="">&nbsp;</div>-->
-			<paper-dialog id="zoomDialog" _modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-click="_onZoomOut">
+			<paper-dialog id="zoomDialog" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-click="_onZoomOut">
 				<fairshop-image id="productZoomImage" sizing="contain" src="[[imageUrl]][[_productImages.0.0]]"></fairshop-image>
 			</paper-dialog>
 

@@ -1,5 +1,4 @@
 import { PolymerElement, html } from '@polymer/polymer';
-import '@polymer/app-layout/app-layout.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
@@ -126,33 +125,65 @@ export class FairshopApp extends PolymerElement {
 					background-color: var(--primary-background-color);
 					color: var(--primary-text-color);
 				}
-				app-header {
-					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
-				}
-				[main-title] {
-					font-size: 1.5rem;
-					color: var(--paper-grey-50);
-				}
 				paper-spinner-lite {
 					left: 50%;
 					top: 50%;
 					position: fixed;
 				}
+				div[page-name] {
+					padding: 1rem;
+				}
 				#home {
 					min-height: 50vh;
 				}
-				app-header {
+
+				.app-header-layout {
+					width: 100vw;
+					height: 100vh;
+					display: flex;
+					flex-direction: column;
+					overflow: hidden;
+				}
+				.app-header {
+					box-sizing: border-box;
+					display: flex;
+					flex-wrap: wrap;
+					align-items: center;
+					justify-content: space-between;
+					padding: 0 .5rem;
+					width: 100%;
+					_height: 3.625rem;
+					left: 0;
+					top: 0;
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
+					z-index: 100;
+				}
+				[main-title] {
+					font-size: 1.5rem;
+					color: var(--paper-grey-50);
+				}
+				.menu {
+					display: flex;
+					flex-wrap: wrap;
+					align-items: center;
 				}
 				paper-button {
 					font-size: 1rem;;
 				}
-				app-header a {
+				.app-header a {
 					color: var(--paper-grey-50);
 					text-decoration: none;
 				}
+				.app-body {
+					flex: 1;
+					display: flex;
+					flex-direction: column;
+					overflow: auto;
+				}
 				#footer {
+					margin-top: 1rem;
 					padding: 1rem;
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
@@ -171,61 +202,61 @@ export class FairshopApp extends PolymerElement {
 
 			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
 
-			<app-header-layout>
-				<app-header slot="header" fixed="">
-					<app-toolbar>
-						<div main-title>fairshop demo</div>
-						<div class="left-bar-item">
-							<a href="/"><paper-button>Home</paper-button></a>
-							<a href="/categories"><paper-button>Categories</paper-button></a>
-							<a href="/manufacturers"><paper-button>Manufacturers</paper-button></a>
-							<fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field>
-						</div>
-					</app-toolbar>
-				</app-header>
+			<div class="app-header-layout">
+				<div class="app-header">
+					<div main-title>fairshop demo</div>
+					<div class="menu">
+						<div><a href="/"><paper-button>Home</paper-button></a></div>
+						<div><a href="/categories"><paper-button>Categories</paper-button></a></div>
+						<div><a href="/manufacturers"><paper-button>Manufacturers</paper-button></a></div>
+						<div><fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field></div>
+					</div>
+				</div>
 
-				<template is="dom-if" if="[[_homeActive]]">
-					<div id="home" page-name="home">
-						<h1>fairshop</h1>
-						<h2>fair and always open</h2>
-						<div class="featurelist">
-							<ul>
-								<li>fastest shop in the world</li>
-								<li>easy to customize</li>
-								<li>extensible</li>
-								<li>reliable</li>
-							</ul>
+				<div class="app-body">
+					<template is="dom-if" if="[[_homeActive]]">
+						<div id="home" page-name="home">
+							<h1>fairshop</h1>
+							<h2>fair and always open</h2>
+							<div class="featurelist">
+								<ul>
+									<li>fastest shop in the world</li>
+									<li>easy to customize</li>
+									<li>extensible</li>
+									<li>reliable</li>
+								</ul>
+							</div>
 						</div>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_categoriesActive]]">
-					<div id="categories" page-name="categories">
-						<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_searchString]]"></fairshop-categories-tree>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_manufacturersActive]]">
-					<div id="manufacturers" page-name="manufacturers">
-						<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" search-string="[[_searchString]]"></fairshop-manufacturers-list>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_manufacturerActive]]">
-					<div id="maufacturer" page-name="maufacturer">
-						<fairshop-manufacturer rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]"></fairshop-manufacturer>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_productsActive]]">
-					<div id="products" page-name="products">
-						<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_searchString]]"></fairshop-products-list>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_productActive]]">
-					<div id="product" page-name="product">
-						<fairshop-product rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[_productId]]"></fairshop-product>
-					</div>
-				</template>
+					</template>
+					<template is="dom-if" if="[[_categoriesActive]]">
+						<div id="categories" page-name="categories">
+							<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_searchString]]"></fairshop-categories-tree>
+						</div>
+					</template>
+					<template is="dom-if" if="[[_manufacturersActive]]">
+						<div id="manufacturers" page-name="manufacturers">
+							<fairshop-manufacturers-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" search-string="[[_searchString]]"></fairshop-manufacturers-list>
+						</div>
+					</template>
+					<template is="dom-if" if="[[_manufacturerActive]]">
+						<div id="maufacturer" page-name="maufacturer">
+							<fairshop-manufacturer rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]"></fairshop-manufacturer>
+						</div>
+					</template>
+					<template is="dom-if" if="[[_productsActive]]">
+						<div id="products" page-name="products">
+							<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_searchString]]"></fairshop-products-list>
+						</div>
+					</template>
+					<template is="dom-if" if="[[_productActive]]">
+						<div id="product" page-name="product">
+							<fairshop-product rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[_productId]]"></fairshop-product>
+						</div>
+					</template>
 
-				<div id="footer">(c) fairshop 2018</div>
-			<app-header-layout>
+					<div id="footer">(c) fairshop 2018</div>
+					<div>
+				<div>
 			<paper-toast id="toast"></paper-toast>
 		`;
 	}

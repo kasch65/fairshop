@@ -81,8 +81,8 @@ export class FairshopProductsList extends PolymerElement {
 					@apply --faishop-header;
 				}
 				#backBtn {
-					right: 0;
 					position: absolute;
+					right: 1.2rem;
 					top: 4rem;
 				}
 				.products {
