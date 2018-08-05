@@ -130,12 +130,6 @@ export class FairshopApp extends PolymerElement {
 					top: 50%;
 					position: fixed;
 				}
-				div[page-name] {
-					padding: 1rem;
-				}
-				#home {
-					min-height: 50vh;
-				}
 
 				.app-header-layout {
 					width: 100vw;
@@ -182,12 +176,8 @@ export class FairshopApp extends PolymerElement {
 					flex-direction: column;
 					overflow: auto;
 				}
-				#footer {
-					margin-top: 1rem;
+				div[page-name] {
 					padding: 1rem;
-					background-color: var(--google-blue-700);
-					color: var(--paper-grey-50);
-					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
 				}
 				#home {
 					min-height: 50vh;
@@ -197,6 +187,13 @@ export class FairshopApp extends PolymerElement {
 					width: fit-content;
 					margin: auto;
 					text-align: left;
+				}
+				#footer {
+					margin-top: 1rem;
+					padding: 1rem;
+					background-color: var(--google-blue-700);
+					color: var(--paper-grey-50);
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
 				}
 			</style>
 
