@@ -32,9 +32,9 @@
           assert.equal(catList.id, 'catList');
         });
         
-        test('.categories must contains 3 children', function() {
+        test('.categories must contains 5 children', function() {
           var catNodes3 = myView.shadowRoot.querySelector('.categories');
-          assert.equal(catNodes3.childElementCount, 3);
+          assert.equal(catNodes3.childElementCount, 5);
         });
         // Async
         test('259 .cat-node´s loaded', function(done) {

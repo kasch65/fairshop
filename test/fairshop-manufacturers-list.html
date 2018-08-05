@@ -32,9 +32,9 @@
           assert.equal(ul.id, 'manufacturersList');
         });
 
-        test('.manufacturers must contains 2 children', function() {
+        test('.manufacturers must contains 3 children', function() {
           var nodes = myView.shadowRoot.querySelector('.manufacturers');
-          assert.equal(nodes.childElementCount, 2);
+          assert.equal(nodes.childElementCount, 3);
         });
         // Async
         test('43 fairshop-manufacturer-card´s loaded', function(done) {
