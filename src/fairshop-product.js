@@ -68,6 +68,7 @@ export class FairshopProduct extends PolymerElement {
 					position: absolute;
 					right: 1.2rem;
 					top: 4rem;
+					z-index: 50;
 				}
 				.images {
 					width: 49%;

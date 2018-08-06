@@ -44,11 +44,12 @@ export class FairshopProductCard extends PolymerElement {
 					line-height: 1.3rem;
 				}
 				.product-card {
-					width: 12rem;
-					height: 18rem;
+					box-sizing: border-box;
+					width: 100%;
+					min-height: 100%;
 					text-align: center;
+					maring: 0;
 					padding: 0.5rem;
-					margin: 0.5rem;
 					border-style: solid;
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);

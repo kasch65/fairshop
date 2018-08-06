@@ -12,7 +12,7 @@ export class FairshopPaginator extends PolymerElement {
 			},
 			itemsPerPage: {
 				type: Number,
-				value: 48,
+				value: 42,
 				observer: "_recalculate"
 			},
 			/**

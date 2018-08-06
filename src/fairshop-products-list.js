@@ -46,7 +46,7 @@ export class FairshopProductsList extends PolymerElement {
 			},
 			_itemsPerPage: {
 				type: Number,
-				value: 48
+				value: 42
 			},
 			_imageUrlMap: {
 				type: Map
@@ -84,21 +84,32 @@ export class FairshopProductsList extends PolymerElement {
 					position: absolute;
 					right: 1.2rem;
 					top: 4rem;
+					z-index: 50;
 				}
 				.products {
-					overflow: hidden;
+					_overflow: hidden;
 				}
 				.active {
 					background-color: var(--google-blue-100);
 				}
 				.products>list {
-					overflow: auto;
+					_overflow: auto;
 				}
 				ul {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: flex-start;
+					width: 100%;
+					margin: 0;
+					padding: 0;
 					list-style-type: none;
 				}
 				li {
-					float: left;
+					box-sizing: border-box;
+					flex-grow: 1;
+					width: 12rem;
+					max-width: 50%;
+					padding: 0.2rem;
 				}
 				li>a {
 					text-decoration: none;
