@@ -1,7 +1,8 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input.js';
+import './fairshop-styles.js';
 
 /**
  * @class
@@ -33,7 +34,7 @@ export class FairshopSearchField extends PolymerElement {
 	 */
 	static get template() {
 		return html `
-			<style>
+			<style include="fairshop-styles">
 				.search-field {
 					display: flex;
 					align-items: center;
@@ -48,6 +49,9 @@ export class FairshopSearchField extends PolymerElement {
 				}
 				paper-input.hidden {
 					width: 0;
+				}
+				paper-icon-button {
+					color: var(--paper-grey-50);
 				}
 			</style>
 			<dic class="search-field">

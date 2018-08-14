@@ -1,4 +1,9 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-slider/paper-slider.js';
+import './fairshop-styles.js';
 
 /**
  * @class
@@ -40,16 +45,11 @@ export class FairshopPaginator extends PolymerElement {
 	 */
 	static get template() {
 		return html `
-			<style>
-				:host {
-					@apply --faishop-host;
+			<style include="fairshop-styles">
+				:host paper-button {
+					width: 1rem;
 				}
-				h1,
-				h2,
-				h3 {
-					@apply --faishop-header;
-				}
-				.active {
+				paper-button.active {
 					background-color: var(--google-blue-100);
 				}
 				#paginator>div {
@@ -61,12 +61,16 @@ export class FairshopPaginator extends PolymerElement {
 					cursor: pointer;
 				}
 			</style>
+			<paper-slider value="1" min="1" max="20" pin></paper-slider>
 			<div id="paginator">
-				<div page="prev" on-click="_navigate">prev</div>
+				<!--<div page="prev" on-click="_navigate">prev</div>-->
+				<paper-icon-button icon="icons:chevron-left" on-click="_navigate" page="prev"></paper-icon-button>
 				<template is="dom-repeat" items="[[_pageButtons]]" as="pageButton">
-					<div class="paginator-page-button" page$="[[pageButton]]" on-click="_navigate">[[pageButton]]</div>
+					<!--<div class="paginator-page-button" page$="[[pageButton]]" on-click="_navigate">[[pageButton]]</div>-->
+					<paper-button on-click="_navigate" page$="[[pageButton]]" raised>[[pageButton]]</paper-button>
 				</template>
-				<div page="next" on-click="_navigate">next</div>
+				<paper-icon-button id="backBtn" icon="icons:chevron-right" on-click="_navigate" page="next"></paper-icon-button>
+				<!--<div page="next" on-click="_navigate">next</div>-->
 			</div>
 		`;
 	}

@@ -1,4 +1,5 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
@@ -9,6 +10,7 @@ import './fairshop-manufacturer.js';
 import './fairshop-categories-tree.js';
 import './fairshop-products-list.js';
 import './fairshop-product.js';
+import './fairshop-styles.js';
 
 /**
  * @class
@@ -90,47 +92,15 @@ export class FairshopApp extends PolymerElement {
 	 */
 	static get template() {
 		return html `
-			<style>
-				:host {
-					--font-weight: 400;
-					--font-family: 'Roboto', sans-serif;
-					--line-height: 1.5rem;
-				}
-				:host {
-					--faishop-host: {
-						box-sizing: border-box;
-						font-family: var(--font-family);
-						font-weight: var(--font-weight);
-						line-height: var(--line-height);
-						color: var(--secondary-text-color);
-					}
-				}
-				h1,
-				h2,
-				h3 {
-					--faishop-header: {
-						font-weight: var(--font-weight);
-						color: var(--primary-text-color);
-					}
-				}
-				:host {
-					@apply --faishop-host;
-				}
-				h1,
-				h2,
-				h3 {
-					@apply --faishop-header;
-				}
+			<style include="fairshop-styles">
 				fairshop-app {
 					background-color: var(--primary-background-color);
-					color: var(--primary-text-color);
 				}
 				paper-spinner-lite {
 					left: 50%;
 					top: 50%;
 					position: fixed;
 				}
-
 				.app-header-layout {
 					width: 100vw;
 					height: 100vh;
@@ -164,7 +134,8 @@ export class FairshopApp extends PolymerElement {
 					align-items: center;
 				}
 				paper-button {
-					font-size: 1rem;;
+					color: var(--paper-grey-50);
+					_font-size: 1rem;;
 				}
 				.app-header a {
 					color: var(--paper-grey-50);

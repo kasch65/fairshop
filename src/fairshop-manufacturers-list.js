@@ -1,6 +1,7 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax';
 import './fairshop-manufacturer-card.js';
+import './fairshop-styles.js';
 
 /**
  * @class
@@ -33,15 +34,7 @@ export class FairshopManufacturersList extends PolymerElement {
 	 */
 	static get template() {
 		return html `
-			<style>
-				:host {
-					@apply --faishop-host;
-				}
-				h1,
-				h2,
-				h3 {
-					@apply --faishop-header;
-				}
+			<style include="fairshop-styles">
 			.manufacturers {
 					overflow: auto;
 				}

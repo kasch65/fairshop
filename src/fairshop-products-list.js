@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
@@ -6,6 +6,7 @@ import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/paper-item/paper-item.js';
 import './fairshop-paginator.js';
 import './fairshop-product-card.js';
+import './fairshop-styles.js';
 
 
 /**
@@ -71,15 +72,7 @@ export class FairshopProductsList extends PolymerElement {
 		return html `
 
 
-			<style>
-				:host {
-					@apply --faishop-host;
-				}
-				h1,
-				h2,
-				h3 {
-					@apply --faishop-header;
-				}
+			<style include="fairshop-styles">
 				#backBtn {
 					position: absolute;
 					right: 1.2rem;
