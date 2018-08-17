@@ -2,7 +2,6 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-slider/paper-slider.js';
 import './fairshop-styles.js';
 
 /**
@@ -32,9 +31,6 @@ export class FairshopPaginator extends PolymerElement {
 			_pages: {
 				type: Number,
 				value: 1
-			},
-			_pageButtons: {
-				type: Array
 			}
 		};
 	}
@@ -46,73 +42,103 @@ export class FairshopPaginator extends PolymerElement {
 	static get template() {
 		return html `
 			<style include="fairshop-styles">
-				:host paper-button {
-					width: 1rem;
-				}
-				paper-button.active {
-					background-color: var(--google-blue-100);
-				}
-				#paginator>div {
-					padding: 0.5rem;
+				paper-button,
+				paper-icon-button {
+					width: 2rem;
+					min-width: 0;
+					height: 2.5rem;
+					margin: 0;
 					border-style: solid;
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
+				}
+				paper-button.active,
+				paper-button:hover,
+				paper-icon-button:hover {
+					//background-color: var(--google-blue-100);
+					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
+				}
+				#prev,
+				#next,
+				.page-button {
 					float: left;
-					cursor: pointer;
+				}
+				paper-icon-button[disabled] {
+					opacity: .5;
 				}
 			</style>
-			<paper-slider value="1" min="1" max="20" pin></paper-slider>
 			<div id="paginator">
-				<!--<div page="prev" on-click="_navigate">prev</div>-->
-				<paper-icon-button icon="icons:chevron-left" on-click="_navigate" page="prev"></paper-icon-button>
-				<template is="dom-repeat" items="[[_pageButtons]]" as="pageButton">
-					<!--<div class="paginator-page-button" page$="[[pageButton]]" on-click="_navigate">[[pageButton]]</div>-->
-					<paper-button on-click="_navigate" page$="[[pageButton]]" raised>[[pageButton]]</paper-button>
-				</template>
-				<paper-icon-button id="backBtn" icon="icons:chevron-right" on-click="_navigate" page="next"></paper-icon-button>
-				<!--<div page="next" on-click="_navigate">next</div>-->
+				<paper-icon-button id="prev" icon="icons:chevron-left" on-click="_prev"></paper-icon-button>
+				<span id="pageButtons"><!-- Generated buttons go here --></span>
+				<paper-icon-button id="next" icon="icons:chevron-right" on-click="_next"></paper-icon-button>
 			</div>
 		`;
 	}
 
 	_recalculate() {
-		var pageButtons = Array();
 		this._pages = Math.max(1, Math.ceil(this.productCnt / this.itemsPerPage));
-		for (var i = 1; i <= this._pages; i++) {
-			pageButtons.push(i);
+		var target = this.$.pageButtons;
+		var firstButton = true;
+		while (target.firstChild) {
+			target.removeChild(target.firstChild);
 		}
-		this._pageButtons = pageButtons;
+		// Create page buttons
+		for (var i = 1; i <= this._pages; i++) {
+			var pageButton = document.createElement('paper-button');
+			pageButton.classList.add('page-button');
+			if (firstButton) {
+				pageButton.classList.add('active');
+				firstButton = false;
+			}
+			pageButton.addEventListener('click', ev => this._navigate(ev));
+			pageButton.page = i;
+			pageButton.innerHTML = i;
+			target.appendChild(pageButton);
+		}
 		this.page = 1;
 	}
 
 	_pageChanged(newValue, oldValue) {
-		var buttons = this.$.paginator.childNodes;
+		var buttons = this.$.pageButtons.childNodes;
 		for (let button of buttons) {
 			if (button.classList) {
-				button.classList.remove('active');
-				if (button.getAttribute('page') == this.page) {
+				if (button.page == this.page) {
 					button.classList.add('active');
 				}
+				else {
+					button.classList.remove('active');
+				}
 			}
+		}
+		if (this.page == 1) {
+			var buttons = this.$.prev.setAttribute('disabled', true);
+		}
+		else {
+			var buttons = this.$.prev.removeAttribute('disabled');
+		}
+		if (this.page == this._pages) {
+			var buttons = this.$.next.setAttribute('disabled', true);
+		}
+		else {
+			var buttons = this.$.next.removeAttribute('disabled');
 		}
 	}
 
 	_navigate(ev) {
 		var target = ev.target;
-		while (target && !target.attributes.page) {
-			target = target.parentElement;
+		if (target && target.page) {
+			this.page = target.page;
+			console.log('Page: ' + this.page);
 		}
-		target.classList.add("active");
-		var pageValue = target.attributes.page.value;
-		if (pageValue == 'prev') {
-			this.page = Math.max(1, this.page - 1);
-		}
-		else if (pageValue == 'next') {
-			this.page = Math.min(this._pages, this.page + 1);
-		}
-		else {
-			this.page = pageValue;
-		}
+	}
+
+	_prev(ev) {
+		this.page = Math.max(1, this.page - 1);
+		console.log('Page: ' + this.page);
+	}
+
+	_next(ev) {
+		this.page = Math.min(this._pages, this.page + 1);
 		console.log('Page: ' + this.page);
 	}
 

@@ -80,6 +80,7 @@ export class FairshopProduct extends PolymerElement {
 				.tab-img {
 					width: 8rem;
 					height: 8rem;
+					margin-bottom: 3px;
 				}
 				.detail-img {
 					width: 100%;
@@ -90,18 +91,6 @@ export class FairshopProduct extends PolymerElement {
 					height: 18rem;
 					overflow: auto;
 				}
-				/*.shade {
-					width: 100vw;
-					height: 100vh;
-					position: fixed;
-					top: 0;
-					left: 0;
-					background-color: var(--iron-overlay-backdrop-background-color, #000);
-					opacity: var(--iron-overlay-backdrop-opacity, 0.6);
-					transition: opacity 0.2s;
-					z-index: 200;
-					pointer-events: none;
-				}*/
 				#zoomDialog {
 					cursor: zoom-out;
 					width: 90vw;
