@@ -1,5 +1,7 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
+import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
 
@@ -33,7 +35,7 @@ export class FairshopCartItem extends PolymerElement {
 				type: Number,
 				observer: '_allPriceChanged'
 			},
-			_allPrice: {
+			allPrice: {
 				type: Number
 			}
 		};
@@ -80,7 +82,10 @@ export class FairshopCartItem extends PolymerElement {
 					[[_onePrice]]€
 				</div>
 				<div class="all-price">
-					[[_allPrice]]€
+					[[allPrice]]€
+				</div>
+				<div class="remove">
+					<paper-icon-button slot="suffix" icon="icons:clear" on-click="_remove"></paper-icon-button>
 				</div>
 			</div>
 
@@ -121,7 +126,16 @@ export class FairshopCartItem extends PolymerElement {
 	}
 
 	_allPriceChanged() {
-		this._allPrice = (this.count * this._onePrice).toFixed(2);
+		var allPrice = this.count * this._onePrice;
+		if (!isNaN(allPrice)) {
+			this.allPrice = allPrice.toFixed(2);
+			document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
+		}
+	}
+
+	_remove() {
+		this.parentElement.removeChild(this);
+		document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
 	}
 
 }

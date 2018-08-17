@@ -1,5 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-input/paper-input.js';
 import './fairshop-cart-item.js';
 import './fairshop-styles.js';
 
@@ -22,6 +23,10 @@ export class FairshopCart extends PolymerElement {
 			_count: {
 				type: Number,
 				value: 1
+			},
+			_sum: {
+				type: Number,
+				value: 0
 			}
 		};
 	}
@@ -58,6 +63,7 @@ export class FairshopCart extends PolymerElement {
 			<div id="cartTable">
 				<!-- Items go here -->
 			</div>
+			Summe: [[_sum]]
 
 			<div id="cartButtons">
 				<paper-button on-click="_empty">Leeren</paper-button>
@@ -66,8 +72,16 @@ export class FairshopCart extends PolymerElement {
 		`;
 	}
 
+	ready() {
+		super.ready();
+		var that = this;
+		document.addEventListener('cart-event', function(event) {
+			that._calculateSum();
+		});
+	}
+
 	_addItem() {
-		this.addItem(this._productId, this._count);
+		this.addItem(Number(this._productId), Number(this._count));
 	}
 
 	addItem(id, count) {
@@ -84,8 +98,8 @@ export class FairshopCart extends PolymerElement {
 			var item = document.createElement('fairshop-cart-item');
 			item.restUrl = this.restUrl;
 			item.imageUrl = this.imageUrl;
-			item.productId = Number(id);
-			item.count = Number(count);
+			item.productId = id;
+			item.count = count;
 			target.appendChild(item);
 		}
 		else {
@@ -98,6 +112,19 @@ export class FairshopCart extends PolymerElement {
 		while (target.firstChild) {
 			target.removeChild(target.firstChild);
 		}
+		this._calculateSum();
+	}
+
+	_calculateSum() {
+		var sum = 0;
+		var target = this.$.cartTable;
+		for (let cadidate of Array.from(target.children)) {
+			var allPrice = Number(cadidate.allPrice);
+			if (!isNaN(allPrice)) {
+				sum += allPrice;
+			}
+		}
+		this._sum = sum.toFixed(2);
 	}
 
 }
