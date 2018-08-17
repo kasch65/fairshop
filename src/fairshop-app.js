@@ -10,6 +10,7 @@ import './fairshop-manufacturer.js';
 import './fairshop-categories-tree.js';
 import './fairshop-products-list.js';
 import './fairshop-product.js';
+import './fairshop-cart.js';
 import './fairshop-styles.js';
 
 /**
@@ -196,6 +197,11 @@ export class FairshopApp extends PolymerElement {
 							</div>
 						</div>
 					</template>
+					<template is="dom-if" if="[[_cartActive]]">
+						<div id="cart" page-name="cart">
+							<fairshop-cart rest-url="[[restUrl]]" image-url="[[imageUrl]]"></fairshop-cart>
+						</div>
+					</template>
 					<template is="dom-if" if="[[_categoriesActive]]">
 						<div id="categories" page-name="categories">
 							<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_searchString]]"></fairshop-categories-tree>
@@ -237,6 +243,7 @@ export class FairshopApp extends PolymerElement {
 		this._manufacturerActive = false;
 		this._productsActive = false;
 		this._productActive = false;
+		this._cartActive = true;
 		// Activate some views
 		if (this._searchString && !this._productId && !this._manufacturerId) {
 			this._categoriesActive = true;
