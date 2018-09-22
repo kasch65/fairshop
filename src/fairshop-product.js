@@ -88,7 +88,7 @@ export class FairshopProduct extends PolymerElement {
 				.tab-img {
 					width: 8rem;
 					height: 8rem;
-					margin-bottom: 3px;
+					margin-bottom: 5px;
 				}
 				.detail-img {
 					width: 100%;
@@ -146,15 +146,23 @@ export class FairshopProduct extends PolymerElement {
 							</tr>
 							<tr>
 								<td>Hersteller</td>
-								<td>[[_productInfo.4]]</td>
+								<td>[[_productInfo.6]]</td>
 							</tr>
 							<tr>
 								<td>Verfügbarkeit</td>
-								<td>[[_productInfo.3]]</td>
+								<td>[[_productInfo.5]]</td>
 							</tr>
 							<tr>
-								<td><b>Preis</b></td>
+								<td><b>Netto Preis</b></td>
 								<td><b>[[_productInfo.2]]</b></td>
+							</tr>
+							<tr>
+								<td><b>MwSt.</b></td>
+								<td><b>[[_productInfo.4]]%</b></td>
+							</tr>
+							<tr>
+								<td><b>Brutto Preis</b></td>
+								<td><b>[[_productInfo.3]]</b></td>
 							</tr>
 						</table>
 						<div class="tabs">
@@ -189,7 +197,7 @@ export class FairshopProduct extends PolymerElement {
 
 			<iron-ajax 
 				id="requestProducInfo"
-				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN,price,available,manufacturerName"
+				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN,nettoPrice,price,tax,available,manufacturerName"
 				handle-as="json"
 				on-response="_productInfoReceived">
 			</iron-ajax>

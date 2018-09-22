@@ -31,9 +31,16 @@ export class FairshopCartItem extends PolymerElement {
 				type: Number,
 				observer: '_allPriceChanged'
 			},
+			_oneNettoPrice: {
+				type: Number,
+				observer: '_allPriceChanged'
+			},
 			_onePrice: {
 				type: Number,
 				observer: '_allPriceChanged'
+			},
+			allNettoPrice: {
+				type: Number
 			},
 			allPrice: {
 				type: Number
@@ -50,36 +57,78 @@ export class FairshopCartItem extends PolymerElement {
 			<style include="fairshop-styles">
 				.item {
 					display: flex;
+					align-items: center;
 					width: 100%;
+					border-bottom: solid;
+					border-width: .5px;
+					border-color: #888;
 				}
 				.item>div {
 					padding: .5rem;
-					border-style: solid;
-					border-width: .5px;
 				}
 				fairshop-image {
-					width: 3rem;
-					height: 3rem;
+					width: 4rem;
+					height: 4rem;
+				}
+				.item>.image {
+					padding: 0 .5rem;
+				}
+				.prod-id {
+					width: 5rem;
+				}
+				.name {
+					flex-grow: 4;
+				}
+				.count {
+					width: 5rem;
+				}
+				.count>paper-input {
+					text-align: right;
+				}
+				.one-price {
+					width: 5rem;
+					text-align: right;
+				}
+				.all-netto-price {
+					width: 5rem;
+					text-align: right;
+				}
+				.tax {
+					width: 5rem;
+					text-align: right;
+				}
+				.all-price {
+					width: 5rem;
+					text-align: right;
+				}
+				.remove {
+					width: 5rem;
 				}
 			</style>
 
 			<div class="item">
-				<div class="image">
-					<template is="dom-if" if="[[_image]]">
-						<fairshop-image id="image" sizing="contain" src="[[imageUrl]][[_image]]"></fairshop-image>
-					</template>
-				</div>
-				<div class="id">
-					[[productId]]
-				</div>
-				<div class="name">
-					[[_name]]
-				</div>
+					<div class="image">
+						<a href="#">
+							<fairshop-image id="image" sizing="contain" src="[[imageUrl]][[_image]]"></fairshop-image>
+						</a>
+					</div>
+					<div class="prod-id">
+						<a href="#">[[productId]]</a>
+					</div>
+					<div class="name">
+						<a href="#">[[_name]]</a>
+					</div>
 				<div class="count">
-					{{count}}
+					<paper-input id="count" label="Anzahl" value="{{count}}" no-label-float></paper-input>
 				</div>
 				<div class="one-price">
-					[[_onePrice]]€
+					[[_oneNettoPrice]]€
+				</div>
+				<div class="all-netto-price">
+					[[allNettoPrice]]€
+				</div>
+				<div class="tax">
+					[[_tax]]%
 				</div>
 				<div class="all-price">
 					[[allPrice]]€
@@ -91,7 +140,7 @@ export class FairshopCartItem extends PolymerElement {
 
 			<iron-ajax 
 				id="getProductDescriptions"
-				url="[[restUrl]]product_search_copy?filter=id,eq,[[productId]]&columns=price,available,name"
+				url="[[restUrl]]product_search_copy?filter=id,eq,[[productId]]&columns=nettoPrice,price,tax,available,name"
 				handle-as="json"
 				on-response="_getProductDescriptionsReceived">
 			</iron-ajax>
@@ -113,8 +162,10 @@ export class FairshopCartItem extends PolymerElement {
 	_getProductDescriptionsReceived(data) {
 		if ( data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records) {
 			var productInfo = data.detail.response.product_search_copy.records[0];
-			this._onePrice = productInfo[0];
-			this._name = productInfo[2];
+			this._oneNettoPrice = productInfo[0];
+			this._onePrice = productInfo[1];
+			this._tax = productInfo[2];
+			this._name = productInfo[4];
 		}
 	}
 
@@ -126,6 +177,10 @@ export class FairshopCartItem extends PolymerElement {
 	}
 
 	_allPriceChanged() {
+		var allNettoPrice = this.count * this._oneNettoPrice;
+		if (!isNaN(allNettoPrice)) {
+			this.allNettoPrice = allNettoPrice.toFixed(2);
+		}
 		var allPrice = this.count * this._onePrice;
 		if (!isNaN(allPrice)) {
 			this.allPrice = allPrice.toFixed(2);
