@@ -119,6 +119,10 @@ export class FairshopRouter extends PolymerElement {
 				}
 			}
 		}
+		else if (pathTokens.length > 0 && pathTokens[0] == 'cart') {
+			page = pathTokens[0];
+			this.hrefPrefix += 'cart';
+		}
 		this.page = page;
 		this.categoryId = categoryId;
 		this.manufacturerId = manufacturerId;

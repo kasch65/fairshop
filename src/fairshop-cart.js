@@ -1,6 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-input/paper-input.js';
 import './fairshop-cart-item.js';
 import './fairshop-styles.js';
 
@@ -16,13 +15,10 @@ export class FairshopCart extends PolymerElement {
 			imageUrl: {
 				type: String
 			},
-			_productId: {
+			count: {
 				type: Number,
-				value: 1814
-			},
-			_count: {
-				type: Number,
-				value: 1
+				value: 0,
+				notify: true
 			},
 			_nettoSum: {
 				type: Number,
@@ -42,25 +38,27 @@ export class FairshopCart extends PolymerElement {
 	static get template() {
 		return html `
 			<style include="fairshop-styles">
+				#backBtn {
+					position: absolute;
+					right: 1.2rem;
+					top: 5rem;
+					_background-color: var(--paper-grey-50);
+					z-index: 50;
+				}
 				#shopping,
 				#cartTable,
 				#cartButtons {
 					width: 100%;
 					min-height: 3rem;
 				}
-				#shopping paper-input,
-				#shopping paper-button {
-					float: left;
-					width: 12rem;
-					margin-right: 0.5rem;
+				#cartButtons {
+					margin-top: 2rem;
 				}
 				.sum {
 					font-weight: bold;
 					text-align: right;
 					margin-right: 3.8rem;
 				}
-
-
 				.item {
 					display: flex;
 					align-items: center;
@@ -91,11 +89,11 @@ export class FairshopCart extends PolymerElement {
 					text-align: center;
 				}
 				.one-price {
-					width: 5rem;
+					width: 6rem;
 					text-align: center;
 				}
 				.all-netto-price {
-					width: 5rem;
+					width: 6rem;
 					text-align: center;
 				}
 				.tax {
@@ -110,13 +108,10 @@ export class FairshopCart extends PolymerElement {
 					width: 5rem;
 				}
 			</style>
+			
+			<paper-button id="backBtn" aria-label="Go back" on-click="_goBack" raised>Weiter einkaufen</paper-button>
 
 			<h1>Warenkorb</h1>
-			<div id="shopping">
-				<paper-input id="productId" label="ID" value="{{_productId}}" always-float-label></paper-input>
-				<paper-input id="count" label="Anzahl" value="{{_count}}" always-float-label></paper-input>
-				<paper-button on-click="_addItem">Artikel Hinzufügen</paper-button>
-			</div>
 
 			<h2>Artikelliste</h2>
 			<div class="item">
@@ -136,7 +131,7 @@ export class FairshopCart extends PolymerElement {
 			<div class="item">
 				<div class="image">&nbsp;</div>
 				<div class="prod-id">&nbsp;</div>
-				<div class="name">&nbsp;</div>
+				<div class="name">Artikelzahl: [[count]]</div>
 				<div class="count"><h3>Summe</h3></div>
 				<div class="one-price"><h3>Netto:</h3></div>
 				<div class="all-netto-price"><h3>[[_nettoSum]]€</h3></div>
@@ -146,14 +141,18 @@ export class FairshopCart extends PolymerElement {
 			</div>
 
 			<div id="cartButtons">
-				<paper-button on-click="_empty">Leeren</paper-button>
-				<paper-button>Kaufen</paper-button>
+				<paper-button id="emptyCart" on-click="_empty">Leeren</paper-button>
+				<paper-button id="buy" raised>Kaufen</paper-button>
 			</div>
 		`;
 	}
 
 	ready() {
 		super.ready();
+		if (this.count < 1) {
+			this.$.emptyCart.setAttribute('disabled', true);
+			this.$.buy.setAttribute('disabled', true);
+		}
 		var that = this;
 		document.addEventListener('cart-event', function(event) {
 			that._calculateSum();
@@ -161,10 +160,10 @@ export class FairshopCart extends PolymerElement {
 	}
 
 	_addItem() {
-		this.addItem(Number(this._productId), Number(this._count));
+		this.addItem(Number(this._productId), Number(this.count));
 	}
 
-	addItem(id, count) {
+	addItem(id, count, productUrl) {
 		var target = this.$.cartTable;
 		var item = null;
 		for (let cadidate of Array.from(target.children)) {
@@ -179,6 +178,7 @@ export class FairshopCart extends PolymerElement {
 			item.restUrl = this.restUrl;
 			item.imageUrl = this.imageUrl;
 			item.productId = id;
+			item.productUrl = productUrl;
 			item.count = count;
 			target.appendChild(item);
 		}
@@ -199,6 +199,7 @@ export class FairshopCart extends PolymerElement {
 		var nettoSum = 0;
 		var sum = 0;
 		var target = this.$.cartTable;
+		var count = 0;
 		for (let cadidate of Array.from(target.children)) {
 			var allNettoPrice = Number(cadidate.allNettoPrice);
 			var allPrice = Number(cadidate.allPrice);
@@ -206,9 +207,23 @@ export class FairshopCart extends PolymerElement {
 				nettoSum += allNettoPrice;
 				sum += allPrice;
 			}
+			++count;
 		}
 		this._nettoSum = nettoSum.toFixed(2);
 		this._sum = sum.toFixed(2);
+		this.count = count;
+		if (this.count < 1) {
+			this.$.emptyCart.setAttribute('disabled', true);
+			this.$.buy.setAttribute('disabled', true);
+		}
+		else {
+			this.$.emptyCart.removeAttribute('disabled');
+			this.$.buy.removeAttribute('disabled');
+		}
+	}
+
+	_goBack() {
+		window.history.back();
 	}
 
 }

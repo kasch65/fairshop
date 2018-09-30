@@ -21,6 +21,9 @@ export class FairshopCartItem extends PolymerElement {
 				type: Number,
 				observer: '_productIdChanged'
 			},
+			productUrl: {
+				type: String
+			},
 			_name: {
 				type: String
 			},
@@ -86,11 +89,11 @@ export class FairshopCartItem extends PolymerElement {
 					text-align: right;
 				}
 				.one-price {
-					width: 5rem;
+					width: 6rem;
 					text-align: right;
 				}
 				.all-netto-price {
-					width: 5rem;
+					width: 6rem;
 					text-align: right;
 				}
 				.tax {
@@ -108,15 +111,15 @@ export class FairshopCartItem extends PolymerElement {
 
 			<div class="item">
 					<div class="image">
-						<a href="#">
+						<a href="[[productUrl]]">
 							<fairshop-image id="image" sizing="contain" src="[[imageUrl]][[_image]]"></fairshop-image>
 						</a>
 					</div>
 					<div class="prod-id">
-						<a href="#">[[productId]]</a>
+						<a href="[[productUrl]]">[[productId]]</a>
 					</div>
 					<div class="name">
-						<a href="#">[[_name]]</a>
+						<a href="[[productUrl]]">[[_name]]</a>
 					</div>
 				<div class="count">
 					<paper-input id="count" label="Anzahl" value="{{count}}" no-label-float></paper-input>

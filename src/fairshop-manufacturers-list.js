@@ -93,7 +93,7 @@ export class FairshopManufacturersList extends PolymerElement {
 		}
 		var imageUrlMap = new Map();
 		for (let manufacturerImage of data.detail.response.manufacturer_images.records) {
-			if (manufacturerImage[1] == 'Kategorie-Bild') {
+			if (manufacturerImage[1] == 'Herstellerlogo') {
 				imageUrlMap.set(manufacturerImage[0], manufacturerImage[2]);
 			}
 		}

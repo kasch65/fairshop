@@ -1,12 +1,15 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-tabs/paper-tabs.js';
+import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/neon-animation/neon-animations.js';
 import '@polymer/paper-dialog/paper-dialog.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
+import './fairshop-cart.js';
 
 /**
  * @class
@@ -43,6 +46,13 @@ export class FairshopProduct extends PolymerElement {
 			_selectedTab: {
 				type: Number,
 				value: 0
+			},
+			_count: {
+				type: Number,
+				value: 1
+			},
+			cart: {
+				type: Object
 			}
 		};
 	}
@@ -111,6 +121,16 @@ export class FairshopProduct extends PolymerElement {
 					width: 100%;
 					height: 100%;
 				}
+				#shopping {
+					width: 100%;
+					min-height: 3rem;
+				}
+				#shopping paper-input,
+				#shopping paper-button {
+					float: left;
+					width: 12rem;
+					margin-right: 0.5rem;
+				}
 			</style>
 
 			<div class="product">
@@ -165,6 +185,10 @@ export class FairshopProduct extends PolymerElement {
 								<td><b>[[_productInfo.3]]</b></td>
 							</tr>
 						</table>
+						<div id="shopping">
+							<paper-input id="count" label="Anzahl" value="{{_count}}" always-float-label></paper-input>
+							<paper-button on-click="_addItem" raised>In den Warenkorb</paper-button>
+						</div>
 						<div class="tabs">
 							<paper-tabs selected="{{_selectedTab}}" scrollable>
 								<paper-tab>Beschreibung</paper-tab>
@@ -289,6 +313,10 @@ export class FairshopProduct extends PolymerElement {
   _onZoomOut(ev) {
     this.$.zoomDialog.close();
   }
+
+	_addItem() {
+		this.cart.addItem(Number(this.selectedProduct), Number(this._count), window.location.pathname);
+	}
 
 }
 customElements.define("fairshop-product", FairshopProduct);

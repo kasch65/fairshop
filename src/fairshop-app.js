@@ -83,6 +83,13 @@ export class FairshopApp extends PolymerElement {
 			_searchString: {
 				type: String,
 				observer: "_searchStringChanged"
+			},
+			_cart: {
+				type: Object
+			},
+			_cartCount: {
+				type: Number,
+				value: 0
 			}
 		};
 	}
@@ -135,6 +142,7 @@ export class FairshopApp extends PolymerElement {
 					align-items: center;
 				}
 				paper-button {
+					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
 					_font-size: 1rem;;
 				}
@@ -167,6 +175,16 @@ export class FairshopApp extends PolymerElement {
 					color: var(--paper-grey-50);
 					box-shadow: 2px 4px 10px rgba(0,0,0,.2);
 				}
+				#cart {
+					/*height: 0;
+					overflow: hidden;*/
+					display: none;
+				}
+				#cart[visible] {
+					/*height: initial;
+					overflow: initial;*/
+					display: initial;
+				}
 			</style>
 
 			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
@@ -178,6 +196,7 @@ export class FairshopApp extends PolymerElement {
 						<div><a href="/"><paper-button>Home</paper-button></a></div>
 						<div><a href="/categories"><paper-button>Categories</paper-button></a></div>
 						<div><a href="/manufacturers"><paper-button>Manufacturers</paper-button></a></div>
+						<div><a href="/cart"><paper-button>Einkaufswagen ([[_cartCount]])</paper-button></a></div>
 						<div><fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field></div>
 					</div>
 				</div>
@@ -198,10 +217,11 @@ export class FairshopApp extends PolymerElement {
 						</div>
 					</template>
 					<template is="dom-if" if="[[_cartActive]]">
-						<div id="cart" page-name="cart">
-							<fairshop-cart rest-url="[[restUrl]]" image-url="[[imageUrl]]"></fairshop-cart>
-						</div>
+						<!-- Cart can not be referenced when in dom-if -->
 					</template>
+					<div id="cart" page-name="cart" visible$="[[_cartActive]]">
+						<fairshop-cart id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}"></fairshop-cart>
+					</div>
 					<template is="dom-if" if="[[_categoriesActive]]">
 						<div id="categories" page-name="categories">
 							<fairshop-categories-tree rest-url="[[restUrl]]" search-string="[[_searchString]]"></fairshop-categories-tree>
@@ -224,7 +244,7 @@ export class FairshopApp extends PolymerElement {
 					</template>
 					<template is="dom-if" if="[[_productActive]]">
 						<div id="product" page-name="product">
-							<fairshop-product rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[_productId]]"></fairshop-product>
+							<fairshop-product rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[_productId]]" cart="[[_cart]]"></fairshop-product>
 						</div>
 					</template>
 
@@ -235,6 +255,12 @@ export class FairshopApp extends PolymerElement {
 		`;
 	}
 
+	ready() {
+		super.ready();
+		this._cart = this.$.cartElement;
+		console.log(this._cart);
+	}
+
 	_pathChanged() {
 		// Hide all views
 		this._homeActive = false;
@@ -243,9 +269,9 @@ export class FairshopApp extends PolymerElement {
 		this._manufacturerActive = false;
 		this._productsActive = false;
 		this._productActive = false;
-		this._cartActive = true;
+		this._cartActive = false;
 		// Activate some views
-		if (this._searchString && !this._productId && !this._manufacturerId) {
+		if (this._searchString && !this._productId && !this._manufacturerId && this._page != 'cart') {
 			this._categoriesActive = true;
 			this._manufacturersActive = true;
 			this._productsActive = true;
@@ -273,6 +299,9 @@ export class FairshopApp extends PolymerElement {
 				else {
 					this._manufacturersActive = true;
 				}
+			}
+			else if (this._page == 'cart') {
+				this._cartActive = true;
 			}
 		}
 	}

@@ -17,6 +17,10 @@ $_documentContainer.innerHTML = `
         h3 {
           color: var(--primary-text-color);
         }
+        paper-button,
+        paper-icon-button {
+					background-color: var(--paper-grey-50);
+				}
       </style>
     </template>
   </dom-module>

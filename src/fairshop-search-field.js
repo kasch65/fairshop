@@ -51,10 +51,11 @@ export class FairshopSearchField extends PolymerElement {
 					width: 0;
 				}
 				paper-icon-button {
+					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
 				}
 			</style>
-			<dic class="search-field">
+			<div class="search-field">
 				<paper-input id="searchField" class="hidden" label="Suche" value="{{_searchInput}}" no-label-float>
 					<paper-icon-button id="resetSearch" slot="suffix" icon="icons:clear" on-click="_resetSearch"></paper-icon-button>
 				</paper-input>
