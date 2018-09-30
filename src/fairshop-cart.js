@@ -27,6 +27,12 @@ export class FairshopCart extends PolymerElement {
 			_sum: {
 				type: Number,
 				value: 0
+			},
+			_id: {
+				type: Number
+			},
+			_pendingItems: {
+				type: Number
 			}
 		};
 	}
@@ -142,8 +148,26 @@ export class FairshopCart extends PolymerElement {
 
 			<div id="cartButtons">
 				<paper-button id="emptyCart" on-click="_empty">Leeren</paper-button>
-				<paper-button id="buy" raised>Kaufen</paper-button>
+				<paper-button id="buy" on-click="_checkout" raised>Kaufen</paper-button>
 			</div>
+
+			<iron-ajax 
+				id="requestCheckout"
+				url="[[restUrl]]orders"
+				method="post"
+				handle-as="json"
+				content-type="application/json"
+				on-response="_checkoutReceived">
+			</iron-ajax>
+
+			<iron-ajax 
+				id="requestCheckoutItem"
+				url="[[restUrl]]order_items"
+				method="post"
+				handle-as="json"
+				content-type="application/json"
+				on-response="_checkoutItemReceived">
+			</iron-ajax>
 		`;
 	}
 
@@ -185,6 +209,9 @@ export class FairshopCart extends PolymerElement {
 		else {
 			item.count = Number(item.count) + count;
 		}
+		if (!this._id || !(Number(this._id) > 0)) {
+			this._id = Number(new Date().getTime());
+		}
 	}
 
 	_empty() {
@@ -224,6 +251,39 @@ export class FairshopCart extends PolymerElement {
 
 	_goBack() {
 		window.history.back();
+	}
+
+	_checkout() {
+		var checkout = new Object();
+		checkout.id = Number(this._id);
+		/*this.$.requestCheckout.body = {
+			"id": "42"
+		};*/
+		this.$.requestCheckout.body = checkout;
+		this.$.requestCheckout.generateRequest();
+	}
+
+	_checkoutReceived(data) {
+		var target = this.$.cartTable;
+		this._pendingItems = 0;
+		for (let cadidate of Array.from(target.children)) {
+			var checkoutItem = new Object();
+			checkoutItem.orderId = Number(this._id);
+			checkoutItem.productId = Number(cadidate.productId);
+			checkoutItem.count = Number(cadidate.count);
+			this.$.requestCheckoutItem.body = checkoutItem;
+			this.$.requestCheckoutItem.generateRequest();
+			++this._pendingItems;
+		}
+	}
+
+	_checkoutItemReceived(data) {
+		--this._pendingItems;
+		// TODO remove item from cart
+		if (this._pendingItems == 0) {
+			this._empty();
+			this._id = null;
+		}
 	}
 
 }
