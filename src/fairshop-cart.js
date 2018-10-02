@@ -31,8 +31,8 @@ export class FairshopCart extends PolymerElement {
 			_id: {
 				type: Number
 			},
-			_pendingItems: {
-				type: Number
+			toast: {
+				type: Object
 			}
 		};
 	}
@@ -166,7 +166,7 @@ export class FairshopCart extends PolymerElement {
 				method="post"
 				handle-as="json"
 				content-type="application/json"
-				on-response="_checkoutItemReceived">
+				on-error="_checkoutItemFailure">
 			</iron-ajax>
 		`;
 	}
@@ -212,6 +212,8 @@ export class FairshopCart extends PolymerElement {
 		if (!this._id || !(Number(this._id) > 0)) {
 			this._id = Number(new Date().getTime());
 		}
+		this.toast.text = 'Artikel in den Warenkorb gelegt: id = ' + id + ', Anzahl = ' + count + '';
+		this.toast.open();
 	}
 
 	_empty() {
@@ -256,35 +258,49 @@ export class FairshopCart extends PolymerElement {
 	_checkout() {
 		var checkout = new Object();
 		checkout.id = Number(this._id);
-		/*this.$.requestCheckout.body = {
-			"id": "42"
-		};*/
 		this.$.requestCheckout.body = checkout;
 		this.$.requestCheckout.generateRequest();
 	}
 
+	/**
+	 * Called when cart has been crated on server
+	 * @param {*} data 
+	 */
 	_checkoutReceived(data) {
 		var target = this.$.cartTable;
-		this._pendingItems = 0;
+		var requests = Array();
 		for (let cadidate of Array.from(target.children)) {
 			var checkoutItem = new Object();
 			checkoutItem.orderId = Number(this._id);
 			checkoutItem.productId = Number(cadidate.productId);
 			checkoutItem.count = Number(cadidate.count);
 			this.$.requestCheckoutItem.body = checkoutItem;
-			this.$.requestCheckoutItem.generateRequest();
-			++this._pendingItems;
+			var request = this.$.requestCheckoutItem.generateRequest();
+			request.setAttribute('productId', checkoutItem.productId);
+			requests.push(request);
 		}
+		var that = this;
+		Promise.all(requests).then(function (requests) {
+			for (let request of requests) {
+				for (let cadidate of Array.from(target.children)) {
+					var productIdRunner = Number(cadidate.productId);
+					if (productIdRunner == request.getAttribute('productId')) {
+						cadidate.parentElement.removeChild(cadidate);
+					}
+				}
+			}
+			that._calculateSum();
+			that.toast.text = 'Bestellung erfolgreich abgeschlossen.';
+			that.toast.open();
+			});
 	}
 
-	_checkoutItemReceived(data) {
-		--this._pendingItems;
-		// TODO remove item from cart
-		if (this._pendingItems == 0) {
-			this._empty();
-			this._id = null;
-		}
-	}
+	_checkoutItemFailure(data) {
+		// Invalidate old cart id
+		this._id = Number(new Date().getTime());
+		this.toast.text = 'Bestellung fehlgeschlegen. Bitte versuchen Sie es später erneut.';
+		this.toast.open();
+}
 
 }
 customElements.define("fairshop-cart", FairshopCart);

@@ -90,6 +90,9 @@ export class FairshopApp extends PolymerElement {
 			_cartCount: {
 				type: Number,
 				value: 0
+			},
+			_toast: {
+				type: Object
 			}
 		};
 	}
@@ -220,7 +223,7 @@ export class FairshopApp extends PolymerElement {
 						<!-- Cart can not be referenced when in dom-if -->
 					</template>
 					<div id="cart" page-name="cart" visible$="[[_cartActive]]">
-						<fairshop-cart id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}"></fairshop-cart>
+						<fairshop-cart id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}" toast="[[_toast]]"></fairshop-cart>
 					</div>
 					<template is="dom-if" if="[[_categoriesActive]]">
 						<div id="categories" page-name="categories">
@@ -258,6 +261,7 @@ export class FairshopApp extends PolymerElement {
 	ready() {
 		super.ready();
 		this._cart = this.$.cartElement;
+		this._toast = this.$.toast;
 		console.log(this._cart);
 	}
 
