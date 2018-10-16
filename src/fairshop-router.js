@@ -23,7 +23,7 @@ export class FairshopRouter extends PolymerElement {
 				type: Number,
 				value: 1,
 				notify: true,
-				observers: '_pageNrChanged'
+				observer: '_pageNrChanged'
 			},
 			categoryId: {
 				type: Number,
@@ -43,6 +43,10 @@ export class FairshopRouter extends PolymerElement {
 			hrefPrefix: {
 				type: String,
 				notify: true
+			},
+			unauthorized: {
+				type: Boolean,
+				observer: '_authorize'
 			}
 		};
 	}
@@ -123,6 +127,10 @@ export class FairshopRouter extends PolymerElement {
 			page = pathTokens[0];
 			this.hrefPrefix += 'cart';
 		}
+		else if (pathTokens.length > 0 && pathTokens[0] == 'login') {
+			page = pathTokens[0];
+			this.hrefPrefix += 'login';
+		}
 		this.page = page;
 		this.categoryId = categoryId;
 		this.manufacturerId = manufacturerId;
@@ -131,8 +139,27 @@ export class FairshopRouter extends PolymerElement {
 	}
 
 	_pageNrChanged() {
-		this._route.__queryParams.page =this.pageNr;
+		this._route.__queryParams.page = this.pageNr;
 		this.notifyPath("_route.__queryParams.page");
+	}
+
+	_authorize() {
+		console.log('Router: Authorization state changed to ' + this.unauthorized);
+		if (this.unauthorized) {
+			console.log('Router: Authorization required!');
+			this._lastPage = Object();
+			this._lastPage.page = this.page;
+			//this._lastPage.path = this.path;
+			this._lastPage.path = this._route.path;
+			//this.page = 'login';
+			this.set('_route.path', '/login');
+			//this.path = '/login';
+		}
+		else if (this._lastPage) {
+			this.page = this._lastPage.page;
+			this.set('_route.path', this._lastPage.path);
+			//this.path = this._lastPage.path;
+		}
 	}
 
 }

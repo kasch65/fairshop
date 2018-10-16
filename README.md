@@ -14,7 +14,7 @@ Auch Google bietet bereits einen einfachen Referenz-Shop in Polymer 3.0 an. Es i
 
 # Backend
 
-https://github.com/mevdschee/php-crud-api
+https://github.com/mevdschee/php-crud-api/tree/v1
 
 
 # Entwicklung

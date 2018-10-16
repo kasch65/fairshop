@@ -11,6 +11,7 @@ import './fairshop-categories-tree.js';
 import './fairshop-products-list.js';
 import './fairshop-product.js';
 import './fairshop-cart.js';
+import './fairshop-login.js';
 import './fairshop-styles.js';
 
 /**
@@ -24,9 +25,6 @@ export class FairshopApp extends PolymerElement {
 			},
 			imageUrl: {
 				type: String
-			},
-			route: {
-				Object
 			},
 			_page: {
 				type: String,
@@ -80,6 +78,10 @@ export class FairshopApp extends PolymerElement {
 				type: Boolean,
 				value: false
 			},
+			_loginActive: {
+				type: Boolean,
+				value: false
+			},
 			_searchString: {
 				type: String,
 				observer: "_searchStringChanged"
@@ -92,6 +94,16 @@ export class FairshopApp extends PolymerElement {
 				value: 0
 			},
 			_toast: {
+				type: Object
+			},
+			_csrf: {
+				type: String
+			},
+			_unauthorized: {
+				type: Boolean,
+				value: false
+			},
+			_session: {
 				type: Object
 			}
 		};
@@ -190,7 +202,7 @@ export class FairshopApp extends PolymerElement {
 				}
 			</style>
 
-			<fairshop-router page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
+			<fairshop-router unauthorized="{{_unauthorized}}" page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
 
 			<div class="app-header-layout">
 				<div class="app-header">
@@ -219,11 +231,14 @@ export class FairshopApp extends PolymerElement {
 							</div>
 						</div>
 					</template>
+					<template is="dom-if" if="[[_loginActive]]">
+						<fairshop-login session="{{_session}}" rest-url="[[restUrl]]" unauthorized="{{_unauthorized}}" csrf="{{_csrf}}" toast="[[_toast]]"></fairshop-login>
+					</template>
 					<template is="dom-if" if="[[_cartActive]]">
 						<!-- Cart can not be referenced when in dom-if -->
 					</template>
 					<div id="cart" page-name="cart" visible$="[[_cartActive]]">
-						<fairshop-cart id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}" toast="[[_toast]]"></fairshop-cart>
+						<fairshop-cart session="[[_session]]" unauthorized="{{_unauthorized}}" csrf="{{_csrf}}" id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}" toast="[[_toast]]"></fairshop-cart>
 					</div>
 					<template is="dom-if" if="[[_categoriesActive]]">
 						<div id="categories" page-name="categories">
@@ -262,7 +277,6 @@ export class FairshopApp extends PolymerElement {
 		super.ready();
 		this._cart = this.$.cartElement;
 		this._toast = this.$.toast;
-		console.log(this._cart);
 	}
 
 	_pathChanged() {
@@ -274,6 +288,7 @@ export class FairshopApp extends PolymerElement {
 		this._productsActive = false;
 		this._productActive = false;
 		this._cartActive = false;
+		this._loginActive = false;
 		// Activate some views
 		if (this._searchString && !this._productId && !this._manufacturerId && this._page != 'cart') {
 			this._categoriesActive = true;
@@ -283,6 +298,9 @@ export class FairshopApp extends PolymerElement {
 		else {
 			if (this._page == 'home') {
 				this._homeActive = true;
+			}
+			else if (this._page == 'login') {
+				this._loginActive = true;
 			}
 			else if (this._productId) {
 				this._productActive = true;

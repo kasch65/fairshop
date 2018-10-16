@@ -33,6 +33,16 @@ export class FairshopCart extends PolymerElement {
 			},
 			toast: {
 				type: Object
+			},
+			unauthorized: {
+				type: Boolean,
+				notify: true
+			},
+			csrf: {
+				type: String
+			},
+			session: {
+				type: Object
 			}
 		};
 	}
@@ -153,16 +163,19 @@ export class FairshopCart extends PolymerElement {
 
 			<iron-ajax 
 				id="requestCheckout"
-				url="[[restUrl]]orders"
+				url="[[restUrl]]orders?csrf=[[csrf]]"
+				with-credentials="true"
 				method="post"
 				handle-as="json"
 				content-type="application/json"
-				on-response="_checkoutReceived">
+				on-response="_checkoutReceived"
+				on-error="_checkoutFailure">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestCheckoutItem"
-				url="[[restUrl]]order_items"
+				url="[[restUrl]]order_items?csrf=[[csrf]]"
+				with-credentials="true"
 				method="post"
 				handle-as="json"
 				content-type="application/json"
@@ -174,8 +187,8 @@ export class FairshopCart extends PolymerElement {
 	ready() {
 		super.ready();
 		if (this.count < 1) {
-			this.$.emptyCart.setAttribute('disabled', true);
-			this.$.buy.setAttribute('disabled', true);
+			this.$.emptyCart.setAttribute('_', true);
+			this.$.buy.setAttribute('_disabled', true);
 		}
 		var that = this;
 		document.addEventListener('cart-event', function(event) {
@@ -247,7 +260,7 @@ export class FairshopCart extends PolymerElement {
 		}
 		else {
 			this.$.emptyCart.removeAttribute('disabled');
-			this.$.buy.removeAttribute('disabled');
+			this.$.buy.removeAttribute('_disabled');
 		}
 	}
 
@@ -258,6 +271,10 @@ export class FairshopCart extends PolymerElement {
 	_checkout() {
 		var checkout = new Object();
 		checkout.id = Number(this._id);
+		// TODO Security risk: user must be set by server!
+		if (this.session) {
+			checkout.user = this.session.user;
+		}
 		this.$.requestCheckout.body = checkout;
 		this.$.requestCheckout.generateRequest();
 	}
@@ -292,15 +309,29 @@ export class FairshopCart extends PolymerElement {
 			that._calculateSum();
 			that.toast.text = 'Bestellung erfolgreich abgeschlossen.';
 			that.toast.open();
-			});
+		});
 	}
 
-	_checkoutItemFailure(data) {
+	_checkoutFailure(event) {
+		if (event.detail.request.status == "401") {
+			console.log('Not authenticated!');
+			this.toast.text = 'Not authenticated!';
+			this.toast.open();
+			this.unauthorized = true;
+		} else if (event.detail.request.status == "403") {
+			console.log('Not permitted!');
+			this.toast.text = 'Not permitted!';
+			this.toast.open();
+			this.unauthorized = true;
+		}
+	}
+
+	_checkoutItemFailure(event) {
 		// Invalidate old cart id
 		this._id = Number(new Date().getTime());
 		this.toast.text = 'Bestellung fehlgeschlegen. Bitte versuchen Sie es später erneut.';
 		this.toast.open();
-}
+	}
 
 }
 customElements.define("fairshop-cart", FairshopCart);
