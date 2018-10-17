@@ -54,7 +54,7 @@ export class FairshopLogin extends PolymerElement {
 			<paper-input id="userField" label="User" value="{{user}}"></paper-input>
 			<paper-input id="passwordField" label="Password" value="{{_password}}" type="password"></paper-input>
 			<paper-button id="reset" on-click="_reset">Reset</paper-button>
-			<paper-button id="login" on-click="_login">Login</paper-button>
+			<paper-button id="login" on-click="_login" raised>Login</paper-button>
 
 			<iron-ajax 
 				id="requestLogin"

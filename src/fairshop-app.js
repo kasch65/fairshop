@@ -3,6 +3,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
 import './fairshop-router.js';
