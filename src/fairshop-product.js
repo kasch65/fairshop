@@ -2,7 +2,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/neon-animation/neon-animations.js';
@@ -125,11 +125,13 @@ export class FairshopProduct extends PolymerElement {
 					width: 100%;
 					min-height: 3rem;
 				}
-				#shopping paper-input,
-				#shopping paper-button {
+				#shopping paper-input {
 					float: left;
 					width: 12rem;
 					margin-right: 0.5rem;
+				}
+				#shopping paper-icon-button {
+					top: .8rem;
 				}
 			</style>
 
@@ -187,7 +189,7 @@ export class FairshopProduct extends PolymerElement {
 						</table>
 						<div id="shopping">
 							<paper-input id="count" label="Anzahl" value="{{_count}}" always-float-label></paper-input>
-							<paper-button on-click="_addItem" raised>In den Warenkorb</paper-button>
+							<paper-icon-button on-click="_addItem" raised icon="add-shopping-cart" text="In den Warenkorb" raised></paper-icon-button>
 						</div>
 						<div class="tabs">
 							<paper-tabs selected="{{_selectedTab}}" scrollable>

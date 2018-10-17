@@ -33,6 +33,7 @@
     "@polymer/paper-spinner": "^3.0.0-pre.21",
     "@polymer/paper-tabs": "^3.0.0-pre.21",
     "@polymer/paper-toast": "^3.0.0-pre.21",
+    "@polymer/paper-tooltip": "^3.0.1",
     "@polymer/polymer": "^3.0.5",
     "@webcomponents/webcomponentsjs": "^2.0.3",
     "web-animations-js": "^2.3.1",

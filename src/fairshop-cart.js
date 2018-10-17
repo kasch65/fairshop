@@ -187,8 +187,8 @@ export class FairshopCart extends PolymerElement {
 	ready() {
 		super.ready();
 		if (this.count < 1) {
-			this.$.emptyCart.setAttribute('_', true);
-			this.$.buy.setAttribute('_disabled', true);
+			this.$.emptyCart.setAttribute('disabled', true);
+			this.$.buy.setAttribute('disabled', true);
 		}
 		var that = this;
 		document.addEventListener('cart-event', function(event) {
@@ -260,7 +260,7 @@ export class FairshopCart extends PolymerElement {
 		}
 		else {
 			this.$.emptyCart.removeAttribute('disabled');
-			this.$.buy.removeAttribute('_disabled');
+			this.$.buy.removeAttribute('disabled');
 		}
 	}
 

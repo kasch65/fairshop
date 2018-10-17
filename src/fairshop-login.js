@@ -1,5 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-input/paper-input.js';
 import './fairshop-styles.js';
 
 /**
@@ -26,6 +27,10 @@ export class FairshopLogin extends PolymerElement {
 				type: String,
 				value: 'admin'
 			},
+			_password: {
+				type: String,
+				value: 'admin'
+			},
 			session: {
 				type: Object,
 				notify: true
@@ -40,9 +45,15 @@ export class FairshopLogin extends PolymerElement {
 	static get template() {
 		return html `
 			<style include="fairshop-styles">
+				paper-input {
+					width: 30rem;
+				}
 			</style>
 
 			<h1>Login</h1>
+			<paper-input id="userField" label="User" value="{{user}}"></paper-input>
+			<paper-input id="passwordField" label="Password" value="{{_password}}" type="password"></paper-input>
+			<paper-button id="reset" on-click="_reset">Reset</paper-button>
 			<paper-button id="login" on-click="_login">Login</paper-button>
 
 			<iron-ajax 
@@ -50,7 +61,7 @@ export class FairshopLogin extends PolymerElement {
 				url="[[restUrl]]"
 				with-credentials="true"
 				method="post"
-				body="username=[[user]]&password=admin"
+				body="username=[[user]]&password=[[_password]]"
 				on-response="_loginReceived"
 				on-error="_loginFailure">
 			</iron-ajax>
@@ -63,6 +74,11 @@ export class FairshopLogin extends PolymerElement {
 
 	_login() {
 		this.$.requestLogin.generateRequest();
+	}
+
+	_reset() {
+		this.user = null;
+		this._password = null;
 	}
 
 	_loginReceived(event) {

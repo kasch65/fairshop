@@ -2,6 +2,8 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-spinner/paper-spinner-lite.js';
 import './fairshop-router.js';
 import './fairshop-search-field.js';
@@ -104,7 +106,8 @@ export class FairshopApp extends PolymerElement {
 				value: false
 			},
 			_session: {
-				type: Object
+				type: Object,
+				notify: true
 			}
 		};
 	}
@@ -156,7 +159,9 @@ export class FairshopApp extends PolymerElement {
 					flex-wrap: wrap;
 					align-items: center;
 				}
-				paper-button {
+				paper-button,
+				paper-icon-button,
+				iron-icon {
 					background-color: var(--google-blue-700);
 					color: var(--paper-grey-50);
 					_font-size: 1rem;;
@@ -173,6 +178,9 @@ export class FairshopApp extends PolymerElement {
 				}
 				div[page-name] {
 					padding: 1rem;
+				}
+				#login {
+					margin: auto;
 				}
 				#home {
 					min-height: 50vh;
@@ -211,8 +219,21 @@ export class FairshopApp extends PolymerElement {
 						<div><a href="/"><paper-button>Home</paper-button></a></div>
 						<div><a href="/categories"><paper-button>Categories</paper-button></a></div>
 						<div><a href="/manufacturers"><paper-button>Manufacturers</paper-button></a></div>
-						<div><a href="/cart"><paper-button>Einkaufswagen ([[_cartCount]])</paper-button></a></div>
+						<div>
+							<a href="/cart">
+								<paper-button id="cartButton">
+									<iron-icon icon="shopping-cart"></iron-icon>([[_cartCount]])
+								</paper-button>
+								<paper-tooltip for="cartButton">Einkaufswagen</paper-tooltip>
+							</a>
+						</div>
 						<div><fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field></div>
+						<template is="dom-if" if="[[_session]]">
+							<div>
+								<paper-icon-button id="logoutButton" on-click="_logout" icon="remove-shopping-cart" tooltip="abmelden"></paper-icon-button>
+								<paper-tooltip for="logoutButton">Einkauf beenden</paper-tooltip>
+							</div>
+						</template>
 					</div>
 				</div>
 
@@ -232,10 +253,12 @@ export class FairshopApp extends PolymerElement {
 						</div>
 					</template>
 					<template is="dom-if" if="[[_loginActive]]">
-						<fairshop-login session="{{_session}}" rest-url="[[restUrl]]" unauthorized="{{_unauthorized}}" csrf="{{_csrf}}" toast="[[_toast]]"></fairshop-login>
+						<div id="login" page-name="login">
+							<fairshop-login session="{{_session}}" rest-url="[[restUrl]]" unauthorized="{{_unauthorized}}" csrf="{{_csrf}}" toast="[[_toast]]"></fairshop-login>
+						</div>
 					</template>
 					<template is="dom-if" if="[[_cartActive]]">
-						<!-- Cart can not be referenced when in dom-if -->
+						<!-- Cart can't be referenced when within dom-if -->
 					</template>
 					<div id="cart" page-name="cart" visible$="[[_cartActive]]">
 						<fairshop-cart session="[[_session]]" unauthorized="{{_unauthorized}}" csrf="{{_csrf}}" id="cartElement" rest-url="[[restUrl]]" image-url="[[imageUrl]]" count="{{_cartCount}}" toast="[[_toast]]"></fairshop-cart>
@@ -341,6 +364,11 @@ export class FairshopApp extends PolymerElement {
 		else {
 			this._pathChanged();
 		}
+	}
+
+	_logout() {
+		this._session = null;
+		this._csrf = null;
 	}
 
 }
