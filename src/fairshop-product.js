@@ -125,7 +125,7 @@ export class FairshopProduct extends PolymerElement {
 				}
 				#shopping {
 					width: 100%;
-					min-height: 3rem;
+					min-height: 4.5rem;
 				}
 				#shopping paper-input {
 					float: left;

@@ -107,8 +107,7 @@ export class FairshopApp extends PolymerElement {
 				value: false
 			},
 			_session: {
-				type: Object,
-				notify: true
+				type: Object
 			}
 		};
 	}
@@ -220,15 +219,19 @@ export class FairshopApp extends PolymerElement {
 						<div><a href="/"><paper-button>Home</paper-button></a></div>
 						<div><a href="/categories"><paper-button>Categories</paper-button></a></div>
 						<div><a href="/manufacturers"><paper-button>Manufacturers</paper-button></a></div>
+						<template is="dom-if" if="[[_cartCount]]">
+							<div>
+								<a href="/cart">
+									<paper-button id="cartButton">
+										<iron-icon icon="shopping-cart"></iron-icon>([[_cartCount]])
+									</paper-button>
+									<paper-tooltip for="cartButton">Einkaufswagen</paper-tooltip>
+								</a>
+							</div>
+						</template>
 						<div>
-							<a href="/cart">
-								<paper-button id="cartButton">
-									<iron-icon icon="shopping-cart"></iron-icon>([[_cartCount]])
-								</paper-button>
-								<paper-tooltip for="cartButton">Einkaufswagen</paper-tooltip>
-							</a>
+							<fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field>
 						</div>
-						<div><fairshop-search-field search-string="{{_searchString}}"></fairshop-search-field></div>
 						<template is="dom-if" if="[[_session]]">
 							<div>
 								<paper-icon-button id="logoutButton" on-click="_logout" icon="remove-shopping-cart" tooltip="abmelden"></paper-icon-button>

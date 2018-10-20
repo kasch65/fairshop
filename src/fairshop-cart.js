@@ -298,6 +298,7 @@ export class FairshopCart extends PolymerElement {
 		}
 		var that = this;
 		Promise.all(requests).then(function (requests) {
+			that._id = Number(new Date().getTime());
 			for (let request of requests) {
 				for (let cadidate of Array.from(target.children)) {
 					var productIdRunner = Number(cadidate.productId);

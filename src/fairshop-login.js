@@ -82,7 +82,7 @@ export class FairshopLogin extends PolymerElement {
 	}
 
 	_loginReceived(event) {
-		this.toast.text = 'Login erfolgreich.';
+		this.toast.text = 'Login erfolgreich für ' + this.user + '.';
 		this.toast.open();
 		this.csrf = event.detail.response;
 		this.unauthorized = false;

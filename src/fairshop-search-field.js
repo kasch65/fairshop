@@ -59,7 +59,8 @@ export class FairshopSearchField extends PolymerElement {
 				<paper-input id="searchField" class="hidden" label="Suche" value="{{_searchInput}}" no-label-float>
 					<paper-icon-button id="resetSearch" slot="suffix" icon="icons:clear" on-click="_resetSearch"></paper-icon-button>
 				</paper-input>
-				<paper-icon-button class="search" icon="icons:search" on-click="_toggleSearch"></paper-icon-button>
+				<paper-icon-button id="searchButton" class="search" icon="icons:search" on-click="_toggleSearch"></paper-icon-button>
+				<paper-tooltip for="searchButton">Suche einblenden</paper-tooltip>
 			</div>
 		`;
 	}
