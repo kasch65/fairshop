@@ -25,6 +25,9 @@ export class FairshopProduct extends PolymerElement {
 			imageUrl: {
 				type: String
 			},
+			/**
+			 * Set the selected product ID to update the displayed content.
+			 */
 			selectedProduct: {
 				type: Number,
 				observer: "_productChanged"

@@ -23,9 +23,15 @@ import './fairshop-styles.js';
 export class FairshopApp extends PolymerElement {
 	static get properties() {
 		return {
+			/**
+			 * Required base URL of the REST service. It must end with '/'.
+			 */
 			restUrl: {
 				type: String
 			},
+			/**
+			 * Required base URL for loading images. It may differ from the REST URL. It must end with '/'.
+			 */
 			imageUrl: {
 				type: String
 			},
@@ -89,6 +95,9 @@ export class FairshopApp extends PolymerElement {
 				type: String,
 				observer: "_searchStringChanged"
 			},
+			/**
+			 * This variable holds the Cart component. It is used to be injected where functions or sttributes of the cart must be called.
+			 */
 			_cart: {
 				type: Object
 			},
