@@ -14,62 +14,60 @@ Auch Google bietet bereits einen einfachen Referenz-Shop in Polymer 3.0 an. Es i
 
 # Backend
 
+Aktuell wird der PHP REST Service von Maurits van der Schee geutzt, der auf jedem PHP-Server leicht installiert werden kann. Vilen Dank dafür!
+
 https://github.com/mevdschee/php-crud-api/tree/v1
+
+https://github.com/mevdschee/php-api-auth/tree/v1
+
+Aktuell ist die Authetifizierung und Autorisierung abgeschlossen.
+Es fehlt noch die Veröffentlichung des angepassten PHP Codes und des Datanbakschemas für das Backend und ein Testdatenbestand.
+
+Das Datenbankschema soll noch angepasst werden, so dass weniger Tabellen nötig sind und es nicht wie bisher vorwiegend auf Datenbank-Views zurückgreift.
+
+Alternativ überlege ich einen Adapter für Amazons Product Advertising API zu implementiere, da der Artikelbestand, der sich in Kundenbesitz befindet, nicht veröffntlicht werden darf.
 
 
 # Entwicklung
 
-Zum Anzeigen dieser Seite unter VS-Code kann die Tastenkombination `Strg + K V` (erst `Strg + K` drücken, loslassen und dann `V` drücken) genutzt werden.
-Alternativ: Rechtsklick auf die Datei -> Vorschau öffnen.
+Ich entwickele dieses Projekt mit Visual Studio Code. Die Projektkonfiguration ist mit versioniert. Test, Demo, Build und Hosting kann mit der Polymer CLI erfolgen.
+
+Das PHP Backend und der Shop sind so gestaltet, dass sie mit einem einfachen Hostigpaket bei fast jedem Provider gehostet werden kann, das MySQL und PHP ab 5.6 unterstützt.
+
+Das Buildergebnis bewerte ich mit dem Google Chrome Lighthous Pluin, das Aufschluss über die Performance, Usability usw. gibt (https://developers.google.com/web/tools/lighthouse/).
 
 # Offne Punkte
 
-- Überschrift über Produktliste dynamisch anpassen: "Produkte von Herstellername" oder Kategoriename oder Suchergebnisse
-- Zoom Funktion für Produktbilder
-- Anmeldung/Authentifizierung
-- Bezahlung
-- Warenkorb
+- Bezahlung (Bisher nur für registrierte B2B Kunden über Rechnung)
+- E-Mail Bestätigungen
 - Wunschliste
 - Dokumentation der REST Schnitttelle
+- Veröffentlichung des Backend Codes
+- Testdaten
+- Unterstützung der Amazon Product Advertising API (https://docs.aws.amazon.com/de_de/AWSECommerceService/latest/DG/Welcome.html)
+- Internationalisierung
+- Attraktiveres Design Template des Demoshops
 
-# Manuelle Anpassungen
-
-Dieses Template ist zur Standartisierung der Webcomponent-Entwicklung gedacht. Bevor man die Entwicklung beginnt muss man ein paar Dinge händisch anpassen.
-
-## package.json Anpassen
-
-Hierbei müssen alle Felder mit dem Platzhalter [[...]] mit dem jeweiligen Inhalt versehen werden.
-Im docs script (`polymer analyze src/fairshop-app.js > analysis.json`) müssen alle JavaScript-Dateien, die in der Dokumentation angezeigt werden sollen, mit Leerzeichen getrennt aufgelistet werden. Hat man bspw. zusätzlich noch ein Mixin `MyMixin.js`, lautet das Skript: `polymer analyze src/fairshop-app.js src/MyMixin.js > analysis.json`
-
-## Installation von VS-Code Tools
-
-Zur Entwicklung von Webkomponenten mit Polymer wird VS-Code als IDE empfohlen, da es dafür von Google unterstützes Tooling gibt.
-Sollte eine andere IDE genutzt werden, sollten äquivalente Tools manuell installiert werden.
-
-### Automatische Installation
-
-Die Datei [install_extensions.ps1](./install_extensions.ps1) ist ein, in VS-Code ausführbares, Skript. Zuerst muss die Konsole mit der Tastenkombination `Strg + Ö` geöffnet werden.
-Ausgeführt wird das Skript nun mit folgendem Befehl: `.\install_extensions.ps1`. Damit die Tools genutzt werden können, muss VS-Code nach der Installation neu gestartet werden.
-
-### Manuelle Installation
-
-Sollte eine andere IDE genutzt werden oder die skriptgesteuerte Installation fehlschlagen, muss man Erweiterungen/Plugins für folgende Funktionen finden:
-
-* Prettier Formatter (Einheitlicher Code-Style für alle JavaScript Projekte)
-* SonarJS Linter (Nutzt die Regeln von SonarJS zum Erkennen von potentiellen Fehlerquellen und schlechtem Programmierstil)
-* Beliebiges JSDoc Tool (Optional zur einfacheren Erstellung von JSDoc-Kommentaren mit Autovervollständigung, Tags, etc.)
-* Beliebiges TODO Highlighting Tool (Optional zum Hervorheben und gesammeltem Anzeigen von JS Kommentaren die mit `//TODO` oder `//TODO:` beginnen)
-* Syntax-Highlightr für in JavaScript integrierten HTML-Code mit Autofill/Intellisense (Optional zum Erleichtern vom template schreiben)
 
 # Tipps zur Entwicklung
 
+Dieses Projekt erfordert die Polymer CLI und NodeJS. Die Installation ist hier beschrieben: https://www.polymer-project.org/3.0/docs/tools/polymer-cli
+
+Bevor das Projekt das erste mal benutzt wird, muss es mit `polymer install` initialisiert werden. Dadurch werden alle in `package.json` angegebenen Abhängigkeiten heruntergeladen und bereitgestellt. Das dauert beim erstan Mal eine Weile.
+
+Für die Entwicklung kann die App nach Ausführung des Befehls `polymer serve` unter der URL http://127.0.0.1:8081 in Chrome aufgerufen werden. Änderungen sind nach einem Refresh im Browser sofort sichtbar.
+
+Es wird angestrebt, die App son unabhängig wie möglich vom Server zu betreiben, um auch bei langsamem Netzwetzwerk eine gute User Experiance zu haben. Dazu wird die `Workbox` eingesetzt, die in der Datei `service-worker.js` konfiguriert ist. Die Workbox ist erst nach dem Build (s.u.) aktiv. 
+
+Eine völlige Offlinefähigkeit des Shops ist nicht möglich, da die Ergebnisse aller möglichen REST Anfragen vorab gecached werden müssten. Außerdem dürfte der Warenbestand mit allen Bildern den Cache-Speicher der meisten Browser sprengen.
+
 ## Demo
 
-Jede Webkomponente sollte mindestens eine Minimal-Demo enthalten, welche eine Beispielhafte Nutzung der Komponente vorführt.
-Diese Demo befindet sich standardmäßig in [/demo/index.html](.\demo\index.html). Eine Demo sollte in dieser Datei einzeln mit einem `<demo-snippet> </demo-snippet>` umgeben sein.
-Achtung: Innerhalb der Demo kann man kein Databinding nutzen, außer man nutzt das `<dom-bind>` helper element von polymer ([dom-bind](https://www.polymer-project.org/2.0/docs/devguide/templates#dom-bind)).
+Jede Webkomponente sollte mindestens ein Minimal-Demo enthalten, welches eine beispielhafte Nutzung der Komponente zeigt.
+Dieses Demo befindet sich standardmäßig in [/demo/index.html](.\demo\index.html). Eine Demo sollte in dieser Datei einzeln mit einem `<demo-snippet> </demo-snippet>` umgeben sein.
+Demos sollten unabhängig vom REST Service sein.
 
-Die Demo-Seite kann über den Befehl `npm run demo` aufgerufen werden.
+Die Demo-Seite kann nach Ausführung des Befehls `polymer serve` unter der URL http://127.0.0.1:8081/demo aufgerufen werden.
 
 ## Automatisierte Tests
 
@@ -78,39 +76,17 @@ Tests müssen mindestens zu den Core-Funktionalitäten, bestenfalls für alle Fe
 ### Entwicklung von Tests
 
 Für jedes selbst geschriebene JavaScript-Modul, das in der Webkomponente genutzt wird, muss eine eigene html Datei im test-Ordner hinzugefügt werden. Außerdem muss diese Datei in der [test/index.html](.\test\index.html) in die Liste der zu ladenden Tests eingefügt werden.
-Hat man beispielsweise ein Mixin namens `MyMixin.js`, muss man eine Datei `test/MyMixin.html` erstellen und [test/index.html](.\test\index.html) wie folgt anpassen:
+Tests können mit `polymer test` für alle installierten Browser automatisiert durchgeführt werden oder nach der Ausführung von `polymer serve` unter der URL http://127.0.0.1:8081/test im verwendeten Browser gestartet werden.
 
-```
-window.WCT.loadSuites([
-  'fairshop-app.html?dom=shadow',
-  'fairshop-app.html?wc-shadydom=true&wc-ce=true',
-  'MyMixin.js'
-]);
-```
-
-Beachtet hierbei, dass die Tests sowohl mit Polyfills als auch ohne ausgeführt werden müssen. Das erfolgt durch den suffix `?dom=shadow` und `wc-shadydom=true&wc-ce=true` welches nur Konfigurationen für den [web-component-tester](https://github.com/Polymer/web-component-tester) sind.
-
-Tests werden in BDD-Syntax (Behaviour-Driven-Development) mit Mocha, Chai und Sinon verfasst (siehe [web-component-tester](https://github.com/Polymer/web-component-tester) für Details).
-
-### Ausführung von Tests
-
-Es gibt zwei Möglichkeiten um Tests auszuführen.
-
-1.  `polymer test`
-    Lässt Selenium-Tests automatisch in allen definierten Browsern laufen. Die Konfiguration dazu ist in der [wct.conf.json](.\wct.conf.json)-Datei.
-2.  `polymer serve`
-    Öffnet ein Chrome-Browser und navigiert zu [test](.\test\index.html). Hier werden die tests mit Mocha ausgeführt und deren Ergebnis visuell repräsentiert. Unter Windows sollte MOMENTAN diese Möglichkeit benutzt werden (Bugs und Performance-Probleme machen Selenium-tests unbrauchbar)
 
 ## API-Dokumentation
 
-Zur Dokumentation nutzen wir [JSDoc](http://usejsdoc.org/). Mit dem Befehl `npm run docs` werden alle in der package.json im jeweiligen Skript genannten JavaScript-Dateien geparsed und eine Datei namens analysis.json generiert. Diese wird in der [index.html](.\index.html) von der [iron-component-page](https://github.com/PolymerElements/iron-component-page) genutzt, um eine Dokumentationsseite anzuzeigen.
+Die Dokumentation wird mit dem Befehl `polymer analyze > analysis.json` erzeugt oder aktualisiert. Nach der Ausführung von `polymer serve` kann sie unter der URL http://localhost:8081/docs.html angesehen werden.
 
+Eigene Komponenten sollten im Javascript code dokumentiert werden, um die generierte Dokumentation Aussagekräftig zu machen.
 
 ## Build-Prozess
 
-Hierzu wird webpack genutzt um ein UMD-Bundle zu bauen. Der Befehl dazu ist `npm run build`. Die Konfiguration ist in [webpack.config.js](.\webpack.config.js) zu finden.
+Hierzu wird die Polymer CLI benutzt. Der Befehl dazu ist `polymer build`. Das Projekt ist in der Datei `polymer.json` so konfiguriert, dass das `es6-bundled `Profil ausgegeben wird. Es läuft in allen aktuellen Browsern mit guter Performance.
 
-**WICHTIG:**
-
-Dieser Schritt sollte nur zu Testzwecken vom Entwickler ausgeführt werden. Am Ende wird der Jenkins-Build-Prozess ein finales UMD-Bundle erzeugen und die Version in git entsprechend Taggen, damit jeder weiß, welche Version genau benutzt wird/werden soll.
-Bitte benutzt eure lokal gebautes UMD-Bundle **NICHT** in einem anderen Projekt. Nehmt immer das, was auf dem Bitbucket-Repository liegt.
+Das Verzeihnis `/build/es6-bundled` kann auf einem beliebigen Webserver deployed werden. Es kann auch der Polymer Server verwendet werden, indem im Verzeichnis `/build/es6-bundled` der Befehl `polymer serve` aufgerufen wird.
