@@ -41,7 +41,7 @@ export class FairshopProductCard extends PolymerElement {
 					width: 100%;
 					min-height: 100%;
 					text-align: center;
-					maring: 0;
+					margin: 0;
 					padding: 0.5rem;
 					border-style: solid;
 					border-width: 0.5px;

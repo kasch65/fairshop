@@ -35,17 +35,21 @@ export class FairshopManufacturersList extends PolymerElement {
 	static get template() {
 		return html `
 			<style include="fairshop-styles">
-			.manufacturers {
+				.manufacturers {
 					overflow: auto;
 				}
 				.active {
 					background-color: var(--google-blue-100);
 				}
 				ul {
+					display: grid;
+					grid-gap: .2rem;
+					grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
 					list-style-type: none;
+					padding: 0;
 				}
 				li {
-					float: left;
+					height: 7rem;
 				}
 				li>a {
 					text-decoration: none;

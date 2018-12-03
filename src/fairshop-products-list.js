@@ -89,19 +89,22 @@ export class FairshopProductsList extends PolymerElement {
 					_overflow: auto;
 				}
 				ul {
-					display: flex;
+					/*display: flex;
 					flex-wrap: wrap;
-					justify-content: flex-start;
+					justify-content: flex-start;*/
 					width: 100%;
+					display: grid;
+					grid-gap: .2rem;
+					grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 					margin: 0;
 					padding: 0;
 					list-style-type: none;
 				}
 				li {
 					box-sizing: border-box;
-					flex-grow: 1;
+					/*flex-grow: 1;
 					width: 12rem;
-					max-width: 50%;
+					max-width: 50%;*/
 					padding: 0.2rem;
 				}
 				li>a {

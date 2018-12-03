@@ -26,11 +26,10 @@ export class FairshopManufacturerCard extends PolymerElement {
 		return html `
 			<style include="fairshop-styles">
 				.manufacturer-card {
-					width: 6rem;
-					height: 6rem;
+					width: 100%;
+					height: 100%;
 					text-align: center;
 					padding: 0.5rem;
-					margin: 0.5rem;
 					border-style: solid;
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
