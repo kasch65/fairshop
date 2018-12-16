@@ -1,7 +1,7 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
+import './services/bukhtest/fairshop-manufacturer-service';
 
 /**
  * @class
@@ -19,11 +19,8 @@ export class FairshopManufacturer extends PolymerElement {
 				type: Number,
 				observer: "_manufacturerChanged"
 			},
-			_manufacturerDescription: {
+			_manufacturer: {
 				type: Object
-			},
-			_manufacturerImages: {
-				type: Array
 			}
 		};
 	}
@@ -54,59 +51,26 @@ export class FairshopManufacturer extends PolymerElement {
 					text-align: center;
 				}
 			</style>
+			<fairshop-manufacturer-service rest-url="[[restUrl]]" image-url="[[imageUrl]]"selected-manufacturer="[[selectedManufacturer]]" manufacturer="{{_manufacturer}}"></fairshop-manufacturer-service>
 			<div class="manufacturer">
-				<h1>[[_manufacturerDescription.0]]</h1>
+				<h1>[[_manufacturer.name]]</h1>
 				<div class="images">
-					<template is="dom-repeat" items="[[_manufacturerImages]]" as="manufacturerImage">
+					<template is="dom-repeat" items="[[_manufacturer.images]]" as="manufacturerImage">
 						<div class="tile-image">
-						<fairshop-image class="manufacturer-img" src="[[imageUrl]][[manufacturerImage.0]]" placeholder="/src/img/no_picture.png""></fairshop-image>
+							<fairshop-image class="manufacturer-img" src="[[manufacturerImage]]" placeholder="/src/img/no_picture.png"></fairshop-image>
 						</div>
 					</template>
 				</div>
+				[[_setManufacturerDescriptionHtml(_manufacturer.description)]]
 				<div id="manufacturerInfo">
 				</div>
 			</div>
-
-			<iron-ajax 
-				id="requestManufacturerDescription"
-				url="[[restUrl]]manufacturer_descriptions?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=name,description"
-				handle-as="json"
-				on-response="_manufacturerDescriptionReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestManufacturerImages"
-				url="[[restUrl]]manufacturer_images?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=use,eq,Herstellerkachel&columns=file"
-				handle-as="json"
-				on-response="_requestManufacturerImagesReceived">
-			</iron-ajax>
 		`;
 	}
 
-	_manufacturerChanged() {
-		if (!this.selectedManufacturer) {
-			this._manufacturerDescription = null;
-			this._manufacturerImages = null;
-		}
-		else {
-			this.$.requestManufacturerDescription.generateRequest();
-			this.$.requestManufacturerImages.generateRequest();
-		}
-	}
-
-	_manufacturerDescriptionReceived(data) {
-		if (data.detail.response && data.detail.response.manufacturer_descriptions && data.detail.response.manufacturer_descriptions.records) {
-			this._manufacturerDescription = data.detail.response.manufacturer_descriptions.records[0];
-			// Add HTML to description
-			this.$.manufacturerInfo.innerHTML =this._manufacturerDescription[1];
-		}
-
-	}
-
-	_requestManufacturerImagesReceived(data) {
-		if (data.detail.response && data.detail.response.manufacturer_images && data.detail.response.manufacturer_images.records) {
-			this._manufacturerImages = data.detail.response.manufacturer_images.records;
-		}
+	_setManufacturerDescriptionHtml(html) {
+		// Add HTML to description
+		this.$.manufacturerInfo.innerHTML = html;
 	}
 
 }

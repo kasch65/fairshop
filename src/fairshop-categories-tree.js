@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
 import './fairshop-styles.js';
+import './services/bukhtest/fairshop-categories-tree-service.js';
 
 /**
  * @class
@@ -12,8 +12,15 @@ export class FairshopCategoriesTree extends PolymerElement {
 				type: String
 			},
 			searchString: {
-				type: String,
+				type: String
+			},
+			_searchMatches: {
+				type: Set,
 				observer: '_search'
+			},
+			_categoriesTree: {
+				type: Array,
+				observer: '_renderTree'
 			}
 		};
 	}
@@ -51,6 +58,7 @@ export class FairshopCategoriesTree extends PolymerElement {
 					background-color: yellow;
 				}
 			</style>
+			<fairshop-categories-tree-service rest-url="[[restUrl]]" search-string="[[searchString]]" search-matches="{{_searchMatches}}" categories-tree="{{_categoriesTree}}"></fairshop-categories-tree-service>
 			<div class="categories">
 				<h1>Kategoriebaum</h1>
 				<template is="dom-if" if="[[searchString]]">
@@ -58,79 +66,16 @@ export class FairshopCategoriesTree extends PolymerElement {
 				</template>
 				<div id="catList">
 			</div>
-
-			<iron-ajax 
-				id="requestCategoryDescriptions"
-				url="[[restUrl]]category_descriptions?columns=categoryId,parentId,name"
-				handle-as="json"
-				on-response="_categoryDescriptionsReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="searchCategoryDescriptions"
-				handle-as="json"
-				on-response="_searchDescriptionsReceived">
-			</iron-ajax>
 		`;
 	}
 
-	ready() {
-		super.ready();
-		this.$.requestCategoryDescriptions.generateRequest();
-	}
-
-	_categoryDescriptionsReceived(data) {
-		if (data.detail.response && data.detail.response.category_descriptions) {
-			var categoryRecords = data.detail.response.category_descriptions.records;
-			var parentCategoryId = null;
-			var indent = 0;
-			var target = this.$.catList;
-			this.addChildren(parentCategoryId, categoryRecords, target, indent);
-			// Let tests wait until ajax data has been evaluated and this event to be fired
-			this.dispatchEvent(new CustomEvent('test-event', {detail: 'ajax-loaded'}));
-		}
-	}
-
-	addChildren(parentCategoryId, categoryRecords, target, indent) {
-		for (let category of categoryRecords) {
-			if (category[1] == parentCategoryId) {
-				//console.log('' + indent + ' ' + category[0] + ' ' + category[2]);
-				var catElement = document.createElement('div');
-				var aElement = document.createElement('a');
-				aElement.setAttribute("href", "/categories/" + category[0]);
-				var catTextElement = document.createTextNode(category[2]);
-				aElement.appendChild(catTextElement);
-				catElement.appendChild(aElement);
-				catElement.setAttribute("class", "cat-node");
-				//catElement.setAttribute("href", category[0]);
-				catElement.setAttribute("category", category[0]);
-				target.appendChild(catElement);
-				this.addChildren(category[0], categoryRecords, catElement, indent + 1);
-			}
-		}
-	}
-
 	_search() {
-		if (this.searchString) {
-			console.log('Highlighting categories: ' + this.searchString);
-			this.$.searchCategoryDescriptions.url = this.restUrl + 'category_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=categoryId';
-			this.$.searchCategoryDescriptions.generateRequest();
-		}
-		else {
-			this._resetSearch();
-		}
-	}
-
-	_searchDescriptionsReceived(data) {
-		if (data.detail.response && data.detail.response.category_descriptions) {
-			this._resetSearch();
+		this._resetSearch();
+		if (this._searchMatches) {
 			var catDivs = this.root.querySelectorAll('.cat-node');
-			for (let catIdRes of data.detail.response.category_descriptions.records) {
-				var catId = catIdRes[0];
-				for (let catDiv of catDivs) {
-					if (catDiv.getAttribute('category') == catId) {
-						catDiv.classList.add('found');
-					}
+			for (let catDiv of catDivs) {
+				if (this._searchMatches.has(Number(catDiv.getAttribute('category')))) {
+					catDiv.classList.add('found');
 				}
 			}
 		}
@@ -140,6 +85,30 @@ export class FairshopCategoriesTree extends PolymerElement {
 		var catDivs = this.root.querySelectorAll('.cat-node');
 		for (let catDiv of catDivs) {
 			catDiv.classList.remove('found');
+		}
+	}
+
+	_renderTree() {
+		for (let category of this._categoriesTree) {
+			this._renderCategory(0, category, this.$.catList);
+		}
+	}
+
+	_renderCategory(level, category, parentElement) {
+		var catElement = document.createElement('div');
+		var aElement = document.createElement('a');
+		aElement.setAttribute("href", category.url);
+		var catTextElement = document.createTextNode(category.name);
+		aElement.appendChild(catTextElement);
+		catElement.appendChild(aElement);
+		catElement.setAttribute("class", "cat-node");
+		//catElement.setAttribute("href", category[0]);
+		catElement.setAttribute("category", category.id);
+		parentElement.appendChild(catElement);
+		if (category.children) {
+			for (let child of category.children) {
+				this._renderCategory(level + 1, child, catElement);
+			}
 		}
 	}
 

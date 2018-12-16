@@ -8,13 +8,13 @@ $_documentContainer.innerHTML = `
         * {
           box-sizing: border-box;
           font-family: 'Roboto', sans-serif;
-          font-weight: 400;
           line-height: 1.5rem;
           color: var(--secondary-text-color);
         }
         h1,
         h2,
         h3 {
+          font-weight: 400;
           color: var(--primary-text-color);
         }
         paper-button,
