@@ -75,8 +75,12 @@ export class FairshopManufacturersListService extends PolymerElement {
 				var id = Number(manufacturerRecord[0]);
 				var manufacturer = manufacturersMap.get(id);
 				if (!manufacturer) {
-					manufacturer = new Object();
-					manufacturer.id = id;
+					manufacturer = {
+						'id': id,
+						'url': null,
+						'name': null,
+						'imageUrl': null
+					}
 				} 
 				manufacturer.url = '/manufacturers/' + id;
 				manufacturer.name = manufacturerRecord[1];

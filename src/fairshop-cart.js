@@ -269,8 +269,10 @@ export class FairshopCart extends PolymerElement {
 	}
 
 	_checkout() {
-		var checkout = new Object();
-		checkout.id = Number(this._id);
+		var checkout = {
+			'id': Number(this._id),
+			'user': null
+		}
 		// TODO Security risk: user must be set by server!
 		if (this.session) {
 			checkout.user = this.session.user;
@@ -287,10 +289,11 @@ export class FairshopCart extends PolymerElement {
 		var target = this.$.cartTable;
 		var requests = Array();
 		for (let cadidate of Array.from(target.children)) {
-			var checkoutItem = new Object();
-			checkoutItem.orderId = Number(this._id);
-			checkoutItem.productId = Number(cadidate.productId);
-			checkoutItem.count = Number(cadidate.count);
+			var checkoutItem = {
+				'orderId': Number(this._id),
+				'productId': Number(cadidate.productId),
+				'count': Number(cadidate.count)
+		}
 			this.$.requestCheckoutItem.body = checkoutItem;
 			var request = this.$.requestCheckoutItem.generateRequest();
 			request.setAttribute('productId', checkoutItem.productId);

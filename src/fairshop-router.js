@@ -147,10 +147,11 @@ export class FairshopRouter extends PolymerElement {
 		console.log('Router: Authorization state changed to ' + this.unauthorized);
 		if (this.unauthorized) {
 			console.log('Router: Authorization required!');
-			this._lastPage = Object();
-			this._lastPage.page = this.page;
-			//this._lastPage.path = this.path;
-			this._lastPage.path = this._route.path;
+			this._lastPage = {
+				'page': this.page,
+				//'path': this.path,
+				'path': this._route.path
+			}
 			//this.page = 'login';
 			this.set('_route.path', '/login');
 			//this.path = '/login';

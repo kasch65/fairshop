@@ -61,11 +61,13 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 			// Store all categories in a map
 			var categoryRecords = data.detail.response.category_descriptions.records;
 			for (let category of categoryRecords) {
-				var newCategory = Object();
-				newCategory.id = Number(category[0]);
-				newCategory.parentId = Number(category[1]);
-				newCategory.url = "/categories/" + category[0];
-				newCategory.name = category[2];
+				var newCategory = {
+					'id': Number(category[0]),
+					'parentId': Number(category[1]),
+					'url': '/categories/' + category[0],
+					'name': category[2],
+					'children': null
+				}
 				this._categoriesMap.set(Number(category[0]), newCategory);
 			}
 			// Assign to children

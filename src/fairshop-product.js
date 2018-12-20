@@ -29,8 +29,7 @@ export class FairshopProduct extends PolymerElement {
 			 * Set the selected product ID to update the displayed content.
 			 */
 			selectedProduct: {
-				type: Number,
-				observer: "_productChanged"
+				type: Number
 			},
 			_product: {
 				type: Object
@@ -151,7 +150,7 @@ export class FairshopProduct extends PolymerElement {
 						</paper-tabs>
 					</div>
 					<div class="info">
-						<h2>[[_product.description1]]</h2>
+						<h2>[[_product.description.name]]</h2>
 						<table>
 							<tr>
 								<td>Artikelnummer</td>
@@ -194,6 +193,7 @@ export class FairshopProduct extends PolymerElement {
 								<paper-tab>Downloads</paper-tab>
 							</paper-tabs>
 							<iron-pages id="tabPages" class="article-tabs" selected="{{_selectedTab}}">
+								[[_setProductDescriptionHtml(_product.description)]]
 								<div id="descriptionTab"></div>
 								<div>...</div>
 								<div id="download">
@@ -243,6 +243,18 @@ export class FairshopProduct extends PolymerElement {
 
 	_addItem() {
 		this.cart.addItem(Number(this.selectedProduct), Number(this._count), window.location.pathname);
+	}
+
+	_setProductDescriptionHtml(description) {
+		// Add HTML to description
+		var html = '';
+		if (description && description.description1) {
+			html += '<p>' + description.description1 + '</p>';
+		}
+		if (description && description.description2) {
+			html += '<p>' + description.description2 + '</p>';
+		}
+		this.$.descriptionTab.innerHTML = html;
 	}
 
 }

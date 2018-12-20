@@ -86,8 +86,9 @@ export class FairshopLogin extends PolymerElement {
 		this.toast.open();
 		this.csrf = event.detail.response;
 		this.unauthorized = false;
-		var session = Object();
-		session.user = this.user;
+		var session = {
+			'user': this.user
+		}
 		this.session = session;
 	}
 

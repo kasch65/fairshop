@@ -52,10 +52,11 @@ export class FairshopManufacturerService extends PolymerElement {
 			var completions = [this.$.requestManufacturerDescription.generateRequest().completes, this.$.requestManufacturerImages.generateRequest().completes];
 			var that = this;
 			Promise.all(completions).then(function (completions) {
-				var newManufacturer = Object();
-				newManufacturer.name = completions[0].response.manufacturer_descriptions.records[0][0];
-				newManufacturer.description = completions[0].response.manufacturer_descriptions.records[0][1];
-				newManufacturer.images = Array();
+				var newManufacturer = {
+					'name': completions[0].response.manufacturer_descriptions.records[0][0],
+					'description': completions[0].response.manufacturer_descriptions.records[0][1],
+					'images': Array()
+				}
 				for (let imageRecord of completions[1].response.manufacturer_images.records[0]) {
 					newManufacturer.images.push(that.imageUrl + imageRecord);
 				}

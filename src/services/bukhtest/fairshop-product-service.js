@@ -71,8 +71,19 @@ export class FairshopProductService extends PolymerElement {
 			this.product = null;
 		}
 		else {
-			this._productTmp = new Object();
-			this._productTmp.id = Number(this.selectedProduct);
+			this._productTmp = {
+				'id': Number(this.selectedProduct),
+				'nr': null,
+				'EAN': null,
+				'nettoPrice': null,
+				'price': null,
+				'tax': null,
+				'available': null,
+				'manufacturerName': null,
+				'description': null,
+				'images': null,
+				'downloads': null
+			}
 			var completions = [
 				this.$.requestProducInfo.generateRequest().completes,
 				this.$.requestProductDescription.generateRequest().completes,
@@ -100,11 +111,12 @@ export class FairshopProductService extends PolymerElement {
 
 	_productDescriptionReceived(data) {
 		if (data.detail.response && data.detail.response.product_descriptions) {
-			var newDescription = new Object();
-			newDescription.name = data.detail.response.product_descriptions.records[0][0];
-			newDescription.description1 = data.detail.response.product_descriptions.records[0][1];
-			newDescription.description2 = data.detail.response.product_descriptions.records[0][2];
-			this._productTmp.decription = newDescription;
+			var newDescription = {
+				'name': data.detail.response.product_descriptions.records[0][0],
+				'description1': data.detail.response.product_descriptions.records[0][1],
+				'description2': data.detail.response.product_descriptions.records[0][2]
+			}
+			this._productTmp.description = newDescription;
 		}
 	}
 
@@ -112,10 +124,11 @@ export class FairshopProductService extends PolymerElement {
 		if (data.detail.response && data.detail.response.product_images) {
 			this._productTmp.images = new Array();
 			for (let image of data.detail.response.product_images.records) {
-				var newImages = new Object();
-				newImages.small = this.imageUrl + image[0];
-				newImages.medium = this.imageUrl + image[1];
-				newImages.large = this.imageUrl + image[2];
+				var newImages = {
+					'small': this.imageUrl + image[0],
+					'medium': this.imageUrl + image[1],
+					'large': this.imageUrl + image[2]
+				}
 				this._productTmp.images.push(newImages);
 			}
 		}
@@ -125,10 +138,11 @@ export class FairshopProductService extends PolymerElement {
 		if (data.detail.response && data.detail.response.product_downloads) {
 			this._productTmp.downloads = new Array();
 			for (let download of data.detail.response.product_downloads.records) {
-				var newDownload = new Object();
-				newDownload.description = download[0];
-				newDownload.url = this.imageUrl + download[1];
-				this._productTmp.downloads.push(newDownload);
+				var newDownload = {
+					'description': download[0],
+					'url': this.imageUrl + download[1]
+				}
+				this._productTmp.downloads.push(newDownload)
 			}
 		}
 	}
