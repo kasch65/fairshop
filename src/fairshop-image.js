@@ -8,7 +8,9 @@ export class FairshopImage extends PolymerElement {
 	static get properties() {
 		return {
 			src: {
-				type: String
+				type: String,
+				value: null,
+				observer: "_srcChange"
 			},
 			placeholder: {
 				type: String
@@ -23,7 +25,7 @@ export class FairshopImage extends PolymerElement {
 			},
 			_imgBg: {
 				type: String,
-				value: ''
+				value: 'background-image: none; background-size: contain;'
 			}
 		};
 	}
@@ -71,7 +73,7 @@ export class FairshopImage extends PolymerElement {
 					transition: opacity 0.3s;
 				}
 			</style>
-			<img id="img" src="[[src]]" on-load="_loaded"></img>
+			<img id="img" src="[[src]]" on-load="_loaded" on-error="_error">
 			<div id="placeholderDiv" style="[[_placeholderBg]]"></div>
 			<div id="imgDiv" style="[[_imgBg]]"></div>
 		`;
@@ -82,10 +84,26 @@ export class FairshopImage extends PolymerElement {
 		this._placeholderBg = 'background-image: url("' + this.placeholder + '"); background-size: ' + this.sizing + ';';
 	}
 
+	_srcChange() {
+		this.$.placeholderDiv.classList.remove("loaded");
+		this.$.imgDiv.classList.remove("loaded");
+	}
+
 	_loaded() {
-		this._imgBg = 'background-image: url("' + this.src + '"); background-size: ' + this.sizing + ';';
-		this.$.placeholderDiv.classList.add("loaded");
-		this.$.imgDiv.classList.add("loaded");
+		if (this.src) {
+			this._imgBg = 'background-image: url("' + this.src + '"); background-size: ' + this.sizing + ';';
+			this.$.placeholderDiv.classList.add("loaded");
+			this.$.imgDiv.classList.add("loaded");
+			}
+		else {
+			this.$.placeholderDiv.classList.remove("loaded");
+			this.$.imgDiv.classList.remove("loaded");
+		}
+	}
+
+	_error() {
+		this.$.placeholderDiv.classList.remove("loaded");
+		this.$.imgDiv.classList.remove("loaded");
 	}
 
 }

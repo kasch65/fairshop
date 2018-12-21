@@ -204,9 +204,7 @@ export class FairshopProduct extends PolymerElement {
 										</a>
 									</template>
 								</div>
-							</div>
 							</iron-pages>
-							<div></div>
 							<div class="downloads">
 							</div>
 						</div>
