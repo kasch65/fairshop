@@ -2,6 +2,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-input/paper-input.js';
 import './fairshop-styles.js';
+import './services/bukhtest/fairshop-login-service.js';
 
 /**
  * @class
@@ -50,35 +51,22 @@ export class FairshopLogin extends PolymerElement {
 				}
 			</style>
 
+			<fairshop-login-service id="loginService" session="{{session}}" rest-url="[[restUrl]]" unauthorized="{{unauthorized}}" csrf="{{csrf}}" toast="[[toast]]" user="[[user]]" password="[[_password]]"></fairshop-login-service>
+
 			<h1>Login</h1>
 			<paper-input id="userField" label="User" value="{{user}}"></paper-input>
 			<paper-input id="passwordField" label="Password" value="{{_password}}" type="password"></paper-input>
 			<paper-button id="reset" on-click="_reset">Reset</paper-button>
 			<paper-button id="login" on-click="_login" raised>Login</paper-button>
-
-			<iron-ajax 
-				id="requestLogin"
-				url="[[restUrl]]"
-				with-credentials="true"
-				method="post"
-				body="username=[[user]]&password=[[_password]]"
-				on-response="_loginReceived"
-				on-error="_loginFailure">
-			</iron-ajax>
 		`;
 	}
 
-	ready() {
-		super.ready();
-	}
-
 	_login() {
-		this.$.requestLogin.generateRequest();
+		this.$.loginService.login();
 	}
 
 	_reset() {
-		this.user = null;
-		this._password = null;
+		this.$.loginService.reset();
 	}
 
 	_loginReceived(event) {

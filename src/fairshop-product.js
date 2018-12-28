@@ -240,7 +240,7 @@ export class FairshopProduct extends PolymerElement {
   }
 
 	_addItem() {
-		this.cart.addItem(Number(this.selectedProduct), Number(this._count), window.location.pathname);
+		this.cart.setItem(Number(this.selectedProduct), Number(this._count), window.location.pathname);
 	}
 
 	_setProductDescriptionHtml(description) {

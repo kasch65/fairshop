@@ -1,5 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
+import './services/bukhtest/fairshop-cart-service.js';
 import './fairshop-cart-item.js';
 import './fairshop-styles.js';
 
@@ -20,17 +21,6 @@ export class FairshopCart extends PolymerElement {
 				value: 0,
 				notify: true
 			},
-			_nettoSum: {
-				type: Number,
-				value: 0
-			},
-			_sum: {
-				type: Number,
-				value: 0
-			},
-			_id: {
-				type: Number
-			},
 			toast: {
 				type: Object
 			},
@@ -43,6 +33,10 @@ export class FairshopCart extends PolymerElement {
 			},
 			session: {
 				type: Object
+			},
+			_cart: {
+				type: Object,
+				observer: '_calculateSum'
 			}
 		};
 	}
@@ -124,12 +118,15 @@ export class FairshopCart extends PolymerElement {
 					width: 5rem;
 				}
 			</style>
+
+			<fairshop-cart-service id="cartService" rest-url="[[restUrl]]" toast="[[toast]]" session="[[session]]" unauthorized="{{unauthorized}}" csrf="{{csrf}}" image-url="[[imageUrl]]" cart="{{_cart}}"></fairshop-cart-service>
 			
 			<paper-button id="backBtn" aria-label="Go back" on-click="_goBack" raised>Weiter einkaufen</paper-button>
 
 			<h1>Warenkorb</h1>
 
 			<h2>Artikelliste</h2>
+			<!-- Table header -->
 			<div class="item">
 				<div class="image">&nbsp;</div>
 				<div class="prod-id"><h3>ID</h3></div>
@@ -143,16 +140,20 @@ export class FairshopCart extends PolymerElement {
 			</div>
 			<div id="cartTable">
 				<!-- Items go here -->
+				<template is="dom-repeat" items="[[_cart.items]]" as="item">
+					<fairshop-cart-item rest-url="[[restUrl]]" image-url="[[imageUrl]]" cart="{{_cart}}" item="{{item}}"></fairshop-cart-item>
+				</template>
 			</div>
+			<!-- Table footer -->
 			<div class="item">
 				<div class="image">&nbsp;</div>
 				<div class="prod-id">&nbsp;</div>
-				<div class="name">Artikelzahl: [[count]]</div>
+				<div class="name">Artikelzahl: [[_cart.count]]</div>
 				<div class="count"><h3>Summe</h3></div>
 				<div class="one-price"><h3>Netto:</h3></div>
-				<div class="all-netto-price"><h3>[[_nettoSum]]€</h3></div>
+				<div class="all-netto-price"><h3>[[_cart.nettoSum]]€</h3></div>
 				<div class="tax"><h3>Brutto:</h3></div>
-				<div class="all-price"><h3>[[_sum]]€</h3></div>
+				<div class="all-price"><h3>[[_cart.sum]]€</h3></div>
 				<div class="remove">&nbsp;</div>
 			</div>
 
@@ -160,101 +161,57 @@ export class FairshopCart extends PolymerElement {
 				<paper-button id="emptyCart" on-click="_empty">Leeren</paper-button>
 				<paper-button id="buy" on-click="_checkout" raised>Kaufen</paper-button>
 			</div>
-
-			<iron-ajax 
-				id="requestCheckout"
-				url="[[restUrl]]orders?csrf=[[csrf]]"
-				with-credentials="true"
-				method="post"
-				handle-as="json"
-				content-type="application/json"
-				on-response="_checkoutReceived"
-				on-error="_checkoutFailure">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestCheckoutItem"
-				url="[[restUrl]]order_items?csrf=[[csrf]]"
-				with-credentials="true"
-				method="post"
-				handle-as="json"
-				content-type="application/json"
-				on-error="_checkoutItemFailure">
-			</iron-ajax>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		if (this.count < 1) {
-			this.$.emptyCart.setAttribute('disabled', true);
-			this.$.buy.setAttribute('disabled', true);
-		}
 		var that = this;
 		document.addEventListener('cart-event', function(event) {
 			that._calculateSum();
 		});
 	}
 
-	_addItem() {
-		this.addItem(Number(this._productId), Number(this.count));
+	static get observers() {
+		return ['_calculateSum(_cart.items.splices)']
 	}
 
-	addItem(id, count, productUrl) {
-		var target = this.$.cartTable;
-		var item = null;
-		for (let cadidate of Array.from(target.children)) {
-			if (cadidate.productId == id) {
-				item = cadidate;
-				break;
-			}
-		}
-		if (!item) {
-			// Create item
-			var item = document.createElement('fairshop-cart-item');
-			item.restUrl = this.restUrl;
-			item.imageUrl = this.imageUrl;
-			item.productId = id;
-			item.productUrl = productUrl;
-			item.count = count;
-			target.appendChild(item);
-		}
-		else {
-			item.count = Number(item.count) + count;
-		}
-		if (!this._id || !(Number(this._id) > 0)) {
-			this._id = Number(new Date().getTime());
-		}
+	setItem(id, count, productUrl) {
+		//console.log('fairshop-cart.js.setItem(): Adding ' + count + ' pcs. to item ' + id + '.');
+		var cartService = this.$.cartService;
+		cartService.setItem(id, count, productUrl);
 		this.toast.text = 'Artikel in den Warenkorb gelegt: id = ' + id + ', Anzahl = ' + count + '';
 		this.toast.open();
 	}
 
 	_empty() {
-		var target = this.$.cartTable;
-		while (target.firstChild) {
-			target.removeChild(target.firstChild);
-		}
-		this._calculateSum();
+		this.set('_cart.items', new Array());
 	}
 
 	_calculateSum() {
+		//console.log('fairshop-cart.js._calculateSum()');
+		if (!this._cart) {
+			return;
+		}
 		var nettoSum = 0;
 		var sum = 0;
-		var target = this.$.cartTable;
 		var count = 0;
-		for (let cadidate of Array.from(target.children)) {
-			var allNettoPrice = Number(cadidate.allNettoPrice);
-			var allPrice = Number(cadidate.allPrice);
+		for (let item of this._cart.items) {
+			var allNettoPrice = Number(item.allNettoPrice);
+			var allPrice = Number(item.allPrice);
 			if (!isNaN(allPrice)) {
 				nettoSum += allNettoPrice;
 				sum += allPrice;
 			}
-			++count;
+			count = Number(count) + Number(item.count);
 		}
-		this._nettoSum = nettoSum.toFixed(2);
-		this._sum = sum.toFixed(2);
-		this.count = count;
-		if (this.count < 1) {
+		// Format currency
+		this.set('_cart.nettoSum', nettoSum.toFixed(2));
+		this.set('_cart.sum', sum.toFixed(2));
+		this.set('_cart.count', count);
+
+		// Enable buttons
+		if (this._cart.count < 1) {
 			this.$.emptyCart.setAttribute('disabled', true);
 			this.$.buy.setAttribute('disabled', true);
 		}
@@ -262,6 +219,8 @@ export class FairshopCart extends PolymerElement {
 			this.$.emptyCart.removeAttribute('disabled');
 			this.$.buy.removeAttribute('disabled');
 		}
+		// Publish count
+		this.count = this._cart.count;
 	}
 
 	_goBack() {
@@ -269,73 +228,7 @@ export class FairshopCart extends PolymerElement {
 	}
 
 	_checkout() {
-		var checkout = {
-			'id': Number(this._id),
-			'user': null
-		}
-		// TODO Security risk: user must be set by server!
-		if (this.session) {
-			checkout.user = this.session.user;
-		}
-		this.$.requestCheckout.body = checkout;
-		this.$.requestCheckout.generateRequest();
+		this.$.cartService.checkout();
 	}
-
-	/**
-	 * Called when cart has been crated on server
-	 * @param {*} data 
-	 */
-	_checkoutReceived(data) {
-		var target = this.$.cartTable;
-		var requests = Array();
-		for (let cadidate of Array.from(target.children)) {
-			var checkoutItem = {
-				'orderId': Number(this._id),
-				'productId': Number(cadidate.productId),
-				'count': Number(cadidate.count)
-		}
-			this.$.requestCheckoutItem.body = checkoutItem;
-			var request = this.$.requestCheckoutItem.generateRequest();
-			request.setAttribute('productId', checkoutItem.productId);
-			requests.push(request);
-		}
-		var that = this;
-		Promise.all(requests).then(function (requests) {
-			that._id = Number(new Date().getTime());
-			for (let request of requests) {
-				for (let cadidate of Array.from(target.children)) {
-					var productIdRunner = Number(cadidate.productId);
-					if (productIdRunner == request.getAttribute('productId')) {
-						cadidate.parentElement.removeChild(cadidate);
-					}
-				}
-			}
-			that._calculateSum();
-			that.toast.text = 'Bestellung erfolgreich abgeschlossen.';
-			that.toast.open();
-		});
-	}
-
-	_checkoutFailure(event) {
-		if (event.detail.request.status == "401") {
-			console.log('Not authenticated!');
-			this.toast.text = 'Not authenticated!';
-			this.toast.open();
-			this.unauthorized = true;
-		} else if (event.detail.request.status == "403") {
-			console.log('Not permitted!');
-			this.toast.text = 'Not permitted!';
-			this.toast.open();
-			this.unauthorized = true;
-		}
-	}
-
-	_checkoutItemFailure(event) {
-		// Invalidate old cart id
-		this._id = Number(new Date().getTime());
-		this.toast.text = 'Bestellung fehlgeschlegen. Bitte versuchen Sie es später erneut.';
-		this.toast.open();
-	}
-
 }
 customElements.define("fairshop-cart", FairshopCart);

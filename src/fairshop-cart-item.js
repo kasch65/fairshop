@@ -1,9 +1,9 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
+import './services/bukhtest/fairshop-cart-item-service.js';
 
 /**
  * @class
@@ -17,36 +17,13 @@ export class FairshopCartItem extends PolymerElement {
 			imageUrl: {
 				type: String
 			},
-			productId: {
-				type: Number,
-				observer: '_productIdChanged'
+			cart: {
+				type: Object,
+				notify: true
 			},
-			productUrl: {
-				type: String
-			},
-			_name: {
-				type: String
-			},
-			_image: {
-				type: String
-			},
-			count: {
-				type: Number,
-				observer: '_allPriceChanged'
-			},
-			_oneNettoPrice: {
-				type: Number,
-				observer: '_allPriceChanged'
-			},
-			_onePrice: {
-				type: Number,
-				observer: '_allPriceChanged'
-			},
-			allNettoPrice: {
-				type: Number
-			},
-			allPrice: {
-				type: Number
+			item: {
+				type: Object,
+				notify: true
 			}
 		};
 	}
@@ -109,91 +86,58 @@ export class FairshopCartItem extends PolymerElement {
 				}
 			</style>
 
+			<fairshop-cart-item-service id="cartItemService" rest-url="[[restUrl]]" image-url="[[imageUrl]]" cart="{{cart}}" item="{{item}}"></fairshop-cart-item-service>
+
 			<div class="item">
 					<div class="image">
-						<a href="[[productUrl]]">
-							<fairshop-image id="image" sizing="contain" src="[[imageUrl]][[_image]]"></fairshop-image>
+						<a href="[[item.url]]">
+							<fairshop-image id="image" sizing="contain" src="[[item.image]]"></fairshop-image>
 						</a>
 					</div>
 					<div class="prod-id">
-						<a href="[[productUrl]]">[[productId]]</a>
+						<a href="[[item.url]]">[[item.id]]</a>
 					</div>
 					<div class="name">
-						<a href="[[productUrl]]">[[_name]]</a>
+						<a href="[[item.url]]">[[item.name]]</a>
 					</div>
 				<div class="count">
-					<paper-input id="count" label="Anzahl" value="{{count}}" no-label-float></paper-input>
+					<paper-input id="count" label="Anzahl" value="{{item.count}}" no-label-float></paper-input>
 				</div>
 				<div class="one-price">
-					[[_oneNettoPrice]]€
+					[[item.oneNettoPrice]]€
 				</div>
 				<div class="all-netto-price">
-					[[allNettoPrice]]€
+					[[item.allNettoPrice]]€
 				</div>
 				<div class="tax">
-					[[_tax]]%
+					[[item.tax]]%
 				</div>
 				<div class="all-price">
-					[[allPrice]]€
+					[[item.allPrice]]€
 				</div>
 				<div class="remove">
 					<paper-icon-button slot="suffix" icon="icons:clear" on-click="_remove"></paper-icon-button>
 				</div>
 			</div>
-
-			<iron-ajax 
-				id="getProductDescriptions"
-				url="[[restUrl]]product_search_copy?filter=id,eq,[[productId]]&columns=nettoPrice,price,tax,available,name"
-				handle-as="json"
-				on-response="_getProductDescriptionsReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProductImages"
-				url="[[restUrl]]product_images?filter=productId,eq,[[productId]]&columns=small&order=pos&page=1,1"
-				handle-as="json"
-				on-response="_productImageReceived">
-			</iron-ajax>
 		`;
 	}
 
-	_productIdChanged() {
-		this.$.getProductDescriptions.generateRequest();
-		this.$.requestProductImages.generateRequest();
-	}
-
-	_getProductDescriptionsReceived(data) {
-		if ( data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records) {
-			var productInfo = data.detail.response.product_search_copy.records[0];
-			this._oneNettoPrice = productInfo[0];
-			this._onePrice = productInfo[1];
-			this._tax = productInfo[2];
-			this._name = productInfo[4];
-		}
-	}
-
-	_productImageReceived(data) {
-		if ( data.detail.response && data.detail.response.product_images && data.detail.response.product_images.records) {
-			var image = data.detail.response.product_images.records[0];
-			this._image = image;
-		}
-	}
-
-	_allPriceChanged() {
-		var allNettoPrice = this.count * this._oneNettoPrice;
-		if (!isNaN(allNettoPrice)) {
-			this.allNettoPrice = allNettoPrice.toFixed(2);
-		}
-		var allPrice = this.count * this._onePrice;
-		if (!isNaN(allPrice)) {
-			this.allPrice = allPrice.toFixed(2);
-			document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
-		}
-	}
-
 	_remove() {
-		this.parentElement.removeChild(this);
-		document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
+		var id = null;
+		for (let item of this.cart.items) {
+			if (item.id == this.item.id) {
+				id = this.item.id;
+				break;
+			}
+		}
+		if (id) {
+			this.splice('cart.items', [{
+				'object': this.cart.items,
+				'index': id,
+				'addedCount': 1,
+				'type': 'splice'
+			}]);
+		}
 	}
 
 }
