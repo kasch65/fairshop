@@ -144,18 +144,12 @@ export class FairshopCartService extends PolymerElement {
 				for (let cadidate of that.cart.items) {
 					var productIdRunner = Number(cadidate.id);
 					if (productIdRunner == request.getAttribute('productId')) {
-						//cadidate.parentElement.removeChild(cadidate);
-						that.splice('cart.items', [{
-							'object': that.cart.items,
-							'index': pos,
-							'addedCount': 1,
-							'type': 'splice'
-						}]);
+						that.splice('cart.items', pos, 1);
+						break;
 					}
 					++pos;
 				}
 			}
-			//that._calculateSum();
 			that.newCart();
 			that.toast.text = 'Bestellung erfolgreich abgeschlossen.';
 			that.toast.open();

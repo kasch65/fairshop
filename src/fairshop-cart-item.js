@@ -123,20 +123,17 @@ export class FairshopCartItem extends PolymerElement {
 	}
 
 	_remove() {
-		var id = null;
+		var pos = -1;
+		var i = 0;
 		for (let item of this.cart.items) {
 			if (item.id == this.item.id) {
-				id = this.item.id;
+				pos = i;
 				break;
 			}
+			++i;
 		}
-		if (id) {
-			this.splice('cart.items', [{
-				'object': this.cart.items,
-				'index': id,
-				'addedCount': 1,
-				'type': 'splice'
-			}]);
+		if (pos >= 0) {
+			this.splice('cart.items', pos, 1);
 		}
 	}
 
