@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import './fairshop-styles.js';
-import './services/bukhtest/fairshop-categories-tree-service.js';
+import './services/zencart/fairshop-categories-tree-service.js';
 
 /**
  * @class

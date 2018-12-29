@@ -1,5 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import './services/bukhtest/fairshop-manufacturers-list-service.js';
+import './services/zencart/fairshop-manufacturers-list-service.js';
 import './fairshop-manufacturer-card.js';
 import './fairshop-styles.js';
 

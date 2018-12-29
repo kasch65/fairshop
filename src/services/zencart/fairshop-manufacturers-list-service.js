@@ -32,19 +32,7 @@ export class FairshopManufacturersListService extends PolymerElement {
 	static get template() {
 		return html `
 			<iron-ajax 
-				id="requestManufacturerImages"
-				url="[[restUrl]]manufacturer_images?columns=manufacturerId,use,file"
-				handle-as="json">
-			</iron-ajax>
-
-			<iron-ajax 
 				id="requestManufacturerDescriptions"
-				url="[[restUrl]]manufacturer_descriptions?columns=manufacturerId,name"
-				handle-as="json">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="searchManufacturerDescriptions"
 				handle-as="json">
 			</iron-ajax>
 		`;
@@ -59,22 +47,21 @@ export class FairshopManufacturersListService extends PolymerElement {
 		var completions = null;
 		if (this.searchString) {
 			console.log('Searching manufacturer: ' + this.searchString);
-			this.$.searchManufacturerDescriptions.url = this.restUrl + 'manufacturer_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=manufacturerId,name';
+			this.$.requestManufacturerDescriptions.url = this.restUrl + 'manufacturers_view?columns=id,name,image&filter=name,cs,' + this.searchString + '&satisfy=any';
 			completions = [
-				this.$.searchManufacturerDescriptions.generateRequest().completes, 
-				this.$.requestManufacturerImages.generateRequest().completes
+				this.$.requestManufacturerDescriptions.generateRequest().completes
 			];
 		}
 		else {
+			this.$.requestManufacturerDescriptions.url = this.restUrl + 'manufacturers_view?columns=id,name,image';
 			completions = [
-				this.$.requestManufacturerDescriptions.generateRequest().completes, 
-				this.$.requestManufacturerImages.generateRequest().completes
+				this.$.requestManufacturerDescriptions.generateRequest().completes
 			];
 		}
 		var that = this;
 		Promise.all(completions).then(function (completions) {
 			var manufacturersMap = new Map();
-			for (let manufacturerRecord of completions[0].response.manufacturer_descriptions.records) {
+			for (let manufacturerRecord of completions[0].response.manufacturers_view.records) {
 				var id = Number(manufacturerRecord[0]);
 				var manufacturer = manufacturersMap.get(id);
 				if (!manufacturer) {
@@ -87,16 +74,8 @@ export class FairshopManufacturersListService extends PolymerElement {
 				} 
 				manufacturer.url = '/manufacturers/' + id;
 				manufacturer.name = manufacturerRecord[1];
+				manufacturer.imageUrl = that.imageUrl + manufacturerRecord[2];
 				manufacturersMap.set(manufacturer.id, manufacturer);
-			}
-			for (let manufacturerImageRecord of completions[1].response.manufacturer_images.records) {
-				if (manufacturerImageRecord[1] == 'Herstellerlogo') {
-					var manufacturer2 = manufacturersMap.get(Number(manufacturerImageRecord[0]));
-					if (manufacturer2) {
-						manufacturer2.imageUrl = that.imageUrl + manufacturerImageRecord[2];
-					}
-					// Ignore images for manufacturers that are not in the result
-				}
 			}
 			var newManufaturers = Array();
 			for (var value of manufacturersMap.values()) {

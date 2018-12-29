@@ -32,13 +32,7 @@ export class FairshopManufacturerService extends PolymerElement {
 		return html `
 			<iron-ajax
 				id="requestManufacturerDescription"
-				url="[[restUrl]]manufacturer_descriptions?filter=manufacturerId,eq,[[selectedManufacturer]]&columns=name,description"
-				handle-as="json">
-			</iron-ajax>
-
-			<iron-ajax
-				id="requestManufacturerImages"
-				url="[[restUrl]]manufacturer_images?filter[]=manufacturerId,eq,[[selectedManufacturer]]&filter[]=use,eq,Herstellerkachel&columns=file"
+				url="[[restUrl]]manufacturers_view?columns=id,name,image&filter=id,eq,[[selectedManufacturer]]"
 				handle-as="json">
 			</iron-ajax>
 		`;
@@ -49,17 +43,17 @@ export class FairshopManufacturerService extends PolymerElement {
 			this.manufacturer = null;
 		}
 		else {
-			var completions = [this.$.requestManufacturerDescription.generateRequest().completes, this.$.requestManufacturerImages.generateRequest().completes];
+			var completions = [
+				this.$.requestManufacturerDescription.generateRequest().completes
+			];
 			var that = this;
 			Promise.all(completions).then(function (completions) {
 				var newManufacturer = {
-					'name': completions[0].response.manufacturer_descriptions.records[0][0],
-					'description': completions[0].response.manufacturer_descriptions.records[0][1],
+					'name': completions[0].response.manufacturers_view.records[0][1],
+					'description': '',
 					'images': Array()
 				}
-				for (let imageRecord of completions[1].response.manufacturer_images.records[0]) {
-					newManufacturer.images.push(that.imageUrl + imageRecord);
-				}
+				newManufacturer.images.push(that.imageUrl + completions[0].response.manufacturers_view.records[0][2]);
 				that.manufacturer = newManufacturer;
 			});
 		}

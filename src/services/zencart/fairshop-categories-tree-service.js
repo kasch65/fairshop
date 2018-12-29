@@ -37,7 +37,7 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 		return html `
 			<iron-ajax 
 				id="requestCategoryDescriptions"
-				url="[[restUrl]]category_descriptions?columns=categoryId,parentId,name&order[]=pos&order[]=name"
+				url="[[restUrl]]categories_view?columns=id,parentId,name&order[]=sort_order&order[]=name"
 				handle-as="json"
 				on-response="_categoryDescriptionsReceived">
 			</iron-ajax>
@@ -56,16 +56,16 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 	}
 
 	_categoryDescriptionsReceived(data) {
-		if (data.detail.response && data.detail.response.category_descriptions) {
+		if (data.detail.response && data.detail.response.categories_view) {
 			this._categoriesMap.clear();
 			// Store all categories in a map
-			var categoryRecords = data.detail.response.category_descriptions.records;
+			var categoryRecords = data.detail.response.categories_view.records;
 			for (let category of categoryRecords) {
 				var newCategory = {
 					'id': Number(category[0]),
-					'parentId': Number(category[1]),
+					'parentId': Number(category[2]),
 					'url': '/categories/' + category[0],
-					'name': category[2],
+					'name': category[1],
 					'children': null
 				}
 				this._categoriesMap.set(Number(category[0]), newCategory);
@@ -79,7 +79,7 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 					obsoleteParents.push(possibleChild.id);
 				}
 			}
-			// Remove categories from mat that are children
+			// Remove categories from map that are children
 			for (var obsoleteParent of obsoleteParents) {
 				this._categoriesMap.delete(obsoleteParent);
 			}
@@ -98,7 +98,7 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 	_search() {
 		if (this.searchString) {
 			console.log('Highlighting categories: ' + this.searchString);
-			this.$.searchCategoryDescriptions.url = this.restUrl + 'category_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=categoryId';
+			this.$.searchCategoryDescriptions.url = this.restUrl + 'categories_view?columns=id&order[]=sort_order&order[]=name&filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any';
 			this.$.searchCategoryDescriptions.generateRequest();
 		}
 		else {
@@ -107,10 +107,10 @@ export class FairshopCategoriesTreeService extends PolymerElement {
 	}
 
 	_searchDescriptionsReceived(data) {
-		if (data.detail.response && data.detail.response.category_descriptions) {
+		if (data.detail.response && data.detail.response.categories_view) {
 			var newMatches = new Set();
 			var catDivs = this.root.querySelectorAll('.cat-node');
-			for (let catIdRes of data.detail.response.category_descriptions.records) {
+			for (let catIdRes of data.detail.response.categories_view.records) {
 				var catId = Number(catIdRes[0]);
 				newMatches.add(catId);
 			}

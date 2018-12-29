@@ -6,7 +6,7 @@ import '@polymer/paper-item/paper-item.js';
 import './fairshop-paginator.js';
 import './fairshop-product-card.js';
 import './fairshop-styles.js';
-import './services/bukhtest/fairshop-products-list-service.js';
+import './services/zencart/fairshop-products-list-service.js';
 
 
 /**
@@ -38,9 +38,6 @@ export class FairshopProductsList extends PolymerElement {
 			_productList: {
 				type: Array
 			},
-			_productCnt: {
-				type: Number
-			},
 			page: {
 				type: Number,
 				value: 1,
@@ -49,13 +46,6 @@ export class FairshopProductsList extends PolymerElement {
 			_itemsPerPage: {
 				type: Number,
 				value: 42
-			},
-			_imageUrlMap: {
-				type: Map
-			},
-			_title: {
-				type: String,
-				value: 'Artikelliste'
 			},
 			_sortOrder: {
 				type: String,
@@ -120,7 +110,7 @@ export class FairshopProductsList extends PolymerElement {
 			<fairshop-products-list-service id="productsListService" rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[selectedManufacturer]]" selected-category="[[selectedCategory]]" search-string="[[searchString]]" page="[[page]]" items-per-page="[[itemsPerPage]]" sort-order="[[_sortOrder]]" product-list="{{_productList}}"></fairshop-products-list-service>
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
-				<div class="heading"><h1>[[_title]]</h1></div>
+				<div class="heading"><h1>[[_productList.title]]</h1></div>
 				<template is="dom-if" if="[[searchString]]">
 					<div class="filtered">Filter: <b>[[searchString]]</b></div>
 				</template>
