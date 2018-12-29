@@ -1,54 +1,57 @@
 <!--
-  Open http://localhost:8081/test/fairshop-manufacturers-list.html to run test in browser
+	Open http://localhost:8081/test/fairshop-manufacturers-list.html to run test in browser
 -->
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>fairshop-manufacturers-list</title>
+		<title>fairshop-manufacturers-list</title>
 
-    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+		<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+		<script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
-    <!-- Import the element to test -->
-    <script type="module" src="../src/fairshop-manufacturers-list.js"></script>
-  </head>
-  <body>
-    <test-fixture id="TestView">
-      <template>
-        <fairshop-manufacturers-list rest-url="/demo/data/manufacturers/" image-url="/demo/data/manufacturers/"></fairshop-manufacturers-list>
-      </template>
-    </test-fixture>
+		<!-- Import the element to test -->
+		<script type="module" src="../src/fairshop-manufacturers-list.js"></script>
+	</head>
+	<body>
+		<test-fixture id="TestView">
+			<template>
+				<fairshop-manufacturers-list rest-url="/demo/data/manufacturers/" image-url="/demo/data/manufacturers/"></fairshop-manufacturers-list>
+			</template>
+		</test-fixture>
 
-    <script type="module">
-      suite('fairshop-manufacturers-list tests', function() {
-        var myView = fixture('TestView');
-                
-        test('ul#manufacturersList must be present', function() {
-          var ul = myView.$.manufacturersList;
-          assert.equal(ul.id, 'manufacturersList');
-        });
+		<script type="module">
+			suite('fairshop-manufacturers-list tests', function() {
+				var myView = fixture('TestView');
+								
+				test('ul#manufacturersList must be present', function() {
+					var ul = myView.$.manufacturersList;
+					assert.equal(ul.id, 'manufacturersList');
+				});
 
-        test('.manufacturers must contains 3 children', function() {
-          var nodes = myView.shadowRoot.querySelector('.manufacturers');
-          assert.equal(nodes.childElementCount, 3);
-        });
-        // Async
-        test('43 fairshop-manufacturer-card´s loaded', function(done) {
-          var myEventView = fixture('TestView');
-          myEventView.addEventListener('test-event', function(event) {
-            assert.equal(event.detail, 'ajax-loaded');
-            var catNodes = myEventView.shadowRoot.querySelectorAll('fairshop-manufacturer-card');
-            assert.equal(catNodes.length, 43);
-            var logoUrl = catNodes[42].logoUrl;
-            assert.equal(logoUrl, '/demo/data/manufacturers/images/categories/zf_49094.png');
-            done();
-          });
-        });
-      });
-    </script>
-  </body>
+				test('.manufacturers must contains 3 children', function() {
+					var nodes = myView.shadowRoot.querySelector('.manufacturers');
+					assert.equal(nodes.childElementCount, 3);
+				});
+				// Async
+				test('43 fairshop-manufacturer-card´s loaded', function(done) {
+					var myEventView = fixture('TestView');
+					var service = myEventView.$.manufacturersListService;
+					assert.equal(Boolean(service), true);
+					service.addEventListener('test-event', function(event) {
+						event.preventDefault();
+						assert.equal(event.detail, 'ajax-loaded');
+						var catNodes = myEventView._manufacturers;
+						assert.equal(catNodes.length, 43);
+						var logoUrl = catNodes[42].imageUrl;
+						assert.equal(logoUrl, '/demo/data/manufacturers/images/categories/zf_49094.png');
+						done();
+					});
+				});
+			});
+		</script>
+	</body>
 </html>

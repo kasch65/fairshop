@@ -22,8 +22,7 @@ export class FairshopProductsList extends PolymerElement {
 				type: String
 			},
 			selectedManufacturer: {
-				type: Number,
-				observer: '_manufacturerChanged'
+				type: Number
 			},
 			selectedCategory: {
 				type: Number,
@@ -36,13 +35,15 @@ export class FairshopProductsList extends PolymerElement {
 			hrefPrefix: {
 				tape: String
 			},
+			_productList: {
+				type: Array
+			},
 			_productCnt: {
 				type: Number
 			},
 			page: {
 				type: Number,
 				value: 1,
-				observer: '_pageChanged',
 				notify: true
 			},
 			_itemsPerPage: {
@@ -58,8 +59,7 @@ export class FairshopProductsList extends PolymerElement {
 			},
 			_sortOrder: {
 				type: String,
-				value: 'sum,desc',
-				observer: '_orderChanged'
+				value: 'sum,desc'
 			}
 		};
 	}
@@ -117,14 +117,14 @@ export class FairshopProductsList extends PolymerElement {
 					display: inline-block;
 				}
 			</style>
-			<fairshop-products-list-service rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[selectedManufacturer]]" selected-category="[[selectedCategory]]" search-string="[[searchString]]" page="[[page]]" items-per-page="[[itemsPerPage]]" sort-order="[[_sortOrder]]" product-list="{{productList}}"></fairshop-products-list-service>
+			<fairshop-products-list-service id="productsListService" rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[selectedManufacturer]]" selected-category="[[selectedCategory]]" search-string="[[searchString]]" page="[[page]]" items-per-page="[[itemsPerPage]]" sort-order="[[_sortOrder]]" product-list="{{_productList}}"></fairshop-products-list-service>
 			<div class="products">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<div class="heading"><h1>[[_title]]</h1></div>
 				<template is="dom-if" if="[[searchString]]">
 					<div class="filtered">Filter: <b>[[searchString]]</b></div>
 				</template>
-				<template is="dom-if" if="[[productList.productCnt]]">
+				<template is="dom-if" if="[[_productList.productCnt]]">
 					<div class="sorting">
 						<paper-dropdown-menu label="Sortierung">
 							<paper-listbox slot="dropdown-content" selected="{{_sortOrder}}" attr-for-selected="value">
@@ -136,11 +136,11 @@ export class FairshopProductsList extends PolymerElement {
 							</paper-listbox>
 						</paper-dropdown-menu>
 					</div>
-					<fairshop-paginator page="{{page}}" product-cnt="[[productList.productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
+					<fairshop-paginator page="{{page}}" product-cnt="[[_productList.productCnt]]" items-per-page="{{_itemsPerPage}}"></fairshop-paginator>
 				</template>
 				<div class="list">
 					<ul id="productsList">
-						<template is="dom-repeat" items="[[productList.products]]" as="product">
+						<template is="dom-repeat" items="[[_productList.products]]" as="product">
 							<li>
 								<a href="[[hrefPrefix]]/[[product.id]]">
 									<fairshop-product-card name="[[product.name]]" description="[[product.description]]" image-url="[[product.imageUrl]]" price="[[product.price]]" manufacturer-name="[[product.manufacturerName]]"></fairshop-product-card>

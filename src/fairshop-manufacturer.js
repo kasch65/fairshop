@@ -16,8 +16,7 @@ export class FairshopManufacturer extends PolymerElement {
 				type: String
 			},
 			selectedManufacturer: {
-				type: Number,
-				observer: "_manufacturerChanged"
+				type: Number
 			},
 			_manufacturer: {
 				type: Object

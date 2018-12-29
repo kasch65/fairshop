@@ -52,7 +52,7 @@ export class FairshopManufacturersList extends PolymerElement {
 					text-decoration: none;
 				}
 			</style>
-			<fairshop-manufacturers-list-service rest-url="[[restUrl]]" image-url="[[imageUrl]]" manufacturers="{{_manufacturers}}" search-string="[[searchString]]"></fairshop-manufacturers-list-service>
+			<fairshop-manufacturers-list-service id="manufacturersListService" rest-url="[[restUrl]]" image-url="[[imageUrl]]" manufacturers="{{_manufacturers}}" search-string="[[searchString]]"></fairshop-manufacturers-list-service>
 			<div class="manufacturers">
 				<h1>Herstellerliste</h1>
 				<template is="dom-if" if="[[searchString]]">
@@ -60,7 +60,11 @@ export class FairshopManufacturersList extends PolymerElement {
 				</template>
 				<ul id="manufacturersList">
 					<template is="dom-repeat" items="[[_manufacturers]]" as="manufacturer">
-						<li><a href="[[manufacturer.url]]"><fairshop-manufacturer-card name="[[manufacturer.name]]" logo-url="[[manufacturer.imageUrl]]"></fairshop-manufacturer-card></a></li>
+						<li>
+							<a href="[[manufacturer.url]]">
+								<fairshop-manufacturer-card name="[[manufacturer.name]]" logo-url="[[manufacturer.imageUrl]]"></fairshop-manufacturer-card>
+							</a>
+						</li>
 					</template>
 				</ul>
 			</div>

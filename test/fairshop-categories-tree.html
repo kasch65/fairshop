@@ -1,54 +1,56 @@
 <!--
-  Open http://localhost:8081/test/fairshop-categories-tree.html to run test in browser
+	Open http://localhost:8081/test/fairshop-categories-tree.html to run test in browser
 -->
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>fairshop-categories-tree</title>
+		<title>fairshop-categories-tree</title>
 
-    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+		<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+		<script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
-    <!-- Import the element to test -->
-    <script type="module" src="../src/fairshop-categories-tree.js"></script>
-  </head>
-  <body>
-    <test-fixture id="TestView">
-      <template>
-        <fairshop-categories-tree rest-url="/demo/data/categories/"></fairshop-categories-tree>
-      </template>
-    </test-fixture>
+		<!-- Import the element to test -->
+		<script type="module" src="../src/fairshop-categories-tree.js"></script>
+	</head>
+	<body>
+		<test-fixture id="TestView">
+			<template>
+				<fairshop-categories-tree rest-url="/demo/data/categories/"></fairshop-categories-tree>
+			</template>
+		</test-fixture>
 
-    <script type="module">
-      suite('fairshop-categories-tree tests', function() {
-        var myView = fixture('TestView');
-        
-        test('#catList must be present', function() {
-          var catList = myView.$.catList;
-          assert.equal(catList.id, 'catList');
-        });
-        
-        test('.categories must contains 5 children', function() {
-          var catNodes3 = myView.shadowRoot.querySelector('.categories');
-          assert.equal(catNodes3.childElementCount, 5);
-        });
-        // Async
-        test('259 .cat-node´s loaded', function(done) {
-          var myEventView = fixture('TestView');
-          myEventView.addEventListener('test-event', function(event) {
-            assert.equal(event.detail, 'ajax-loaded');
-            var catNodes = myView.shadowRoot.querySelectorAll('.cat-node');
-            assert.equal(catNodes.length, 259);
-            assert.equal(catNodes[0].firstChild.innerText, 'Neuheiten T');
-            assert.equal(catNodes[258].firstChild.innerText, 'Trinkwassertanks');
-            done();
-          });
-        });
-      });
-    </script>
-  </body>
+		<script type="module">
+			suite('fairshop-categories-tree tests', function() {
+				var myView = fixture('TestView');
+				
+				test('#catList must be present', function() {
+					var catList = myView.$.catList;
+					assert.equal(catList.id, 'catList');
+				});
+				
+				test('.categories must contains 3 children', function() {
+					var catNodes3 = myView.shadowRoot.querySelector('.categories');
+					assert.equal(catNodes3.childElementCount, 3);
+				});
+				// Async
+				test('259 .cat-node´s loaded', function(done) {
+					var myEventView = fixture('TestView');
+					var service = myEventView.$.categoriesTreeService;
+					service.addEventListener('test-event', function(event) {
+						event.preventDefault();
+						assert.equal(event.detail, 'ajax-loaded');
+						var catNodes = myView.shadowRoot.querySelectorAll('.cat-node');
+						assert.equal(catNodes.length, 259);
+						assert.equal(catNodes[0].firstChild.innerText, 'Neuheiten T');
+						assert.equal(catNodes[258].firstChild.innerText, 'Trinkwassertanks');
+						done();
+					});
+				});
+			});
+		</script>
+	</body>
 </html>

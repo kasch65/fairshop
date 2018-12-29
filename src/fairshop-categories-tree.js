@@ -58,13 +58,15 @@ export class FairshopCategoriesTree extends PolymerElement {
 					background-color: yellow;
 				}
 			</style>
-			<fairshop-categories-tree-service rest-url="[[restUrl]]" search-string="[[searchString]]" search-matches="{{_searchMatches}}" categories-tree="{{_categoriesTree}}"></fairshop-categories-tree-service>
+			<fairshop-categories-tree-service id="categoriesTreeService" rest-url="[[restUrl]]" search-string="[[searchString]]" search-matches="{{_searchMatches}}" categories-tree="{{_categoriesTree}}"></fairshop-categories-tree-service>
 			<div class="categories">
 				<h1>Kategoriebaum</h1>
 				<template is="dom-if" if="[[searchString]]">
 					<div class="filtered">Filter: <b>[[searchString]]</b></div>
 				</template>
 				<div id="catList">
+					<!-- Categories go here -->
+				</div>
 			</div>
 		`;
 	}

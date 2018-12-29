@@ -34,21 +34,18 @@ export class FairshopManufacturersListService extends PolymerElement {
 			<iron-ajax 
 				id="requestManufacturerImages"
 				url="[[restUrl]]manufacturer_images?columns=manufacturerId,use,file"
-				handle-as="json"
-				on-response="_manufacturerImagesReceived">
+				handle-as="json">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestManufacturerDescriptions"
 				url="[[restUrl]]manufacturer_descriptions?columns=manufacturerId,name"
-				handle-as="json"
-				on-response="_manufacturerDescriptionsReceived">
+				handle-as="json">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="searchManufacturerDescriptions"
-				handle-as="json"
-				on-response="_manufacturerDescriptionsReceived">
+				handle-as="json">
 			</iron-ajax>
 		`;
 	}
@@ -63,10 +60,16 @@ export class FairshopManufacturersListService extends PolymerElement {
 		if (this.searchString) {
 			console.log('Searching manufacturer: ' + this.searchString);
 			this.$.searchManufacturerDescriptions.url = this.restUrl + 'manufacturer_descriptions?filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any&columns=manufacturerId,name';
-			completions = [this.$.searchManufacturerDescriptions.generateRequest().completes, this.$.requestManufacturerImages.generateRequest().completes];
+			completions = [
+				this.$.searchManufacturerDescriptions.generateRequest().completes, 
+				this.$.requestManufacturerImages.generateRequest().completes
+			];
 		}
 		else {
-			completions = [this.$.requestManufacturerDescriptions.generateRequest().completes, this.$.requestManufacturerImages.generateRequest().completes];
+			completions = [
+				this.$.requestManufacturerDescriptions.generateRequest().completes, 
+				this.$.requestManufacturerImages.generateRequest().completes
+			];
 		}
 		var that = this;
 		Promise.all(completions).then(function (completions) {
