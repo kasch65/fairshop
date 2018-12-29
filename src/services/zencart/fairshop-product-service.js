@@ -38,30 +38,9 @@ export class FairshopProductService extends PolymerElement {
 		return html `
 			<iron-ajax 
 				id="requestProducInfo"
-				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN,nettoPrice,price,tax,available,manufacturerName"
+				url="[[restUrl]]products_view?columns=nr,EAN,name,description,products_image,price,tax_rate,available,manufacturers_name&filter[]=id,eq,[[selectedProduct]]&filter[]=countries_iso_code_2,eq,DE&filter[]=language,eq,de"
 				handle-as="json"
 				on-response="_productInfoReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProductDescription"
-				url="[[restUrl]]product_descriptions?filter=id,eq,[[selectedProduct]]&columns=name,description,description2"
-				handle-as="json"
-				on-response="_productDescriptionReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProductImages"
-				url="[[restUrl]]product_images?filter=productId,eq,[[selectedProduct]]&columns=small,medium,large&order=pos"
-				handle-as="json"
-				on-response="_productImageReceived">
-			</iron-ajax>
-
-			<iron-ajax 
-				id="requestProductDownloads"
-				url="[[restUrl]]product_downloads?filter=productId,eq,[[selectedProduct]]&columns=description,file"
-				handle-as="json"
-				on-response="_productDownloadReceived">
 			</iron-ajax>
 		`;
 	}
@@ -85,10 +64,7 @@ export class FairshopProductService extends PolymerElement {
 				'downloads': null
 			}
 			var completions = [
-				this.$.requestProducInfo.generateRequest().completes,
-				this.$.requestProductDescription.generateRequest().completes,
-				this.$.requestProductImages.generateRequest().completes,
-				this.$.requestProductDownloads.generateRequest().completes
+				this.$.requestProducInfo.generateRequest().completes
 			];
 			var that = this;
 			Promise.all(completions).then(function (completions) {
@@ -98,53 +74,47 @@ export class FairshopProductService extends PolymerElement {
 	}
 
 	_productInfoReceived(data) {
-		if (data.detail.response && data.detail.response.products) {
-			this._productTmp.nr = data.detail.response.products.records[0][0];
-			this._productTmp.EAN = data.detail.response.products.records[0][1];
-			this._productTmp.nettoPrice = data.detail.response.products.records[0][2];
-			this._productTmp.price = data.detail.response.products.records[0][3];
-			this._productTmp.tax = data.detail.response.products.records[0][4];
-			this._productTmp.available = data.detail.response.products.records[0][5];
-			this._productTmp.manufacturerName = data.detail.response.products.records[0][6];
-		}
-	}
-
-	_productDescriptionReceived(data) {
-		if (data.detail.response && data.detail.response.product_descriptions) {
+		if (data.detail.response && data.detail.response.products_view && data.detail.response.products_view.records) {
+			var columns = data.detail.response.products_view.columns;
+			var item = data.detail.response.products_view.records[0];
+			this._productTmp.nr = this._getColumnValue(columns, 'nr', item);
+			this._productTmp.EAN = this._getColumnValue(columns, 'EAN', item);
+			this._productTmp.nettoPrice = Number(this._getColumnValue(columns, 'price', item)).toFixed(2);
+			this._productTmp.tax = Number(this._getColumnValue(columns, 'tax_rate', item));
+			this._productTmp.price = Number(Number(this._productTmp.nettoPrice) * (100 + this._productTmp.tax) / 100).toFixed(2);
+			this._productTmp.available = this._getColumnValue(columns, 'available', item);
+			this._productTmp.manufacturerName = this._getColumnValue(columns, 'manufacturers_name', item);
 			var newDescription = {
-				'name': data.detail.response.product_descriptions.records[0][0],
-				'description1': data.detail.response.product_descriptions.records[0][1],
-				'description2': data.detail.response.product_descriptions.records[0][2]
+				'name': this._getColumnValue(columns, 'name', item),
+				'description1': this._getColumnValue(columns, 'description', item),
+				'description2': null
 			}
 			this._productTmp.description = newDescription;
-		}
-	}
-
-	_productImageReceived(data) {
-		if (data.detail.response && data.detail.response.product_images) {
 			this._productTmp.images = new Array();
-			for (let image of data.detail.response.product_images.records) {
-				var newImages = {
-					'small': this.imageUrl + image[0],
-					'medium': this.imageUrl + image[1],
-					'large': this.imageUrl + image[2]
-				}
-				this._productTmp.images.push(newImages);
+			// TODO Use an image service
+			var newImages = {
+				'small': this.imageUrl + this._getColumnValue(columns, 'products_image', item),
+				'medium': this.imageUrl + this._getColumnValue(columns, 'products_image', item),
+				'large': this.imageUrl + this._getColumnValue(columns, 'products_image', item)
 			}
-		}
-	}
-
-	_productDownloadReceived(data) {
-		if (data.detail.response && data.detail.response.product_downloads) {
-			this._productTmp.downloads = new Array();
+			this._productTmp.images.push(newImages);
+			/*this._productTmp.downloads = new Array();
 			for (let download of data.detail.response.product_downloads.records) {
 				var newDownload = {
 					'description': download[0],
 					'url': this.imageUrl + download[1]
 				}
 				this._productTmp.downloads.push(newDownload)
-			}
+			}*/
 		}
+	}
+
+	_getColumnValue(columns, name, item) {
+		var pos = columns.findIndex(colName => colName == name);
+		if (pos >= 0) {
+			return item[pos];
+		}
+		console.log("Column doesn't exist: " + name);
 	}
 
 }

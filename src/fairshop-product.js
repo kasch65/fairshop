@@ -8,7 +8,7 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/neon-animation/neon-animations.js';
 import '@polymer/paper-dialog/paper-dialog.js';
-import './services/bukhtest/fairshop-product-service.js';
+import './services/zencart/fairshop-product-service.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
 import './fairshop-cart.js';
