@@ -77,7 +77,7 @@ export class FairshopProductsListService extends PolymerElement {
 	_requestProducts() {
 		this.$.requestProducts.url = this.restUrl + 'products_view?columns=id,price,manufacturers_name,name,description,products_image&order[]=' + this.sortOrder + '&order[]=pos&page=' + this.page + ',' + this.itemsPerPage + '';
 		if (this.searchString) {
-			this.$.requestProducts.url += '?filter[]=nr,cs,' + this.searchString + '&filter[]=ean,cs,' + this.searchString + '&filter[]=manufacturerName,cs,' + this.searchString + '&filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&filter[]=description2,cs,' + this.searchString + '&satisfy=any';
+			this.$.requestProducts.url += '&filter[]=nr,cs,' + this.searchString + '&filter[]=EAN,cs,' + this.searchString + '&filter[]=manufacturers_name,cs,' + this.searchString + '&filter[]=name,cs,' + this.searchString + '&filter[]=description,cs,' + this.searchString + '&satisfy=any';
 		}
 		else if (this.selectedManufacturer) {
 			// TODO: get countries iso code from session
@@ -135,26 +135,20 @@ export class FairshopProductsListService extends PolymerElement {
 			console.log('Searching products: ' + this.searchString);
 			this.selectedManufacturer = null;
 			this.selectedCategory = null;
-			if (this.page != 1) {
-				// Triggers request
-				this.page = 1;
-			}
-			else {
-				this._requestProducts();
-			}
 		}
 		else {
 			this.selectedManufacturer = null;
 			this.selectedCategory = null;
-			if (this.page != 1) {
-				// Triggers request
-				this.page = 1;
-			}
-			else {
-				this._requestProducts();
-			}
+			// All filters null
 		}
-	}
+		if (this.page != 1) {
+			// Triggers request
+			this.page = 1;
+		}
+		else {
+			this._requestProducts();
+		}
+}
 
 	/**
 	 * Pagewise
@@ -164,6 +158,7 @@ export class FairshopProductsListService extends PolymerElement {
 		var records = null;
 		var results = 0;
 		var title = 'Keine Produkte gefunden';
+		var prodIdSet = new Set();
 		if (data.detail.response && data.detail.response.products_view && data.detail.response.products_view.results && data.detail.response.products_view.records) {
 			columns = data.detail.response.products_view.columns;
 			records = data.detail.response.products_view.records;
@@ -191,9 +186,14 @@ export class FairshopProductsListService extends PolymerElement {
 		};
 		if (records) {
 			for (let item of records) {
+				var prodId = this._getColumnValue(columns, 'id', item);
+				if (prodIdSet.has(prodId)) {
+					continue;
+				}
+				prodIdSet.add(prodId);
 				var product = {
-					'id': this._getColumnValue(columns, 'id', item),
-					'price': this._getColumnValue(columns, 'price', item),
+					'id': prodId,
+					'price': Number(this._getColumnValue(columns, 'price', item)).toFixed(2),
 					'manufacturerName': this._getColumnValue(columns, 'manufacturers_name', item),
 					'name': this._getColumnValue(columns, 'name', item),
 					'description': this._getColumnValue(columns, 'description', item),
