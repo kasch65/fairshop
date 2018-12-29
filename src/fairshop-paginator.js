@@ -68,9 +68,9 @@ export class FairshopPaginator extends PolymerElement {
 				}
 			</style>
 			<div id="paginator">
-				<paper-icon-button id="prev" icon="icons:chevron-left" on-click="_prev"></paper-icon-button>
+				<paper-icon-button id="prev" aria-label="previous" icon="icons:chevron-left" on-click="_prev"></paper-icon-button>
 				<span id="pageButtons"><!-- Generated buttons go here --></span>
-				<paper-icon-button id="next" icon="icons:chevron-right" on-click="_next"></paper-icon-button>
+				<paper-icon-button id="next" aria-label="next" icon="icons:chevron-right" on-click="_next"></paper-icon-button>
 			</div>
 		`;
 	}
