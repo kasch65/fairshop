@@ -2,7 +2,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-input/paper-input.js';
 import './fairshop-styles.js';
-import './services/bukhtest/fairshop-login-service.js';
+import './services/zencart/fairshop-login-service.js';
 
 /**
  * @class

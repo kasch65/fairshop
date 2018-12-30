@@ -33,14 +33,14 @@ export class FairshopCartItemService extends PolymerElement {
 	static get template() {
 		return html `
 			<iron-ajax 
-				id="getProductDescriptions"
-				url="[[restUrl]]product_search_copy?filter=id,eq,[[item.id]]&columns=nettoPrice,price,tax,available,name"
+				id="getProductInfo"
+				url="[[restUrl]]products_view?columns=price,tax_rate,available,name,products_image&filter=id,eq,[[item.id]]"
 				handle-as="json">
 			</iron-ajax>
 
 			<iron-ajax 
-				id="requestProductImages"
-				url="[[restUrl]]product_images?filter=productId,eq,[[item.id]]&columns=small&order=pos&page=1,1"
+				id="getProductDiscount"
+				url="[[restUrl]]products_quantity_discount_view?columns=discount_price&filter[]=products_id,eq,[[item.id]]&filter[]=from,le,[[item.count]]&order=from,desc&page=1,1"
 				handle-as="json">
 			</iron-ajax>
 		`;
@@ -49,22 +49,21 @@ export class FairshopCartItemService extends PolymerElement {
 	ready() {
 		super.ready();
 		var completions = [
-			this.$.getProductDescriptions.generateRequest().completes,
-			this.$.requestProductImages.generateRequest().completes
+			this.$.getProductInfo.generateRequest().completes
 		];
 		//console.log('fairshop-cart-item-service.js.requestItemData(): Item ' + this.item.id + '.');
 		var that = this;
 		Promise.all(completions).then(function (completions) {
-			if (completions[0].response && completions[0].response.product_search_copy && completions[0].response.product_search_copy.records) {
-				var productInfo = completions[0].response.product_search_copy.records[0];
-				that.set('item.oneNettoPrice', productInfo[0]);
-				that.set('item.onePrice', productInfo[1]);
-				that.set('item.tax', productInfo[2]);
-				that.set('item.available', productInfo[3]);
-				that.set('item.name', productInfo[4]);
-			}
-			if (completions[1].response && completions[1].response.product_images && completions[1].response.product_images.records) {
-				that.set('item.image', that.imageUrl + completions[1].response.product_images.records[0]);
+			if (completions[0].response && completions[0].response.products_view && completions[0].response.products_view.records) {
+				var columns = completions[0].response.products_view.columns;
+				var productInfo = completions[0].response.products_view.records[0];
+
+				that.set('item.oneNettoPrice', Number(that._getColumnValue(columns, 'price', productInfo)).toFixed(2));
+				that.set('item.tax', Number(that._getColumnValue(columns, 'tax_rate', productInfo)));
+				that.set('item.onePrice', Number(Number(that.item.oneNettoPrice) * (100 + that.item.tax) / 100).toFixed(2));
+				that.set('item.available', that._getColumnValue(columns, 'available', productInfo));
+				that.set('item.name', that._getColumnValue(columns, 'name', productInfo));
+				that.set('item.image', that.imageUrl + that._getColumnValue(columns, 'products_image', productInfo));
 			}
 			that.countChanged(that.item);
 			//console.log('fairshop-cart-item-service.js.requestItemData().Promise.all: Data for item ' + that.item.id + ' reveived.');
@@ -82,13 +81,14 @@ export class FairshopCartItemService extends PolymerElement {
 		return {
 			'id': Number(id),
 			'url': productUrl,
-			'count': Number(count),
 			'available': null,
 			'oneNettoPrice': null,
+			'count': Number(count),
 			'allNettoPrice': null,
+			'tax': null,
+			'quantityDiscount': 0,
 			'onePrice': null,
 			'allPrice': null,
-			'tax': null,
 			'name': null,
 			'image': null
 		};
@@ -104,16 +104,42 @@ export class FairshopCartItemService extends PolymerElement {
 			//console.log('fairshop-cart-item-service.js.countChanged(): Count for item ' + this.item.id + ' skipped.');
 			return;
 		}
-		var allNettoPrice = this.item.count * this.item.oneNettoPrice;
-		if (!isNaN(allNettoPrice)) {
-			this.set('item.allNettoPrice', allNettoPrice.toFixed(2));
+		var oneNettoPrice = Number(this.item.oneNettoPrice);
+		var onePrice = oneNettoPrice * (100 + this.item.tax) / 100;
+		var allNettoPrice = oneNettoPrice * this.item.count;
+		var allPrice = onePrice * this.item.count;
+		// Request quantity discont
+		var completions = [
+			this.$.getProductDiscount.generateRequest().completes
+		];
+		var that = this;
+		Promise.all(completions).then(function (completions) {
+			if (completions[0].response && completions[0].response.products_quantity_discount_view && completions[0].response.products_quantity_discount_view.records) {
+				var columns = completions[0].response.products_quantity_discount_view.columns;
+				// Apply quantity discount
+				if (completions[0].response.products_quantity_discount_view.records[0]) {
+					var discount = Number(completions[0].response.products_quantity_discount_view.records[0]);
+					that.set('item.quantityDiscount', discount);
+					allNettoPrice *= (100 - discount) / 100;
+					onePrice *= (100 - discount) / 100;
+					allPrice *= (100 - discount) / 100;
+				}
+			}
+			that.set('item.allNettoPrice', Number(allNettoPrice).toFixed(2));
+			that.set('item.onePrice', Number(onePrice).toFixed(2));
+			that.set('item.allPrice', Number(allPrice).toFixed(2));
+		
+			document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
+		});
+	}
+
+	_getColumnValue(columns, name, item) {
+		var pos = columns.findIndex(colName => colName == name);
+		if (pos >= 0) {
+			return item[pos];
 		}
-		var allPrice = this.item.count * this.item.onePrice;
-		if (!isNaN(allPrice)) {
-			this.set('item.allPrice', allPrice.toFixed(2));
-		}
-		document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
-		}
+		console.log("Column doesn't exist: " + name);
+	}
 
 }
 customElements.define("fairshop-cart-item-service", FairshopCartItemService);

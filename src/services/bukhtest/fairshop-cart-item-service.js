@@ -88,6 +88,7 @@ export class FairshopCartItemService extends PolymerElement {
 			'allNettoPrice': null,
 			'onePrice': null,
 			'allPrice': null,
+			'quantityDiscount': 0,
 			'tax': null,
 			'name': null,
 			'image': null

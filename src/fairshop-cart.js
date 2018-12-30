@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
-import './services/bukhtest/fairshop-cart-service.js';
+import './services/zencart/fairshop-cart-service.js';
 import './fairshop-cart-item.js';
 import './fairshop-styles.js';
 
@@ -106,6 +106,10 @@ export class FairshopCart extends PolymerElement {
 					width: 6rem;
 					text-align: center;
 				}
+				.discount {
+					width: 5rem;
+					text-align: center;
+				}
 				.tax {
 					width: 5rem;
 					text-align: center;
@@ -132,7 +136,8 @@ export class FairshopCart extends PolymerElement {
 				<div class="prod-id"><h3>ID</h3></div>
 				<div class="name"><h3>Name</h3></div>
 				<div class="count"><h3>Anzahl</h3></div>
-				<div class="one-price"><h3>Einzel Netto</h3></div>
+				<div class="one-price"><h3>UVP</h3></div>
+				<div class="discount"><h3>Rabatt</h3></div>
 				<div class="all-netto-price"><h3>Netto</h3></div>
 				<div class="tax"><h3>MwSt.</h3></div>
 				<div class="all-price"><h3>Brutto</h3></div>
@@ -151,6 +156,7 @@ export class FairshopCart extends PolymerElement {
 				<div class="name">Artikelzahl: [[_cart.count]]</div>
 				<div class="count"><h3>Summe</h3></div>
 				<div class="one-price"><h3>Netto:</h3></div>
+				<div class="discount"></div>
 				<div class="all-netto-price"><h3>[[_cart.nettoSum]]€</h3></div>
 				<div class="tax"><h3>Brutto:</h3></div>
 				<div class="all-price"><h3>[[_cart.sum]]€</h3></div>

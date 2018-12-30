@@ -3,7 +3,7 @@ import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
-import './services/bukhtest/fairshop-cart-item-service.js';
+import './services/zencart/fairshop-cart-item-service.js';
 
 /**
  * @class
@@ -73,6 +73,10 @@ export class FairshopCartItem extends PolymerElement {
 					width: 6rem;
 					text-align: right;
 				}
+				.discount {
+					width: 5rem;
+					text-align: right;
+				}
 				.tax {
 					width: 5rem;
 					text-align: right;
@@ -105,6 +109,9 @@ export class FairshopCartItem extends PolymerElement {
 				</div>
 				<div class="one-price">
 					[[item.oneNettoPrice]]€
+				</div>
+				<div class="discount">
+					[[item.quantityDiscount]]%
 				</div>
 				<div class="all-netto-price">
 					[[item.allNettoPrice]]€
