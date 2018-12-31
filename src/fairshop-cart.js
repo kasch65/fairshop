@@ -1,6 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
-import './services/zencart/fairshop-cart-service.js';
 import './fairshop-cart-item.js';
 import './fairshop-styles.js';
 

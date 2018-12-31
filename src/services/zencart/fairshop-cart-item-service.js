@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { getColumnValue } from '../../fairshop-commons';
 import '@polymer/iron-ajax/iron-ajax.js';
 
 /**
@@ -58,12 +59,12 @@ export class FairshopCartItemService extends PolymerElement {
 				var columns = completions[0].response.products_view.columns;
 				var productInfo = completions[0].response.products_view.records[0];
 
-				that.set('item.oneNettoPrice', Number(that._getColumnValue(columns, 'price', productInfo)).toFixed(2));
-				that.set('item.tax', Number(that._getColumnValue(columns, 'tax_rate', productInfo)));
+				that.set('item.oneNettoPrice', Number(getColumnValue(columns, 'price', productInfo)).toFixed(2));
+				that.set('item.tax', Number(getColumnValue(columns, 'tax_rate', productInfo)));
 				that.set('item.onePrice', Number(Number(that.item.oneNettoPrice) * (100 + that.item.tax) / 100).toFixed(2));
-				that.set('item.available', that._getColumnValue(columns, 'available', productInfo));
-				that.set('item.name', that._getColumnValue(columns, 'name', productInfo));
-				that.set('item.image', that.imageUrl + that._getColumnValue(columns, 'products_image', productInfo));
+				that.set('item.available', getColumnValue(columns, 'available', productInfo));
+				that.set('item.name', getColumnValue(columns, 'name', productInfo));
+				that.set('item.image', that.imageUrl + getColumnValue(columns, 'products_image', productInfo));
 			}
 			that.countChanged(that.item);
 			//console.log('fairshop-cart-item-service.js.requestItemData().Promise.all: Data for item ' + that.item.id + ' reveived.');
@@ -131,14 +132,6 @@ export class FairshopCartItemService extends PolymerElement {
 		
 			document.dispatchEvent(new CustomEvent('cart-event', {detail: 'price-changed'}));
 		});
-	}
-
-	_getColumnValue(columns, name, item) {
-		var pos = columns.findIndex(colName => colName == name);
-		if (pos >= 0) {
-			return item[pos];
-		}
-		console.log("Column doesn't exist: " + name);
 	}
 
 }

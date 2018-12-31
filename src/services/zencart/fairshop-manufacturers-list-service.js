@@ -40,7 +40,6 @@ export class FairshopManufacturersListService extends PolymerElement {
 
 	ready() {
 		super.ready();
-		//this._search();
 	}
 
 	_search() {

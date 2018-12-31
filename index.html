@@ -1,64 +1,71 @@
 <!doctype html>
 <html lang="de">
 
-  <head>
-    <title>fairshop</title>
-    <base href="/">
-    <meta charset="utf-8">
-    <meta name="description" content="fairshop is a lexible open source shop solution built with polymer.">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <meta name="theme-color" content="#3367d6">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="fairshop">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="fairshop">
-    <meta name="msapplication-TileColor" content="#3367d6">
-    <meta name="msapplication-tap-highlight" content="no">
-    <!-- Icons -->
-    <link rel="icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="icons/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icons/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="icons/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icons/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icons/manifest/icon-192x192.png">
-    <meta name="msapplication-TileImage" content="icons/manifest/icon-144x144.png">
+	<head>
+		<title>fairshop</title>
+		<base href="/">
+		<meta charset="utf-8">
+		<meta name="description" content="fairshop is a lexible open source shop solution built with polymer.">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<meta name="theme-color" content="#3367d6">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="application-name" content="fairshop">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-title" content="fairshop">
+		<meta name="msapplication-TileColor" content="#3367d6">
+		<meta name="msapplication-tap-highlight" content="no">
+		<!-- Icons -->
+		<link rel="icon" href="favicon.ico">
+		<link rel="apple-touch-icon" href="icons/manifest/icon-48x48.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="icons/manifest/icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="96x96" href="icons/manifest/icon-96x96.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="icons/manifest/icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="192x192" href="icons/manifest/icon-192x192.png">
+		<meta name="msapplication-TileImage" content="icons/manifest/icon-144x144.png">
 
-    <link rel="manifest" href="manifest.json">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script type="module" src="/src/fairshop-app.js"></script>
+		<link rel="manifest" href="manifest.json">
+		<link rel="shortcut icon" href="/favicon.ico">
+		<script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <!-- general style -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<!-- The shop app -->
+		<script type="module" src="/src/fairshop-app.js"></script>
+		
+		<!-- general style -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <style>
-      html {
-        _box-sizing: border-box;
-        _margin: 0;
-      }
-      body {
-        box-sizing: border-box;
-        margin: 0;
-      }
-    </style>
+		<style>
+			html {
+				_box-sizing: border-box;
+				_margin: 0;
+			}
+			body {
+				box-sizing: border-box;
+				margin: 0;
+			}
+		</style>
 
-    <script>
-      // Check that service workers are registered
-      if ('serviceWorker' in navigator) {
-        // Use the window load event to keep the page load performant
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
-      }
-    </script>
-    <script src="/node_modules/web-animations-js/web-animations-next.min.js"></script>
-  </head>
+		<script>
+			// Check that service workers are registered
+			if ('serviceWorker' in navigator) {
+				// Use the window load event to keep the page load performant
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/service-worker.js');
+				});
+			}
+		</script>
+		<script src="/node_modules/web-animations-js/web-animations-next.min.js"></script>
+	</head>
 
-  <body>
-    <noscript>Sorry, your browser does not support JavaScript!</noscript>
-    <!--<fairshop-app rest-url="http://localhost/php-api-auth/api.php/" image-url="http://www.bukh-bremen.de/"></fairshop-app>-->
-    <fairshop-app rest-url="http://localhost/zencart-german-grundsystem/rest/api.php/" image-url="http://localhost/zencart-german-grundsystem/images/"></fairshop-app>
-  </body>
-  
+	<body>
+		<noscript>Sorry, your browser does not support JavaScript!</noscript>
+		<!-- Choose the content -->
+		<!-- The BUKH Bremen testshop -->
+		<!--<script type="module" src="/src/services/bukhtest/fairshop-services.js"></script>
+		<fairshop-app rest-url="http://localhost/php-api-auth/api.php/" image-url="http://www.bukh-bremen.de/"></fairshop-app>-->
+		<!-- The Zen Cart demo content -->
+		<script type="module" src="/src/services/zencart/fairshop-services.js"></script>
+		<fairshop-app rest-url="http://localhost/zencart-german-grundsystem/rest/api.php/" image-url="http://localhost/zencart-german-grundsystem/images/"></fairshop-app>
+	</body>
+	
 </html>

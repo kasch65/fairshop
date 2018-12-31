@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { getColumnValue } from '../../fairshop-commons';
 import '@polymer/iron-ajax/iron-ajax.js';
 
 
@@ -164,7 +165,7 @@ export class FairshopProductsListService extends PolymerElement {
 			records = data.detail.response.products_view.records;
 			results = data.detail.response.products_view.results;
 			if (this.selectedManufacturer) {
-				title = 'Produkte von ' + this._getColumnValue(columns, 'manufacturers_name', records[0]);
+				title = 'Produkte von ' + getColumnValue(columns, 'manufacturers_name', records[0]);
 			}
 			else if (this.searchString) {
 				title = 'Suchergebis für "' + this.searchString + '"';
@@ -177,7 +178,7 @@ export class FairshopProductsListService extends PolymerElement {
 			columns = data.detail.response.products_to_categories_view.columns;
 			records = data.detail.response.products_to_categories_view.records;
 			results = data.detail.response.products_to_categories_view.results;
-			title = 'Produkte der Kategorie ' + this._getColumnValue(columns, 'categories_name', records[0]);
+			title = 'Produkte der Kategorie ' + getColumnValue(columns, 'categories_name', records[0]);
 		}
 		this._productListTmp = {
 			'title': title,
@@ -186,32 +187,24 @@ export class FairshopProductsListService extends PolymerElement {
 		};
 		if (records) {
 			for (let item of records) {
-				var prodId = this._getColumnValue(columns, 'id', item);
+				var prodId = getColumnValue(columns, 'id', item);
 				if (prodIdSet.has(prodId)) {
 					continue;
 				}
 				prodIdSet.add(prodId);
 				var product = {
 					'id': prodId,
-					'price': Number(this._getColumnValue(columns, 'price', item)).toFixed(2),
-					'manufacturerName': this._getColumnValue(columns, 'manufacturers_name', item),
-					'name': this._getColumnValue(columns, 'name', item),
-					'description': this._getColumnValue(columns, 'description', item),
-					'imageUrl': this.imageUrl + this._getColumnValue(columns, 'products_image', item)
+					'price': Number(getColumnValue(columns, 'price', item)).toFixed(2),
+					'manufacturerName': getColumnValue(columns, 'manufacturers_name', item),
+					'name': getColumnValue(columns, 'name', item),
+					'description': getColumnValue(columns, 'description', item),
+					'imageUrl': this.imageUrl + getColumnValue(columns, 'products_image', item)
 				};
 				this._productListTmp.products.push(product);
 			}
 		}
 		this.productList = this._productListTmp;
 		this.dispatchEvent(new CustomEvent('test-event', { detail: 'ajax-loaded' }));
-	}
-
-	_getColumnValue(columns, name, item) {
-		var pos = columns.findIndex(colName => colName == name);
-		if (pos >= 0) {
-			return item[pos];
-		}
-		console.log("Column doesn't exist: " + name);
 	}
 
 }

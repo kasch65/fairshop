@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { getColumnValue } from '../../fairshop-commons';
 import '@polymer/iron-ajax/iron-ajax.js';
 
 /**
@@ -13,21 +14,18 @@ export class FairshopProductService extends PolymerElement {
 			imageUrl: {
 				type: String
 			},
-			/**
-			 * Set the selected product ID to update the displayed content.
-			 */
-			selectedProduct: {
-				type: Number,
-				observer: "_productChanged"
-			},
 			product: {
 				type: Object,
-				notify: true
-			},
-			_productTmp: {
-				type: Object
+				notify: true,
+				observer: "_productChanged"
 			}
 		};
+	}
+
+	static get observers() {
+		return [
+			'_productChanged(product.id)'
+		]
 	}
 
 	/**
@@ -38,28 +36,28 @@ export class FairshopProductService extends PolymerElement {
 		return html `
 			<iron-ajax 
 				id="requestProducInfo"
-				url="[[restUrl]]products?filter=id,eq,[[selectedProduct]]&columns=nr,EAN,nettoPrice,price,tax,available,manufacturerName"
+				url="[[restUrl]]products?filter=id,eq,[[product.id]]&columns=nr,EAN,nettoPrice,price,tax,available,manufacturerName"
 				handle-as="json"
 				on-response="_productInfoReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductDescription"
-				url="[[restUrl]]product_descriptions?filter=id,eq,[[selectedProduct]]&columns=name,description,description2"
+				url="[[restUrl]]product_descriptions?filter=id,eq,[[product.id]]&columns=name,description,description2"
 				handle-as="json"
 				on-response="_productDescriptionReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductImages"
-				url="[[restUrl]]product_images?filter=productId,eq,[[selectedProduct]]&columns=small,medium,large&order=pos"
+				url="[[restUrl]]product_images?filter=productId,eq,[[product.id]]&columns=small,medium,large&order=pos"
 				handle-as="json"
 				on-response="_productImageReceived">
 			</iron-ajax>
 
 			<iron-ajax 
 				id="requestProductDownloads"
-				url="[[restUrl]]product_downloads?filter=productId,eq,[[selectedProduct]]&columns=description,file"
+				url="[[restUrl]]product_downloads?filter=productId,eq,[[product.id]]&columns=description,file"
 				handle-as="json"
 				on-response="_productDownloadReceived">
 			</iron-ajax>
@@ -67,23 +65,7 @@ export class FairshopProductService extends PolymerElement {
 	}
 
 	_productChanged() {
-		if (!this.selectedProduct) {
-			this.product = null;
-		}
-		else {
-			this._productTmp = {
-				'id': Number(this.selectedProduct),
-				'nr': null,
-				'EAN': null,
-				'nettoPrice': null,
-				'price': null,
-				'tax': null,
-				'available': null,
-				'manufacturerName': null,
-				'description': null,
-				'images': null,
-				'downloads': null
-			}
+		if (this.product && this.product.id) {
 			var completions = [
 				this.$.requestProducInfo.generateRequest().completes,
 				this.$.requestProductDescription.generateRequest().completes,
@@ -92,58 +74,67 @@ export class FairshopProductService extends PolymerElement {
 			];
 			var that = this;
 			Promise.all(completions).then(function (completions) {
-				that.product = that._productTmp;
 			});
 		}
 	}
 
 	_productInfoReceived(data) {
 		if (data.detail.response && data.detail.response.products) {
-			this._productTmp.nr = data.detail.response.products.records[0][0];
-			this._productTmp.EAN = data.detail.response.products.records[0][1];
-			this._productTmp.nettoPrice = data.detail.response.products.records[0][2];
-			this._productTmp.price = data.detail.response.products.records[0][3];
-			this._productTmp.tax = data.detail.response.products.records[0][4];
-			this._productTmp.available = data.detail.response.products.records[0][5];
-			this._productTmp.manufacturerName = data.detail.response.products.records[0][6];
+			var columns = data.detail.response.products.columns;
+			var item = data.detail.response.products.records[0];
+			this.set('product.nr', getColumnValue(columns, 'nr', item));
+			this.set('product.EAN', getColumnValue(columns, 'EAN', item));
+			this.set('product.nettoPrice', getColumnValue(columns, 'nettoPrice', item));
+			this.set('product.price', getColumnValue(columns, 'price', item));
+			this.set('product.count', 1);
+			this.set('product.discount', 0);
+			this.set('product.tax', getColumnValue(columns, 'tax', item));
+			this.set('product.available', getColumnValue(columns, 'available', item));
+			this.set('product.manufacturerName', getColumnValue(columns, 'manufacturerName', item));
 		}
 	}
 
 	_productDescriptionReceived(data) {
 		if (data.detail.response && data.detail.response.product_descriptions) {
+			var columns = data.detail.response.product_descriptions.columns;
+			var item = data.detail.response.product_descriptions.records[0];
 			var newDescription = {
-				'name': data.detail.response.product_descriptions.records[0][0],
-				'description1': data.detail.response.product_descriptions.records[0][1],
-				'description2': data.detail.response.product_descriptions.records[0][2]
+				'name': getColumnValue(columns, 'name', item),
+				'description1': getColumnValue(columns, 'description', item),
+				'description2': getColumnValue(columns, 'description2', item)
 			}
-			this._productTmp.description = newDescription;
+			this.set('product.description', newDescription);
 		}
 	}
 
 	_productImageReceived(data) {
 		if (data.detail.response && data.detail.response.product_images) {
-			this._productTmp.images = new Array();
-			for (let image of data.detail.response.product_images.records) {
+			var columns = data.detail.response.product_images.columns;
+			var images = new Array();
+			for (let item of data.detail.response.product_images.records) {
 				var newImages = {
-					'small': this.imageUrl + image[0],
-					'medium': this.imageUrl + image[1],
-					'large': this.imageUrl + image[2]
+					'small': this.imageUrl + getColumnValue(columns, 'small', item),
+					'medium': this.imageUrl + getColumnValue(columns, 'medium', item),
+					'large': this.imageUrl + getColumnValue(columns, 'large', item)
 				}
-				this._productTmp.images.push(newImages);
+				images.push(newImages);
 			}
+			this.set('product.images', images);
 		}
 	}
 
 	_productDownloadReceived(data) {
 		if (data.detail.response && data.detail.response.product_downloads) {
-			this._productTmp.downloads = new Array();
-			for (let download of data.detail.response.product_downloads.records) {
+			var columns = data.detail.response.product_downloads.columns;
+			var downloads = new Array();
+			for (let item of data.detail.response.product_downloads.records) {
 				var newDownload = {
-					'description': download[0],
-					'url': this.imageUrl + download[1]
+					'description': getColumnValue(columns, 'description', item),
+					'url': this.imageUrl + getColumnValue(columns, 'file', item)
 				}
-				this._productTmp.downloads.push(newDownload)
+				downloads.push(newDownload)
 			}
+			this.set('product.downloads', downloads);
 		}
 	}
 

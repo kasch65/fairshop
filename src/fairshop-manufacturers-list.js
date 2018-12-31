@@ -1,5 +1,4 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import './services/zencart/fairshop-manufacturers-list-service.js';
 import './fairshop-manufacturer-card.js';
 import './fairshop-styles.js';
 
@@ -19,8 +18,7 @@ export class FairshopManufacturersList extends PolymerElement {
 				type: Array
 			},
 			searchString: {
-				type: String,
-				observer: '_search'
+				type: String
 			}
 		};
 	}

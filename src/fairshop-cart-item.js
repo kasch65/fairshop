@@ -3,7 +3,6 @@ import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
-import './services/zencart/fairshop-cart-item-service.js';
 
 /**
  * @class

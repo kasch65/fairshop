@@ -6,7 +6,6 @@ import '@polymer/paper-item/paper-item.js';
 import './fairshop-paginator.js';
 import './fairshop-product-card.js';
 import './fairshop-styles.js';
-import './services/zencart/fairshop-products-list-service.js';
 
 
 /**
@@ -25,12 +24,10 @@ export class FairshopProductsList extends PolymerElement {
 				type: Number
 			},
 			selectedCategory: {
-				type: Number,
-				observer: '_categoryChanged'
+				type: Number
 			},
 			searchString: {
-				type: String,
-				observer: '_searchStringChanged'
+				type: String
 			},
 			hrefPrefix: {
 				tape: String

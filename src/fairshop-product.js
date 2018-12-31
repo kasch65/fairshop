@@ -8,7 +8,6 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/neon-animation/neon-animations.js';
 import '@polymer/paper-dialog/paper-dialog.js';
-import './services/zencart/fairshop-product-service.js';
 import './fairshop-image.js';
 import './fairshop-styles.js';
 import './fairshop-cart.js';
@@ -29,7 +28,8 @@ export class FairshopProduct extends PolymerElement {
 			 * Set the selected product ID to update the displayed content.
 			 */
 			selectedProduct: {
-				type: Number
+				type: Number,
+				observer: '_productChanged'
 			},
 			_product: {
 				type: Object
@@ -41,10 +41,6 @@ export class FairshopProduct extends PolymerElement {
 			_selectedTab: {
 				type: Number,
 				value: 0
-			},
-			_count: {
-				type: Number,
-				value: 1
 			},
 			cart: {
 				type: Object
@@ -128,7 +124,7 @@ export class FairshopProduct extends PolymerElement {
 				}
 			</style>
 
-			<fairshop-product-service rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-product="[[selectedProduct]]" product="{{_product}}"></fairshop-product-service>
+			<fairshop-product-service rest-url="[[restUrl]]" image-url="[[imageUrl]]" product="{{_product}}"></fairshop-product-service>
 			<div class="product">
 				<paper-icon-button id="backBtn" icon="arrow-back" aria-label="Go back" on-click="_goBack"></paper-icon-button>
 				<h1>[[_product.name]]</h1>
@@ -169,8 +165,12 @@ export class FairshopProduct extends PolymerElement {
 								<td>[[_product.available]]</td>
 							</tr>
 							<tr>
-								<td><b>Netto Preis</b></td>
+								<td><b>UVP</b></td>
 								<td><b>[[_product.nettoPrice]]</b></td>
+							</tr>
+							<tr>
+								<td><b>Rabatt</b></td>
+								<td><b>[[_product.discount]]%</b></td>
 							</tr>
 							<tr>
 								<td><b>MwSt.</b></td>
@@ -182,7 +182,7 @@ export class FairshopProduct extends PolymerElement {
 							</tr>
 						</table>
 						<div id="shopping">
-							<paper-input id="count" label="Anzahl" value="{{_count}}" always-float-label></paper-input>
+							<paper-input id="count" label="Anzahl" value="{{_product.count}}" always-float-label></paper-input>
 							<paper-button id="addItemButton" on-click="_addItem" raised text="In den Warenkorb" raised><iron-icon icon="add-shopping-cart"></iron-icon></paper-button>
 							<paper-tooltip for="addItemButton">Anzahl in den Einkaufswagen</paper-tooltip>
 						</div>
@@ -217,6 +217,31 @@ export class FairshopProduct extends PolymerElement {
 		`;
 	}
 
+	ready() {
+		super.ready();
+		this._product = {
+			'id': Number(this.selectedProduct),
+			'nr': null,
+			'EAN': null,
+			'nettoPrice': null,
+			'price': null,
+			'count': 1,
+			'discount': 0,
+			'tax': null,
+			'available': null,
+			'manufacturerName': null,
+			'description': null,
+			'images': null,
+			'downloads': null
+		};
+	}
+
+	_productChanged() {
+		if (this.selectedProduct && this._product) {
+			this.set('_product.id', this.selectedProduct);
+		}
+	}
+
 	_goBack() {
 		window.history.back();
 	}
@@ -240,7 +265,7 @@ export class FairshopProduct extends PolymerElement {
   }
 
 	_addItem() {
-		this.cart.setItem(Number(this.selectedProduct), Number(this._count), window.location.pathname);
+		this.cart.setItem(Number(this.selectedProduct), Number(this._product.count), window.location.pathname);
 	}
 
 	_setProductDescriptionHtml(description) {
