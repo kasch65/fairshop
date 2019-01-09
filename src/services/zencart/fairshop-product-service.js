@@ -48,6 +48,12 @@ export class FairshopProductService extends PolymerElement {
 				handle-as="json"
 				on-response="_productDiscountReceived">
 			</iron-ajax>
+
+			<iron-ajax 
+				id="getProductImages"
+				handle-as="json"
+				on-response="_productImagesReceived">
+			</iron-ajax>
 		`;
 	}
 
@@ -100,6 +106,8 @@ export class FairshopProductService extends PolymerElement {
 			}
 			images.push(newImages);
 			this.set('product.images', images);
+			this.$.getProductImages.url = this.restUrl + '../zc-image-service.php?image=' + getColumnValue(columns, 'products_image', item);
+			this.$.getProductImages.generateRequest();
 			/*this.product.downloads = new Array();
 			for (let download of data.detail.response.product_downloads.records) {
 				var newDownload = {
@@ -118,6 +126,50 @@ export class FairshopProductService extends PolymerElement {
 			if (item) {
 				this.set('product.discount', Number(getColumnValue(columns, 'discount_price', item)));
 				this.set('product.price', Number(Number(this.product.nettoPrice) * (100 - this.product.discount) / 100 * (100 + this.product.tax) / 100).toFixed(2));
+			}
+		}
+	}
+
+	_productImagesReceived(data) {
+		if (data.detail.response) {
+			var pos = 0;
+			for (let image of data.detail.response) {
+				console.log(image);
+				var smallImage = image.small;
+				if (!smallImage) {
+					smallImage = image.medium;
+				}
+				if (!smallImage) {
+					smallImage = image.large;
+				}
+				var mediumImage = image.medium;
+				if (!mediumImage) {
+					mediumImage = image.large;
+				}
+				if (!mediumImage) {
+					mediumImage = image.small;
+				}
+				var largeImage = image.large;
+				if (!largeImage) {
+					largeImage = image.medium;
+				}
+				if (!largeImage) {
+					largeImage = image.small;
+				}
+				if (pos == 0) {
+					this.set('product.images.0.small', this.imageUrl + smallImage);
+					this.set('product.images.0.medium', this.imageUrl + mediumImage);
+					this.set('product.images.0.large', this.imageUrl + largeImage);
+				}
+				else {
+					var newImages = {
+						'small': this.imageUrl + smallImage,
+						'medium': this.imageUrl + mediumImage,
+						'large': this.imageUrl + largeImage
+					}
+					this.push('product.images', newImages);
+				}
+				pos++;
 			}
 		}
 	}

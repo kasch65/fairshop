@@ -25,6 +25,7 @@ export class FairshopProductsListService extends PolymerElement {
 			},
 			searchString: {
 				type: String,
+				value: null,
 				observer: '_searchStringChanged'
 			},
 			page: {
@@ -131,16 +132,12 @@ export class FairshopProductsListService extends PolymerElement {
 		}
 	}
 
-	_searchStringChanged() {
+	_searchStringChanged(newValue, oldValue) {
+		if (!newValue && !oldValue) {
+			return;
+		}
 		if (this.searchString) {
 			console.log('Searching products: ' + this.searchString);
-			this.selectedManufacturer = null;
-			this.selectedCategory = null;
-		}
-		else {
-			this.selectedManufacturer = null;
-			this.selectedCategory = null;
-			// All filters null
 		}
 		if (this.page != 1) {
 			// Triggers request

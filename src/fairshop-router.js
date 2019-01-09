@@ -133,8 +133,11 @@ export class FairshopRouter extends PolymerElement {
 		}
 		this.page = page;
 		this.categoryId = categoryId;
+		console.log('Router.categoryId = ' + this.categoryId);
 		this.manufacturerId = manufacturerId;
+		console.log('Router.manufacturerId = ' + this.manufacturerId);
 		this.productId = productId;
+		console.log('Router.productId = ' + this.productId);
 		this.path = this._route.path;
 	}
 
