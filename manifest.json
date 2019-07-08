@@ -2,7 +2,7 @@
   "name": "fairshop",
   "short_name": "fairshop",
   "description": "An open Polymer Shop",
-  "start_url": "/",
+  "start_url": "/fairshop/",
   "display": "standalone",
   "icons": [
     {

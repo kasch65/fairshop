@@ -10,7 +10,10 @@
     "node_modules/@webcomponents/webcomponentsjs/*.js",
     "!node_modules/@webcomponents/webcomponentsjs/gulpfile.js",
     "node_modules/@webcomponents/webcomponentsjs/bundles/*.js",
-    "node_modules/web-animations-js/web-animations-next.min.js"
+    "node_modules/web-animations-js/web-animations-next.min.js",
+    "src/img/*",
+    "node_modules/workbox-sw/build/workbox-sw.js",
+    "workbox.js"
   ],
   "builds": [
     {
@@ -19,7 +22,7 @@
         "es2015"
       ],
       "js": {
-        "minify": true,
+        "minify": false,
         "transformModulesToAmd": true
       },
       "css": {
@@ -28,8 +31,9 @@
       "html": {
         "minify": true
       },
-      "bundle": true,
-      "addServiceWorker": true
+      "bundle": false,
+      "addServiceWorker": true,
+      "basePath": "fairshop"
     }
   ],
   "moduleResolution": "node",

@@ -1,4 +1,7 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import {} from '@polymer/polymer/lib/utils/resolve-url.js';
+
+import './services/bukhtest/fairshop-services.js';
 
 import '@polymer/paper-toast/paper-toast.js';
 import '@polymer/paper-button/paper-button.js';
@@ -225,9 +228,9 @@ export class FairshopApp extends PolymerElement {
 				<div class="app-header">
 					<div main-title>fairshop demo</div>
 					<div class="menu">
-						<div><a href="/"><paper-button>Home</paper-button></a></div>
-						<div><a href="/categories"><paper-button>Categories</paper-button></a></div>
-						<div><a href="/manufacturers"><paper-button>Manufacturers</paper-button></a></div>
+						<div><a href="[[resolveUrl('.')]]"><paper-button>Home</paper-button></a></div>
+						<div><a href="[[resolveUrl('categories')]]"><paper-button>Categories</paper-button></a></div>
+						<div><a href="[[resolveUrl('manufacturers')]]"><paper-button>Manufacturers</paper-button></a></div>
 						<template is="dom-if" if="[[_cartCount]]">
 							<div>
 								<a href="/cart">
