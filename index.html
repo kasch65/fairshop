@@ -26,10 +26,10 @@
 
 		<link rel="manifest" href="manifest.json">
 		<link rel="shortcut icon" href="/favicon.ico">
-		<script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
 		<!-- The shop app -->
-		<script type="module" src="/src/fairshop-app.js"></script>
+		<script type="module" src="./src/fairshop-app.js"></script>
 		
 		<!-- general style -->
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -47,14 +47,14 @@
 
 		<script>
 			// Check that service workers are registered
-			if ('serviceWorker' in navigator) {
+			if ("serviceWorker" in navigator) {
 				// Use the window load event to keep the page load performant
-				window.addEventListener('load', () => {
-					navigator.serviceWorker.register('/service-worker.js');
+				window.addEventListener("load", () => {
+					navigator.serviceWorker.register("./workbox.js");
 				});
 			}
 		</script>
-		<script src="/node_modules/web-animations-js/web-animations-next.min.js"></script>
+		<script src="./node_modules/web-animations-js/web-animations-next.min.js"></script>
 	</head>
 
 	<body>
@@ -62,10 +62,12 @@
 		<!-- Choose the content -->
 		<!-- The BUKH Bremen testshop -->
 		<script type="module" src="/src/services/bukhtest/fairshop-services.js"></script>
-		<fairshop-app rest-url="http://localhost/php-api-auth/api.php/" image-url="http://www.bukh-bremen.de/"></fairshop-app>-->
+		<fairshop-app rest-url="http://localhost/php-api-auth/api.php/" image-url="http://www.bukh-bremen.de/"></fairshop-app>
 		<!-- The Zen Cart demo content -->
 		<!--<script type="module" src="/src/services/zencart/fairshop-services.js"></script>
-		<fairshop-app rest-url="http://localhost/zencart-german-grundsystem/rest/api.php/" image-url="http://localhost/zencart-german-grundsystem/images/"></fairshop-app> -->
+    <fairshop-app rest-url="http://localhost/zencart-german-grundsystem/rest/api.php/" image-url="http://localhost/zencart-german-grundsystem/images/"></fairshop-app>-->
+    <!-- on open.fairweben.de -->
+		<!--<fairshop-app rest-url="https://open.fairweben.de/php-api-auth/api.php/" image-url="https://www.bukh-bremen.de/"></fairshop-app>-->
 	</body>
-	
+
 </html>

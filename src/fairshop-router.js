@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import {} from '@polymer/polymer/lib/utils/resolve-url.js';
 import '@polymer/app-route/app-location.js';
 
 /**
@@ -61,21 +62,63 @@ export class FairshopRouter extends PolymerElement {
 		`;
 	}
 
-	ready() {
-		super.ready();
+	constructor() {
+		super();
+		window.router = this;
 	}
 
 	static get observers() {
 		return ['_routePageChanged(_route.path)']
 	}
 
+	setProduct(productId) {
+
+	}
+
 	_routePageChanged(path) {
+		const url = window.location.href;
+		console.log('New URL: ', window.location.href);
 		// Analyze _route
-		var pathTokens = this._route.path.substr(1).split('/');
+		var categoryId = this._getCategoryId(url);
+		var manufacturerId = this._getMaufacturerId(url);
+		var productId = this._getProductId(url);
+
+		if (this._isLogin(url)) {
+			this.page = 'login';
+		}
+		else if (this._isCart(url)) {
+			this.page = 'cart';
+		}
+		else if (categoryId) {
+			this.categoryId = Number(categoryId);
+			this.page = 'categories';
+			if (productId) {
+				this.productId = Number(productId);
+			}
+		}
+		else if (this._isCategory(url)) {
+			this.categoryId = null;
+			this.page = 'categories';
+		}
+		else if (manufacturerId) {
+			this.manufacturerId = Number(manufacturerId);
+			this.page = 'manufacturers';
+			if (productId) {
+				this.productId = Number(productId);
+			}
+		}
+		else if (this._isMaufacturer(url)) {
+			this.manufacturerId = null;
+			this.page = 'manufacturers';
+		}
+		else {
+			this.page = 'home';
+		}
+		this.pageNr = this._getPage(url);
+		this.path = this._route.path;
+		return;
+
 		var page = 'home';
-		var categoryId = null;
-		var manufacturerId = null;
-		var productId = null;
 		this.hrefPrefix = '/';
 		if (pathTokens.length > 0 && pathTokens[0] == 'categories') {
 			page = pathTokens[0];
@@ -166,5 +209,71 @@ export class FairshopRouter extends PolymerElement {
 		}
 	}
 
+	_getMaufacturerId(url) {
+		var exp = /\/manufacturers\/(\d+)/i;
+		const res = exp.exec(url);
+		if (res) {
+			return res[1];
+		}
+		return null;
+	}
+	
+	_isMaufacturer(url) {
+		var exp = /\/manufacturers(?:[\/&\?]|$)/i;
+		const res = exp.exec(url);
+		return Boolean(res);
+	}
+	
+	_getCategoryId(url) {
+		var exp = /\/categories\/(\d+)/i;
+		const res = exp.exec(url);
+		if (res) {
+			return res[1];
+		}
+		return null;
+	}
+	
+	_isCategory(url) {
+		var exp = /\/categories(?:[\/&\?]|$)/i;
+		const res = exp.exec(url);
+		return Boolean(res);
+	}
+	
+	_getProductId(url) {
+		var exp = /\/product\/(\d+)/i;
+		const res = exp.exec(url);
+		if (res) {
+			return res[1];
+		}
+		return null;
+	}
+	
+	_isProduct(url) {
+		var exp = /\/product(?:[\/&\?]|$)/i;
+		const res = exp.exec(url);
+		return Boolean(res);
+	}
+	
+	_getPage(url) {
+		var exp = /(?:\?|&)page=(\d+)/i;
+		const res = exp.exec(url);
+		if (res) {
+			return res[1];
+		}
+		return 1;
+	}
+	
+	_isLogin(url) {
+		var exp = /\/login(?:[\/&\?]|$)/i;
+		const res = exp.exec(url);
+		return Boolean(res);
+	}
+	
+	_isCart(url) {
+		var exp = /\/cart(?:[\/&\?]|$)/i;
+		const res = exp.exec(url);
+		return Boolean(res);
+	}
+	
 }
 customElements.define("fairshop-router", FairshopRouter);
