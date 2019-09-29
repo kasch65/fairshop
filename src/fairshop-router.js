@@ -62,8 +62,17 @@ export class FairshopRouter extends PolymerElement {
 		`;
 	}
 
+	constructor() {
+		super();
+		window.router = this;
+	}
+
 	static get observers() {
 		return ['_routePageChanged(_route.path)']
+	}
+
+	setProduct(productId) {
+
 	}
 
 	_routePageChanged(path) {
