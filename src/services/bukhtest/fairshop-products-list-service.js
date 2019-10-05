@@ -142,7 +142,7 @@ export class FairshopProductsListService extends PolymerElement {
 	 * Pagewise
 	 */
 	_manufacturerProductsReceived(data) {
-		if (data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records) {
+		if (data.detail.response && data.detail.response.product_search_copy && data.detail.response.product_search_copy.records && data.detail.response.product_search_copy.records.length) {
 			this._productListTmp = {
 				'title': 'Produkte von ' + data.detail.response.product_search_copy.records[0][2],
 				'products': new Array(),

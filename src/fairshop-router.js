@@ -79,46 +79,60 @@ export class FairshopRouter extends PolymerElement {
 		const url = window.location.href;
 		console.log('New URL: ', window.location.href);
 		// Analyze _route
-		var categoryId = this._getCategoryId(url);
-		var manufacturerId = this._getMaufacturerId(url);
-		var productId = this._getProductId(url);
+		let categoryId = this._getCategoryId(url);
+		let manufacturerId = this._getMaufacturerId(url);
+        let productId = this._getProductId(url);
+        let page = 'categories';
 
 		if (this._isLogin(url)) {
-			this.page = 'login';
+			page = 'login';
 		}
 		else if (this._isCart(url)) {
-			this.page = 'cart';
+			page = 'cart';
 		}
 		else if (categoryId) {
 			this.categoryId = Number(categoryId);
-			this.page = 'categories';
 			if (productId) {
 				this.productId = Number(productId);
 			}
+			else {
+				this.productId = null;
+            }
+            this.manufacturerId = null;
 		}
 		else if (this._isCategory(url)) {
 			this.categoryId = null;
-			this.page = 'categories';
+			page = 'categories';
 		}
 		else if (manufacturerId) {
 			this.manufacturerId = Number(manufacturerId);
-			this.page = 'manufacturers';
+			page = 'manufacturers';
 			if (productId) {
 				this.productId = Number(productId);
 			}
+			else {
+				this.productId = null;
+            }
+            this.categoryId = null;
 		}
 		else if (this._isMaufacturer(url)) {
 			this.manufacturerId = null;
-			this.page = 'manufacturers';
+			page = 'manufacturers';
 		}
+		else if (productId) {
+            this.productId = Number(productId);
+            this.categoryId = null;
+            this.manufacturerId = null;
+        }
 		else {
-			this.page = 'home';
-		}
+			page = 'home';
+        }
+        this.page = page;
 		this.pageNr = this._getPage(url);
 		this.path = this._route.path;
 		return;
 
-		var page = 'home';
+		/*var page = 'home';
 		this.hrefPrefix = '/';
 		if (pathTokens.length > 0 && pathTokens[0] == 'categories') {
 			page = pathTokens[0];
@@ -181,7 +195,7 @@ export class FairshopRouter extends PolymerElement {
 		console.log('Router.manufacturerId = ' + this.manufacturerId);
 		this.productId = productId;
 		console.log('Router.productId = ' + this.productId);
-		this.path = this._route.path;
+		this.path = this._route.path;*/
 	}
 
 	_pageNrChanged() {

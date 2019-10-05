@@ -53,6 +53,9 @@ export class FairshopCategoriesTree extends PolymerElement {
 					border-width: 0.5px;
 					border-color: var(--google-grey-300);
 				}
+				#catList[filtered]>.cat-node .cat-node:not(.found)>a {
+					display: none;
+				}
 				.found {
 					background-color: yellow;
 				}
@@ -63,7 +66,7 @@ export class FairshopCategoriesTree extends PolymerElement {
 				<template is="dom-if" if="[[searchString]]">
 					<div class="filtered">Filter: <b>[[searchString]]</b></div>
 				</template>
-				<div id="catList">
+				<div id="catList" filtered$=[[searchString]]>
 					<!-- Categories go here -->
 				</div>
 			</div>
