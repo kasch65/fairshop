@@ -59,9 +59,6 @@ export class FairshopApp extends PolymerElement {
 				type: Number,
 				value: null
 			},
-			_hrefPrefix: {
-				type: String
-			},
 			_path: {
 				type: String,
 				observer: "_pathChanged"
@@ -222,7 +219,7 @@ export class FairshopApp extends PolymerElement {
 				}
 			</style>
 
-			<fairshop-router unauthorized="{{_unauthorized}}" page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}" href-prefix="{{_hrefPrefix}}" path="{{_path}}"></fairshop-router>
+			<fairshop-router unauthorized="{{_unauthorized}}" page="{{_page}}" page-nr="{{_pageNr}}" category-id="{{_categoryId}}" manufacturer-id="{{_manufacturerId}}" product-id="{{_productId}}"" path="{{_path}}"></fairshop-router>
 
 			<div class="app-header-layout">
 				<div class="app-header">
@@ -253,7 +250,7 @@ export class FairshopApp extends PolymerElement {
 					</div>
 				</div>
 
-				<div class="app-body">
+				<div id="appBody" class="app-body">
 					<template is="dom-if" if="[[_homeActive]]">
 						<div id="home" page-name="home">
 							<h1>fairshop</h1>
@@ -296,7 +293,7 @@ export class FairshopApp extends PolymerElement {
 					</template>
 					<template is="dom-if" if="[[_productsActive]]">
 						<div id="products" page-name="products">
-							<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" href-prefix="[[_hrefPrefix]]" page="{{_pageNr}}" search-string="[[_searchString]]"></fairshop-products-list>
+							<fairshop-products-list rest-url="[[restUrl]]" image-url="[[imageUrl]]" selected-manufacturer="[[_manufacturerId]]" selected-category="[[_categoryId]]" page="{{_pageNr}}" search-string="[[_searchString]]"></fairshop-products-list>
 						</div>
 					</template>
 					<template is="dom-if" if="[[_productActive]]">
@@ -343,6 +340,7 @@ export class FairshopApp extends PolymerElement {
 			}
 			else if (this._productId) {
 				this._productActive = true;
+				this.$.appBody.scrollTop = 0;
 			}
 			else if (this._page == 'categories') {
 				if (this._categoryId) {

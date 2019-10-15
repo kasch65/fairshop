@@ -129,7 +129,7 @@ export class FairshopProductsList extends PolymerElement {
 					<ul id="productsList">
 						<template is="dom-repeat" items="[[_productList.products]]" as="product">
 							<li>
-								<a href="[[hrefPrefix]]/product/[[product.id]]">
+								<a href="[[_resolveProductUrl(product.id)]]">
 									<fairshop-product-card name="[[product.name]]" description="[[product.description]]" image-url="[[product.imageUrl]]" price="[[product.price]]" manufacturer-name="[[product.manufacturerName]]"></fairshop-product-card>
 								</a>
 							</li>
@@ -138,6 +138,10 @@ export class FairshopProductsList extends PolymerElement {
 				</div>
 			</div>
 		`;
+	}
+	
+	_resolveProductUrl(id) {
+		return this.resolveUrl('product/' + id);
 	}
 
 	_goBack() {

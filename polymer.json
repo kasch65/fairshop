@@ -13,7 +13,9 @@
     "node_modules/web-animations-js/web-animations-next.min.js",
     "src/img/*",
     "node_modules/workbox-sw/build/workbox-sw.js",
-    "workbox.js"
+    "workbox.js",
+    "undefined",
+    "null"
   ],
   "builds": [
     {

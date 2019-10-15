@@ -85,7 +85,7 @@ export class FairshopManufacturersListService extends PolymerElement {
 						'imageUrl': null
 					}
 				} 
-				manufacturer.url = '/manufacturers/' + id;
+				manufacturer.url = 'manufacturers/' + id;
 				manufacturer.name = manufacturerRecord[1];
 				manufacturersMap.set(manufacturer.id, manufacturer);
 			}

@@ -98,11 +98,23 @@ export class FairshopProduct extends PolymerElement {
 					height: 18rem;
 					overflow: auto;
 				}
+				/* Mobile first */
 				#zoomDialog {
 					cursor: zoom-out;
-					width: 90vw;
-					height: 90vh;
+					width: 100vw;
+					height: 100vh;
+					max-width: 100vw;
+					max-height: 100vh;
+					margin: 0;
+					padding: 0;
 					z-index: 300;
+				}
+				/* Bigger screens */
+				@media only screen and (min-width: 768px) {
+					#zoomDialog {
+						width: 90vw;
+						height: 90vh;
+					}
 				}
 				#productZoomImage {
 					max-height: inherit;
@@ -261,7 +273,7 @@ export class FairshopProduct extends PolymerElement {
   }
 
   _onZoomOut(ev) {
-    this.$.zoomDialog.close();
+	this.$.zoomDialog.close();
   }
 
 	_addItem() {

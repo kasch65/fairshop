@@ -81,8 +81,8 @@ export class FairshopRouter extends PolymerElement {
 		// Analyze _route
 		let categoryId = this._getCategoryId(url);
 		let manufacturerId = this._getMaufacturerId(url);
-        let productId = this._getProductId(url);
-        let page = 'categories';
+		let productId = this._getProductId(url);
+		let page = 'categories';
 
 		if (this._isLogin(url)) {
 			page = 'login';
@@ -97,8 +97,8 @@ export class FairshopRouter extends PolymerElement {
 			}
 			else {
 				this.productId = null;
-            }
-            this.manufacturerId = null;
+			}
+			this.manufacturerId = null;
 		}
 		else if (this._isCategory(url)) {
 			this.categoryId = null;
@@ -112,22 +112,22 @@ export class FairshopRouter extends PolymerElement {
 			}
 			else {
 				this.productId = null;
-            }
-            this.categoryId = null;
+			}
+			this.categoryId = null;
 		}
 		else if (this._isMaufacturer(url)) {
 			this.manufacturerId = null;
 			page = 'manufacturers';
 		}
 		else if (productId) {
-            this.productId = Number(productId);
-            this.categoryId = null;
-            this.manufacturerId = null;
-        }
+			this.productId = Number(productId);
+			this.categoryId = null;
+			this.manufacturerId = null;
+		}
 		else {
 			page = 'home';
-        }
-        this.page = page;
+		}
+		this.page = page;
 		this.pageNr = this._getPage(url);
 		this.path = this._route.path;
 		return;

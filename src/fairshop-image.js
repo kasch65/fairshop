@@ -41,6 +41,8 @@ export class FairshopImage extends PolymerElement {
 					display: inline-block;
 					overflow: hidden;
 					position: relative;
+					max-width: 100vw;
+					max-height: 100vh;
 				}
 				#img {
 					width: 0;
@@ -82,6 +84,7 @@ export class FairshopImage extends PolymerElement {
 	ready() {
 		super.ready();
 		this._placeholderBg = 'background-image: url("' + this.placeholder + '"); background-size: ' + this.sizing + ';';
+		console.debug('_placeholderBg', this._placeholderBg);
 	}
 
 	_srcChange() {

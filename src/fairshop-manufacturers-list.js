@@ -59,7 +59,7 @@ export class FairshopManufacturersList extends PolymerElement {
 				<ul id="manufacturersList">
 					<template is="dom-repeat" items="[[_manufacturers]]" as="manufacturer">
 						<li>
-							<a href="[[manufacturer.url]]">
+							<a href="[[resolveUrl(manufacturer.url)]]">
 								<fairshop-manufacturer-card name="[[manufacturer.name]]" logo-url="[[manufacturer.imageUrl]]"></fairshop-manufacturer-card>
 							</a>
 						</li>
